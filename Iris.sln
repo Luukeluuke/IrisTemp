@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iris", "Iris\Iris.csproj", "{F10599F6-88FB-4147-BEE7-647788D68099}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F10599F6-88FB-4147-BEE7-647788D68099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F10599F6-88FB-4147-BEE7-647788D68099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F10599F6-88FB-4147-BEE7-647788D68099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F10599F6-88FB-4147-BEE7-647788D68099}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CDA38A25-ACDC-417D-AB3A-7CD7A9624C16}
+	EndGlobalSection
+EndGlobal
