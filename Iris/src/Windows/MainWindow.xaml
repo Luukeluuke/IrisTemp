@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:Iris"
         mc:Ignorable="d"
         Title="Iris VGV" Height="720" Width="1280"
-        Background="{StaticResource MaterialDesignDarkBackground}">
+        Background="{StaticResource MaterialDesignDarkBackground}"
+        Loaded="Window_Loaded">
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"></RowDefinition>
@@ -24,16 +25,13 @@
                     <TextBlock Text="Ausleihen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                 </Button.Content>
             </Button>
-            <Button x:Name="DevicesMenuButton" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DevicesMenuButton_Click">
+            <Button x:Name="DevicesMenuButton" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DevicesMenuButton_Click" Cursor="Hand">
                 <Button.Content>
                     <TextBlock Text="Geräte" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                 </Button.Content>
             </Button>
         </StackPanel>
-        <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
-            <Grid Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
-                <Frame x:Name="ContentFrame" Source=""></Frame>
-            </Grid>
-        </Border>
+        <Grid Grid.Row="1" x:Name="ContentGrid" Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
+        </Grid>
     </Grid>
 </Window>
