@@ -48,6 +48,7 @@
         public static Device CreateDevice(string name, string notes, DeviceType type)
         {
             //TODO: Die query erst an die Datenbank und dann die Daten wieder aus der Datenbank holen und in den cosntructor packen
+            return new Device(-1, name, notes, type);
         }
 
         /// <summary>
@@ -57,7 +58,7 @@
         /// <returns>Whether the device contains the given string.</returns>
         public bool Contains(string match)
         {
-            return Name.Contains(match) || Notes.Contains(match);
+            return Name.Contains(match, System.StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, System.StringComparison.CurrentCultureIgnoreCase);
         }
         #endregion
         #endregion
