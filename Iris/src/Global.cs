@@ -31,6 +31,9 @@ namespace Iris
 
         #region Methods
         #region Private
+        /// <summary>
+        /// Loads the three primary MaterialDesing colors.
+        /// </summary>
         static private void LoadMaterialDesignColors()
         {
             MaterialDesignDarkBackground = Application.Current.FindResource("MaterialDesignDarkBackground") as SolidColorBrush;

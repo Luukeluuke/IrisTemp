@@ -113,6 +113,10 @@ namespace Iris
 
         #region Methods
         #region Private
+        /// <summary>
+        /// Changes the active/visible UserControl of ContentGrid.
+        /// </summary>
+        /// <param name="menuTab">The menu tab you want to show.</param>
         private void ChangeContentFrame(MenuTab menuTab)
         {
             string uriString = "";
