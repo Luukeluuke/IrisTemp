@@ -41,6 +41,12 @@
             Notes = notes;
             Type = type;
         }
+
+        /// <param name="dbString">THe string direct out of the database.</param>
+        public Device (string dbString)
+        {
+            //TODO:
+        }
         #endregion
 
         #region Methods
