@@ -1,5 +1,4 @@
-﻿using MaterialDesignThemes.Wpf;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -90,6 +89,8 @@ namespace Iris
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ChangeContentFrame(MenuTab.Startpage);
+
+            Global.MainWindow = this;
         }
         #endregion
 

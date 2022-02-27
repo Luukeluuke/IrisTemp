@@ -1,5 +1,15 @@
-﻿namespace Iris.Devices
+﻿using System;
+
+namespace Iris.Devices
 {
+    internal enum DeviceType
+    {
+        Notebook = 1,
+        GigaCube = 2,
+        ERK_Meeting = 3,
+        Special = 4
+    }
+
     internal class Device
     {
         #region Properties and Variables
@@ -19,14 +29,6 @@
         /// The type of the device.
         /// </summary>
         public DeviceType Type { get; private set; }
-
-        public enum DeviceType
-        {
-            Notebook = 1,
-            GigaCube = 2,
-            ERK_Meeting = 3,
-            Special = 4
-        }
         #endregion
 
         #region Constructors
@@ -34,7 +36,7 @@
         /// <param name="name">The name of the device.</param>
         /// <param name="notes">The notes of the device.</param>
         /// <param name="type">The device type.</param>
-        private Device(int id, string name, string notes, DeviceType type)
+        public Device(int id, string name, string notes, DeviceType type)
         {
             ID = id;
             Name = name;
@@ -42,10 +44,19 @@
             Type = type;
         }
 
-        /// <param name="dbString">THe string direct out of the database.</param>
-        public Device (string dbString)
+        /// <summary>
+        /// Used for database.
+        /// </summary>
+        /// <param name="id">The ID from the database.</param>
+        /// <param name="name">The name of the device.</param>
+        /// <param name="notes">The notes of the device.</param>
+        /// <param name="typeId">The device typeId.</param>
+        public Device(int id, string name, string notes, int typeId)
         {
-            //TODO:
+            ID = id;
+            Name = name;
+            Notes = notes;
+            Type = (DeviceType)typeId;
         }
         #endregion
 
