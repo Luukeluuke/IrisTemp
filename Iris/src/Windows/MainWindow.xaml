@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Iris VGV" Height="720" Width="1280"
         Background="{StaticResource MaterialDesignDarkBackground}"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"></RowDefinition>

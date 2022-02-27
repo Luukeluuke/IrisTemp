@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Iris.Database;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -92,6 +93,11 @@ namespace Iris
 
             Global.MainWindow = this;
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            DatabaseHandler.CloseDBConnection();
+        }
         #endregion
 
         #region MenuButtons
@@ -145,6 +151,7 @@ namespace Iris
             ContentGrid.Children.Add(new Frame() { Source = new Uri(uriString, UriKind.Relative) });
         }
         #endregion
+
         #endregion
     }
 }

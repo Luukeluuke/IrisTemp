@@ -32,6 +32,14 @@ namespace Iris.Database
         #region Methods
         #region Public
         /// <summary>
+        /// Closes the database connection.
+        /// </summary>
+        public static void CloseDBConnection()
+        {
+            Connection.Close();
+        }
+
+        /// <summary>
         /// Insert a new device into the database.
         /// </summary>
         /// <param name="name">Name of the device.</param>
