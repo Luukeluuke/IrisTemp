@@ -128,6 +128,11 @@ namespace Iris.Database
             Global.MainWindow.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// Executes a read command on the database.
+        /// </summary>
+        /// <param name="sqlCommand">The SQL command.</param>
+        /// <returns>The reader.</returns>
         private static async Task<SqliteDataReader?> ExecuteReaderAsync(string sqlCommand)
         {
             Global.MainWindow.Cursor = Cursors.Wait;
