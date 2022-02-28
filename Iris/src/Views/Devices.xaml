@@ -27,10 +27,10 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Filter:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox Content="Notebook" Margin="10 0 0 0" IsChecked="True" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}"></CheckBox>
-                    <CheckBox Content="GigaCube" Margin="10 0 0 0" IsChecked="True" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}"></CheckBox>
-                    <CheckBox Content="ERK-Meeting" Margin="10 0 0 0" IsChecked="True" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}"></CheckBox>
-                    <CheckBox Content="Spezial" Margin="10 0 0 0" IsChecked="True" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}"></CheckBox>
+                    <CheckBox x:Name="FilterNotebookCheckBox" Content="Notebook"  Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterNotebookCheckBox_Checked" Unchecked="FilterNotebookCheckBox_Unchecked"></CheckBox>
+                    <CheckBox x:Name="FilterGigaCubeCheckBox" Content="GigaCube" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterGigaCubeCheckBox_Checked" Unchecked="FilterGigaCubeCheckBox_Unchecked"></CheckBox>
+                    <CheckBox x:Name="FilterERKMeetingCheckBox" Content="ERK-Meeting" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterERKMeetingCheckBox_Checked" Unchecked="FilterERKMeetingCheckBox_Unchecked"></CheckBox>
+                    <CheckBox x:Name="FilterSpecialCheckBox" Content="Spezial" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterSpecialCheckBox_Checked" Unchecked="FilterSpecialCheckBox_Unchecked"></CheckBox>
                 </StackPanel>
             </Grid>
             <DataGrid x:Name="DevicesDataGrid" Grid.Row="1" Margin="0 0 0 0" DataContext="{Binding LoadedDevices}" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="DevicesDataGrid_SelectedCellsChanged">

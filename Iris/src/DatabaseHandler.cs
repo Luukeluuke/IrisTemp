@@ -1,5 +1,6 @@
 ﻿using Iris.Devices;
 using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -111,6 +112,41 @@ namespace Iris.Database
             List<Device> devices = new();
         
             while(reader.Read())
+            {
+                devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
+            }
+
+            await reader.CloseAsync();
+            return devices;
+        }
+
+        /// <summary>
+        /// Select all specific devices by the type out of the database.
+        /// </summary>
+        /// <returns>The devices, otherwise null.</returns>
+        public static async Task<List<Device>> SelectAllDevices(params DeviceType[] types)
+        {
+            #region Validation
+            if (types.Length == 0)
+            {
+                return null;
+            }
+            #endregion
+
+            string where = string.Join(" OR ", Array.ConvertAll(types, v => $"Type == {(int)v}"));
+
+            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
+                                                                                WHERE
+                                                                                    {where}");
+
+            if (reader is null)
+            {
+                return null;
+            }
+
+            List<Device> devices = new();
+
+            while (reader.Read())
             {
                 devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
             }

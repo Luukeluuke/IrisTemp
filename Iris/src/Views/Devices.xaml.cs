@@ -68,7 +68,9 @@ namespace Iris.src.Views
         /// <summary>
         /// The currently selected device in <see cref="DevicesDataGrid"/>.
         /// </summary>
-        private Device SelectedDevice { get; set; } = null;
+        private Device SelectedDevice { get; set; }
+
+        private List<DeviceType> SelectedDeviceTypes { get; set; }
 
         private enum MenuTab
         {
@@ -81,6 +83,9 @@ namespace Iris.src.Views
         public Devices()
         {
             InitializeComponent();
+
+            SelectedDevice = null;
+            SelectedDeviceTypes = new List<DeviceType>();
         }
         #endregion
 
@@ -88,6 +93,11 @@ namespace Iris.src.Views
         #region UserControl
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            FilterNotebookCheckBox.IsChecked = true;
+            FilterGigaCubeCheckBox.IsChecked = true;
+            FilterERKMeetingCheckBox.IsChecked = true;
+            FilterSpecialCheckBox.IsChecked = true;
+
             LoadDevices();
         }
         #endregion
@@ -222,6 +232,52 @@ namespace Iris.src.Views
             DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
         }
         #endregion
+
+        #region FilterCheckBoxes
+        private void FilterNotebookCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Add(DeviceType.Notebook);
+            LoadDevices();
+        }
+        private void FilterNotebookCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Remove(DeviceType.Notebook);
+            LoadDevices();
+        }
+
+        private void FilterGigaCubeCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Add(DeviceType.GigaCube);
+            LoadDevices();
+        }
+        private void FilterGigaCubeCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Remove(DeviceType.GigaCube);
+            LoadDevices();
+        }
+
+        private void FilterERKMeetingCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Add(DeviceType.ERK_Meeting);
+            LoadDevices();
+        }
+        private void FilterERKMeetingCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Remove(DeviceType.ERK_Meeting);
+            LoadDevices();
+        }
+
+        private void FilterSpecialCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Add(DeviceType.Special);
+            LoadDevices();
+        }
+        private void FilterSpecialCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SelectedDeviceTypes.Remove(DeviceType.Special);
+            LoadDevices();
+        }
+        #endregion
         #endregion
 
         #region Methods
@@ -254,7 +310,7 @@ namespace Iris.src.Views
         /// </summary>
         private async void LoadDevices()
         {
-            LoadedDevices = await DatabaseHandler.SelectAllDevices();
+            LoadedDevices = await DatabaseHandler.SelectAllDevices(SelectedDeviceTypes.ToArray());
             DevicesDataGrid.ItemsSource = LoadedDevices;
         }
         #endregion
