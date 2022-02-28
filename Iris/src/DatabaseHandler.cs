@@ -118,6 +118,24 @@ namespace Iris.Database
             await reader.CloseAsync();
             return devices;
         }
+
+        public static async Task<Device> SelectLastDevice()
+        {
+            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
+                                                                                WHERE
+                                                                                    ID == (SELECT MAX(ID) FROM TDevices)");
+
+            if (reader is null)
+            {
+                return null;
+            }
+
+            reader.Read();
+            Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
+
+            await reader.CloseAsync();
+            return device;
+        }
         #endregion
 
         #region Private

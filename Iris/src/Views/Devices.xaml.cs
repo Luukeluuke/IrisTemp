@@ -1,13 +1,13 @@
 ﻿using Iris.Database;
 using Iris.Devices;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace Iris.src.Views
 {
-    //TODO: Bei EditDevicesGrid alle Elemente Disablen wenn kein Gerät ausgewählt
-
     /// <summary>
     /// Interaktionslogik für Devices.xaml
     /// </summary>
@@ -108,6 +108,36 @@ namespace Iris.src.Views
         private void DevicesDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             SelectedDevice = DevicesDataGrid.SelectedItem as Device;
+
+            if (SelectedDevice is not null)
+            {
+                //Enable controls
+                EditDeviceNameTextBox.IsEnabled = true;
+                EditDeviceNotesRichTextBox.IsEnabled = true;
+                EditDeviceCancelButton.IsEnabled = true;
+                EditDeviceConfirmButton.IsEnabled = true;
+
+                DeleteDeviceButton.IsEnabled = true;
+
+                //Load data into controls
+                EditDeviceNameTextBox.Text = SelectedDevice.Name;
+                EditDeviceTypeComboBox.SelectedIndex = (int)SelectedDevice.Type - 1;
+                EditDeviceNotesRichTextBox.Document.Blocks.Clear();
+                EditDeviceNotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(SelectedDevice.Notes.Trim())));
+            }
+            else
+            {
+                EditDeviceNameTextBox.IsEnabled = false;
+                EditDeviceNotesRichTextBox.IsEnabled = false;
+                EditDeviceCancelButton.IsEnabled = false;
+                EditDeviceConfirmButton.IsEnabled = false;
+
+                DeleteDeviceButton.IsEnabled = false;
+
+                EditDeviceNameTextBox.Text = "";
+                EditDeviceTypeComboBox.SelectedIndex = -1;
+                EditDeviceNotesRichTextBox.Document.Blocks.Clear();
+            }
         }
         #endregion
 
@@ -121,8 +151,6 @@ namespace Iris.src.Views
         #region DeleteDeviceButton
         private void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: Verify if SelectedDevice is null when deleted here.
-
             if (SelectedDevice is null)
             {
                 MessageBox.Show("Es ist kein Gerät ausgewählt.", "Kein Gerät ausgewählt", MessageBoxButton.OK);
@@ -143,6 +171,55 @@ namespace Iris.src.Views
             NewDeviceNameTextBox.Text = "";
             NewDeviceTypeComboBox.SelectedIndex = -1;
             NewDeviceNotesRichTextBox.Document.Blocks.Clear();
+        }
+        #endregion
+
+        #region AddDeviceConfirmButton
+        private async void AddDeviceConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(NewDeviceNameTextBox.Text))
+            {
+                MessageBox.Show("Es muss ein Name angegeben werden.", "Ungültiger Name", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (NewDeviceTypeComboBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Es muss ein Gerätetyp angegeben werden.", "Ungültiger Gerätetyp", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            await Device.CreateNewDevice(NewDeviceNameTextBox.Text, new TextRange(NewDeviceNotesRichTextBox.Document.ContentStart, NewDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), (DeviceType)(NewDeviceTypeComboBox.SelectedIndex + 1));
+            LoadDevices();
+
+            AddDeviceCancelButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
+        #endregion
+
+        #region EditDeviceCancelButton
+        private void EditDeviceCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditDeviceNameTextBox.Text = SelectedDevice.Name;
+            EditDeviceTypeComboBox.SelectedIndex = (int)SelectedDevice.Type - 1;
+            EditDeviceNotesRichTextBox.Document.Blocks.Clear();
+            EditDeviceNotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(SelectedDevice.Notes.Trim())));
+        }
+        #endregion
+
+        #region EditDeviceConfirmButton
+        private void EditDeviceConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(EditDeviceNameTextBox.Text))
+            {
+                MessageBox.Show("Es muss ein Name angegeben werden.", "Ungültiger Name", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int lastID = SelectedDevice.ID;
+
+            DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim());
+            LoadDevices();
+
+            DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
         }
         #endregion
         #endregion

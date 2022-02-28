@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Iris.Database;
+using System;
+using System.Threading.Tasks;
 
 namespace Iris.Devices
 {
@@ -62,12 +64,17 @@ namespace Iris.Devices
 
         #region Methods
         #region Public
-        public static Device CreateDevice(string name, string notes, DeviceType type)
+        /// <summary>
+        /// Initial create of a device. Creates it in the database.
+        /// </summary>
+        /// <param name="name">Name of the device.</param>
+        /// <param name="notes">Notes of the device.</param>
+        /// <param name="type">Type of the device.</param>
+        public static async Task<Device> CreateNewDevice(string name, string notes, DeviceType type)
         {
-            //TODO: Die query erst an die Datenbank und dann die Daten wieder aus der Datenbank holen und in den cosntructor packen
+            DatabaseHandler.InsertDevice(name, notes, type);
 
-
-            return new Device(-1, name, notes, type);
+            return await DatabaseHandler.SelectLastDevice();
         }
 
         /// <summary>
