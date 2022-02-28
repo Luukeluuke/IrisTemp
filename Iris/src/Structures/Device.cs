@@ -55,7 +55,7 @@ namespace Iris.Devices
         {
             ID = id;
             Name = name;
-            Notes = notes;
+            Notes = notes.Equals(Global.NullDBString) ? null : notes;
             Type = (DeviceType)typeId;
         }
         #endregion
@@ -77,7 +77,7 @@ namespace Iris.Devices
         /// <returns>Whether the device contains the given string.</returns>
         public bool Contains(string match)
         {
-            return Name.Contains(match, System.StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, System.StringComparison.CurrentCultureIgnoreCase);
+            return Name.Contains(match, StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public override string ToString()

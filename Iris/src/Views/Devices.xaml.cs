@@ -1,17 +1,8 @@
-﻿using System;
+﻿using Iris.Database;
+using Iris.Devices;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Iris.src.Views
 {
@@ -70,6 +61,15 @@ namespace Iris.src.Views
         }
         private MenuTab selectedMenuTab = MenuTab.AddDevice;
 
+        /// <summary>
+        /// The ItemSource for <see cref="DevicesDataGrid"/>.
+        /// </summary>
+        private List<Device> LoadedDevices { get; set; }
+        /// <summary>
+        /// The currently selected device in <see cref="DevicesDataGrid"/>.
+        /// </summary>
+        private Device SelectedDevice { get; set; } = null;
+
         private enum MenuTab
         {
             AddDevice,
@@ -85,6 +85,13 @@ namespace Iris.src.Views
         #endregion
 
         #region Events
+        #region UserControl
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadDevices();
+        }
+        #endregion
+
         #region MenuButtons
         private void NewDeviceButton_Click(object sender, RoutedEventArgs e)
         {
@@ -94,6 +101,48 @@ namespace Iris.src.Views
         private void EditDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedMenuTab = MenuTab.EditDevice;
+        }
+        #endregion
+
+        #region Devices DataGrid
+        private void DevicesDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            SelectedDevice = DevicesDataGrid.SelectedItem as Device;
+        }
+        #endregion
+
+        #region RefreshDevicesButton
+        private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadDevices();
+        }
+        #endregion
+
+        #region DeleteDeviceButton
+        private void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: Verify if SelectedDevice is null when deleted here.
+
+            if (SelectedDevice is null)
+            {
+                MessageBox.Show("Es ist kein Gerät ausgewählt.", "Kein Gerät ausgewählt", MessageBoxButton.OK);
+                return;
+            }
+
+            if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Warning).Equals(MessageBoxResult.Yes))
+            {
+                DatabaseHandler.DeleteDevice(SelectedDevice.ID);
+                LoadDevices();
+            }
+        }
+        #endregion
+
+        #region AddDeviceCancelButton
+        private void AddDeviceCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewDeviceNameTextBox.Text = "";
+            NewDeviceTypeComboBox.SelectedIndex = -1;
+            NewDeviceNotesRichTextBox.Document.Blocks.Clear();
         }
         #endregion
         #endregion
@@ -122,7 +171,17 @@ namespace Iris.src.Views
                     }
             }
         }
+
+        /// <summary>
+        /// Load the devices out of the database.
+        /// </summary>
+        private async void LoadDevices()
+        {
+            LoadedDevices = await DatabaseHandler.SelectAllDevices();
+            DevicesDataGrid.ItemsSource = LoadedDevices;
+        }
         #endregion
+
         #endregion
     }
 }
