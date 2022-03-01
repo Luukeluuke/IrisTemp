@@ -104,7 +104,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <ComboBox x:Name="NewDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}">
+                        <ComboBox x:Name="NewDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True">
                             <ComboBoxItem Content="Notebook" ></ComboBoxItem>
                             <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
                             <ComboBoxItem Content="ERK-Meeting" ></ComboBoxItem>
@@ -168,7 +168,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <ComboBox x:Name="EditDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" IsEnabled="False" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}">
+                        <ComboBox x:Name="EditDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" IsEnabled="False" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True">
                             <ComboBoxItem Content="Notebook" ></ComboBoxItem>
                             <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
                             <ComboBoxItem Content="ERK-Meeting" ></ComboBoxItem>
