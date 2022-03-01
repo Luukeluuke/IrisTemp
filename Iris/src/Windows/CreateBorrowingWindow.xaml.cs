@@ -57,6 +57,8 @@ namespace Iris.src.Windows
                                                string.IsNullOrWhiteSpace(notes) ? null : notes);
 
             DataHandler.RefreshData();
+
+            Close();
         }
         #endregion
 

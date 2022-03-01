@@ -1,6 +1,5 @@
 ﻿using Iris.Structures;
 using Microsoft.Data.Sqlite;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -56,6 +55,12 @@ namespace Iris.Database
                                                 WHERE ID == {id}");
         }
 
+        /// <summary>
+        /// Updates a device in the database.
+        /// </summary>
+        /// <param name="id">ID of the device.</param>
+        /// <param name="name">"New" name of the device.</param>
+        /// <param name="notes">"New" notes of the device.</param>
         public static void UpdateDevice(int id, string name, string notes)
         {
             ExecuteNonQueryAsync($@"UPDATE TDevices
@@ -205,6 +210,44 @@ namespace Iris.Database
                                                 (DeviceID, Loaner, Taker, LenderName, LenderPhone, LenderEmail, DateStart, DatePlannedEnd, DateEnd, Borrowed, Notes) 
                                             VALUES 
                                                 ({deviceID}, '{loaner ?? Global.NullDBString}', '{taker ?? Global.NullDBString}', '{lenderName}', '{lenderPhone ?? Global.NullDBString}', '{lenderEmail ?? Global.NullDBString}', {dateStart}, {datePlannedEnd}, {dateEnd}, {(isBorrowed ? '1' : '0')}, '{notes ?? Global.NullDBString}')");
+        }
+
+        /// <summary>
+        /// Deletes a borrowing by its ID out of the database.
+        /// </summary>
+        /// <param name="id">ID of the borrowing.</param>
+        public static void DeleteBorrowing(int id)
+        {
+            ExecuteNonQueryAsync($@"DELETE FROM TBorrowings
+                                                WHERE ID == {id}");
+        }
+
+        /// <summary>
+        /// Select all borrowings out of the database.
+        /// </summary>
+        /// <returns>The borrowings, otherwise null.</returns>
+        public static async Task<List<Borrowing>> SelectAllBorrowings()
+        {
+            Global.MainWindow.Cursor = Cursors.Wait;
+
+            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings");
+
+            if (reader is null)
+            {
+                return null;
+            }
+
+            List<Borrowing> borrowings = new();
+
+            while (reader.Read())
+            {
+                borrowings.Add(new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11)));
+            }
+
+            await reader.CloseAsync();
+
+            Global.MainWindow.Cursor = Cursors.Arrow;
+            return borrowings;
         }
 
         /// <summary>

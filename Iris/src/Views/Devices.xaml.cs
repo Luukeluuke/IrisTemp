@@ -163,7 +163,7 @@ namespace Iris.src.Views
         {
             if (SelectedDevice is null)
             {
-                MessageBox.Show("Es ist kein Gerät ausgewählt.", "Kein Gerät ausgewählt", MessageBoxButton.OK);
+                MessageBox.Show("Es ist kein Gerät ausgewählt.", "Kein Gerät ausgewählt", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -306,7 +306,7 @@ namespace Iris.src.Views
         }
 
         /// <summary>
-        /// Load the devices out of the database.
+        /// Load the devices out of the database. Including the filters.
         /// </summary>
         private async void LoadDevices()
         {

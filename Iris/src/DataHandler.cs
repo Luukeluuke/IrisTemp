@@ -33,6 +33,7 @@ namespace Iris.Structures
         public static async void RefreshData()
         {
             Devices = (await DatabaseHandler.SelectAllDevices()).OrderBy(a => a.Type).ToList();
+            Borrowings = (await DatabaseHandler.SelectAllBorrowings()).OrderBy(b => b.DateStart).ToList();
         }
 
         /// <summary>

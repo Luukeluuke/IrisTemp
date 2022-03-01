@@ -5,16 +5,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Iris.src.Views"
+             DataContext="{Binding RelativeSource={RelativeSource self}}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
     <Grid  Background="{StaticResource MaterialDesignDarkBackground}">
         <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="29*"/>
+                <ColumnDefinition Width="129*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Margin="5 0 0 0" >
+            <Grid Margin="5,0,0,0" Grid.ColumnSpan="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -32,9 +38,9 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0">
                         <TextBlock VerticalAlignment="Center" Text="Von:" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <DatePicker VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
+                        <DatePicker x:Name="FilterFromDatePicker" VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
                         <TextBlock Margin="10 0 0 0" VerticalAlignment="Center" Text="Bis:" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <DatePicker VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
+                        <DatePicker x:Name="FilterToDatePicker" VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
                     </StackPanel>
                     <Separator Grid.Column="1" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="2" Margin="10 5 0 5"></Separator>
                     <Grid Grid.Column="2" Margin="10 0 2 0">
@@ -43,7 +49,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" Width="100" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}">
+                        <ComboBox x:Name="FilterDeviceComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" Width="100" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}">
                             <ComboBoxItem Content="Notebook" ></ComboBoxItem>
                             <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
                             <ComboBoxItem Content="ERK-Meeting" ></ComboBoxItem>
@@ -57,26 +63,33 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Enthält:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <TextBox Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                        <TextBox x:Name="FilterContainsTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
-                    <Button x:Name="RemoveFiltersButton" Grid.Column="5" Margin="10 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}">
+                    <Button x:Name="RemoveFiltersButton" Grid.Column="5" Margin="10 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RemoveFiltersButton_Click">
                         <Button.Content>
                             <TextBlock Text="Zurücksetzen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         </Button.Content>
                     </Button>
-                    <Button x:Name="ApplyFiltersButton" Grid.Column="6" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}">
+                    <Button x:Name="ApplyFiltersButton" Grid.Column="6" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="ApplyFiltersButton_Click">
                         <Button.Content>
                             <TextBlock Text="Anwenden" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         </Button.Content>
                     </Button>
                 </Grid>
             </Grid>
-            <DataGrid Grid.Row="1" Margin="0 0 0 0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn></DataGridTextColumn>
+                    <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Ausleihdatum" Binding="{Binding DateStart}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Geplante Rückgabe" Binding="{Binding DatePlannedEnd}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Herausgeber" Binding="{Binding Loaner}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Zurückgabedatum" Binding="{Binding EndDate}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Annehmer" Binding="{Binding Taker}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Row="2" Margin="-5 5 0 -5">
+            <Grid Grid.Row="2" Margin="-5 5 0 -5" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -88,12 +101,12 @@
                         <TextBlock Text="Neue Ausleihe" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="DeleteBorrowingButton" Grid.Column="1" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}">
+                <Button x:Name="DeleteBorrowingButton" Grid.Column="1" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteBorrowingButton_Click">
                     <Button.Content>
                         <TextBlock Text="Ausleihe löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="RefreshBorrowingsButton" Grid.Column="3" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}">
+                <Button x:Name="RefreshBorrowingsButton" Grid.Column="3" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshBorrowingsButton_Click">
                     <Button.Content>
                         <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>

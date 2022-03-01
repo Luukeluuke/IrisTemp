@@ -1,4 +1,9 @@
-﻿using Iris.src.Windows;
+﻿using Iris.Database;
+using Iris.src.Windows;
+using Iris.Structures;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Iris.src.Views
@@ -9,7 +14,14 @@ namespace Iris.src.Views
     public partial class Borrowings : UserControl
     {
         #region Properties and Variables
-
+        /// <summary>
+        /// The ItemSource for <see cref="BorrowingsDataGrid"/>.
+        /// </summary>
+        private List<Borrowing> LoadedBorrowings { get; set; }
+        /// <summary>
+        /// The currently selected borrowing in <see cref="BorrowingsDataGrid"/>.
+        /// </summary>
+        private Borrowing SelectedBorrowing { get; set; }
         #endregion
 
         #region Constructors
@@ -20,10 +32,103 @@ namespace Iris.src.Views
         #endregion
 
         #region Events
+        #region AddBorrowingButton
         private void AddBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             new CreateBorrowingWindow().ShowDialog();
         }
+        #endregion
+
+        #region UserControl
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LoadBorrowings();
+        }
+        #endregion
+
+        #region RemoveFiltersButton
+        private void RemoveFiltersButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FilterFromDatePicker.SelectedDate = null;
+            FilterToDatePicker.SelectedDate = null;
+            FilterDeviceComboBox.SelectedIndex = -1;
+            FilterContainsTextBox.Text = "";
+        }
+        #endregion
+
+        #region ApplyFiltersButton
+        private void ApplyFiltersButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LoadBorrowings();
+        }
+        #endregion
+
+        #region DeleteBorrowingsButton
+        private void DeleteBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (SelectedBorrowing is null)
+            {
+                MessageBox.Show("Es ist keine Ausleihe ausgewählt.", "Keine Ausleihe ausgewählt", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show($"Soll die Ausleihe: \"{SelectedBorrowing.LenderName}, {SelectedBorrowing.Device.Name}, {SelectedBorrowing.DateStart:yyyy.dd.MM} - {SelectedBorrowing.DatePlannedEnd:yyyy.dd.MM}\" wirklich gelöscht werden?", $"{SelectedBorrowing.LenderName}, {SelectedBorrowing.Device.Name}, {SelectedBorrowing.DateStart:yyyy.dd.MM} - {SelectedBorrowing.DatePlannedEnd:yyyy.dd.MM} löschen", MessageBoxButton.YesNo, MessageBoxImage.Warning).Equals(MessageBoxResult.Yes))
+            {
+                DatabaseHandler.DeleteBorrowing(SelectedBorrowing.ID);
+                LoadBorrowings();
+            }
+        }
+        #endregion
+
+        #region BorrowingsDataGrid
+        private void BorrowingsDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            SelectedBorrowing = BorrowingsDataGrid.SelectedItem as Borrowing;
+        }
+        #endregion
+
+        #region RefreshBorrowingsButton
+        private void RefreshBorrowingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadBorrowings();
+        }
+        #endregion
+        #endregion
+
+        #region Methods
+        #region Private
+        /// <summary>
+        /// Load the borrowings out of the database. Including the filters.
+        /// </summary>
+        private void LoadBorrowings()
+        {
+            DataHandler.RefreshData();
+
+            LoadedBorrowings = DataHandler.Borrowings;
+
+            #region Filter
+            if (FilterDeviceComboBox.SelectedIndex != -1)
+            {
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.Device.Type.Equals((DeviceType)(FilterDeviceComboBox.SelectedIndex + 1))).ToList();
+            }
+            if (FilterFromDatePicker.SelectedDate is not null)
+            {
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.DateStart >= FilterFromDatePicker.SelectedDate).ToList();
+            }
+            if (FilterToDatePicker.SelectedDate is not null)
+            {
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.DatePlannedEnd <= FilterToDatePicker.SelectedDate).ToList();
+            }
+            if (!FilterContainsTextBox.Text.Equals(""))
+            {
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.Contains(FilterContainsTextBox.Text)).ToList();
+            }
+            #endregion
+
+            BorrowingsDataGrid.ItemsSource = LoadedBorrowings;
+        }
+        #endregion
+
         #endregion
     }
 }
