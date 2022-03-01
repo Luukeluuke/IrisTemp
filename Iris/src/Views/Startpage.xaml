@@ -59,7 +59,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="NewBorrowingButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}">
+                <Button x:Name="NewBorrowingButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="NewBorrowingButton_Click">
                     <Button.Content>
                         <TextBlock Text="Neue Ausleihe" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>

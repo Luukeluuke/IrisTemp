@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Iris.src.Windows;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Iris.src.Views
 {
@@ -20,9 +9,24 @@ namespace Iris.src.Views
     /// </summary>
     public partial class Startpage : UserControl
     {
+        #region Properties and Variables
+
+        #endregion
+
+        #region Constructors
         public Startpage()
         {
             InitializeComponent();
         }
+        #endregion
+
+        #region Events
+        #region NewBorrowingButton
+        private void NewBorrowingButton_Click(object sender, RoutedEventArgs e)
+        {
+            new CreateBorrowingWindow().ShowDialog();
+        }
+        #endregion
+        #endregion
     }
 }
