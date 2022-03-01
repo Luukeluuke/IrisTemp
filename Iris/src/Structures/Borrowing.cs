@@ -98,19 +98,16 @@ namespace Iris.Structures
         /// <summary>
         /// Initial create of a borrowing. Creates it in the database.
         /// </summary>
-        /// <param name="deviceID">The ID of the borrowed device.</param>
         /// <param name="loaner">Name of the loaner of the borrowing.</param>
-        /// <param name="taker">Name of the taker of the borrowing.</param>
         /// <param name="lenderName">Name of the lender.</param>
         /// <param name="lenderPhone">Phone number of the lender.</param>
         /// <param name="lenderEmail">Start date of the borrowing.</param>
         /// <param name="dateStart">Start date of the borrowing.</param>
         /// <param name="datePlannedEnd">Planned end of the borrowing.</param>
-        /// <param name="dateEnd">The actual end of the borrowing.</param>
         /// <param name="isBorrowed">Whether the borrowing is active. </param>
         /// <param name="notes">Notes about the borrowing.</param>
         /// <returns>The created borrowing.</returns>
-        public static async Task<Borrowing> CreateNewBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, DateTime dateEnd, bool isBorrowed, string notes)
+        public static async Task<Borrowing> CreateNewBorrowing(string loaner, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string notes)
         {
             return null;
 

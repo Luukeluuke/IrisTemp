@@ -90,7 +90,7 @@ namespace Iris.Structures
 
         public override string ToString()
         {
-            return $"ID: '{ID}', Type: '{Type}', Name: '{Name}'";
+            return $"ID: '{ID}', Typ: '{Type}', Name: '{Name}'";
         }
         #endregion
         #endregion

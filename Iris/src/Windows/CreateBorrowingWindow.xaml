@@ -7,8 +7,9 @@
         xmlns:local="clr-namespace:Iris.src.Windows"
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         mc:Ignorable="d"
-        Title="Iris VGV - Neue Ausleihe" MinHeight="420" MinWidth="450" Height="420" Width="500"
-        Background="{StaticResource MaterialDesignDarkBackground}">
+        Title="Iris VGV - Neue Ausleihe" MinHeight="420" MinWidth="480" Height="420" Width="500"
+        Background="{StaticResource MaterialDesignDarkBackground}"
+        Loaded="Window_Loaded">
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
         <Border BorderThickness="1 0 1 1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
             <Border Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
@@ -31,7 +32,7 @@
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Ausleiher:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="LenderNameTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="5 0 10 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Gerät*:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <ComboBox x:Name="DeviceComboBox" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" Width="150" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True"></ComboBox>
+                        <ComboBox x:Name="DeviceComboBox" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True" SelectionChanged="DeviceComboBox_SelectionChanged" DisplayMemberPath="Name"></ComboBox>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 0 0 15">
                         <Grid.ColumnDefinitions>
@@ -40,10 +41,10 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Ausleiher E-Mail:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Ausleiher Mail:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="LenderEMailTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="5 0 10 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Ausleiher Tel.:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <TextBox x:Name="LenderTelTextBox" Grid.Column="3" VerticalAlignment="Center" Margin="5 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                        <TextBox x:Name="LenderPhoneTextBox" Grid.Column="3" VerticalAlignment="Center" Margin="5 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
                     <Grid Grid.Row="2" Margin="0 0 0 15">
                         <Grid.ColumnDefinitions>

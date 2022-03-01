@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:Iris.src.Windows"
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         mc:Ignorable="d"
-        Title="Iris VGV - Ausleihe bearbeiten" MinHeight="420" MinWidth="450" Height="420" Width="500"
+        Title="Iris VGV - Ausleihe bearbeiten" MinHeight="420" MinWidth="480" Height="420" Width="500"
         Background="{StaticResource MaterialDesignDarkBackground}">
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
         <Border BorderThickness="1 0 1 1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">

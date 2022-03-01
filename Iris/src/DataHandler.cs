@@ -1,4 +1,5 @@
 ﻿using Iris.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +15,7 @@ namespace Iris.Structures
         /// <summary>
         /// Loaded borrowing out of the database.
         /// </summary>
-        public static List<Borrowing> Borrowings { get; private set; }
+        public static List<Borrowing> Borrowings { get; private set; } = new(); //TODO: Remove this
         #endregion
 
         #region Constructors
@@ -42,6 +43,30 @@ namespace Iris.Structures
         public static Device GetDeviceByID(int id)
         {
             return Devices.Where(d => d.ID.Equals(id)).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Checks if a device is available in a given timespan.
+        /// </summary>
+        /// <param name="device">The device to check.</param>
+        /// <param name="startDate">The from date.</param>
+        /// <param name="endDate">The to date.</param>
+        /// <returns>Whether the device is availalbe in the given timespan.</returns>
+        public static bool IsDeviceAvailable(Device device, DateTime startDate, DateTime endDate)
+        {
+            // TODO: Verify correctness
+
+            List<Borrowing> relevantBorrowings = Borrowings.Where(b => b.DeviceID.Equals(device.ID) && b.DateEnd >= startDate).ToList();
+
+            foreach (Borrowing borrowing in relevantBorrowings)
+            {
+                if (((startDate > borrowing.DateStart) && (startDate < borrowing.DateEnd)) || ((endDate > borrowing.DateStart) && (endDate < borrowing.DateEnd)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
         #endregion
         #endregion
