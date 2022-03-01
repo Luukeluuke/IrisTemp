@@ -1,4 +1,4 @@
-﻿using Iris.Devices;
+﻿using Iris.Structures;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;

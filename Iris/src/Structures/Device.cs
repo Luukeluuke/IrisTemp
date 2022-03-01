@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Iris.Devices
+namespace Iris.Structures
 {
     internal enum DeviceType
     {
@@ -70,6 +70,7 @@ namespace Iris.Devices
         /// <param name="name">Name of the device.</param>
         /// <param name="notes">Notes of the device.</param>
         /// <param name="type">Type of the device.</param>
+        /// <returns>The created device.</returns>
         public static async Task<Device> CreateNewDevice(string name, string notes, DeviceType type)
         {
             DatabaseHandler.InsertDevice(name, notes, type);

@@ -1,5 +1,5 @@
 ﻿using Iris.Database;
-using Iris.Devices;
+using Iris.Structures;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;

@@ -40,6 +40,18 @@ namespace Iris.src.Windows
 
         }
         #endregion
+
+        #region InstantBorrowCheckBox
+        private void InstantBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void InstantBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
         #endregion
     }
 }
