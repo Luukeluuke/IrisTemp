@@ -95,7 +95,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätename:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätename:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="NewDeviceNameTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 10 0 0">
@@ -103,7 +103,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <ComboBox x:Name="NewDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}">
                             <ComboBoxItem Content="Notebook" ></ComboBoxItem>
                             <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
@@ -159,7 +159,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätename:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätename:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="EditDeviceNameTextBox" Grid.Column="1" IsEnabled="False" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 10 0 0">
@@ -167,7 +167,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <ComboBox x:Name="EditDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" IsEnabled="False" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}">
                             <ComboBoxItem Content="Notebook" ></ComboBoxItem>
                             <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
