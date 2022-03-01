@@ -17,7 +17,7 @@ namespace Iris.Structures
         /// <summary>
         /// The borrowed device.
         /// </summary>
-        public Device Device => null; // TODO: Datahandler.GetDeviceByID(DeviceID);
+        public Device Device => DataHandler.GetDeviceByID(DeviceID);
         /// <summary>
         /// Name of the loaner of the borrowing.
         /// (The person who gave the device to the lender)
@@ -112,6 +112,8 @@ namespace Iris.Structures
         /// <returns>The created borrowing.</returns>
         public static async Task<Borrowing> CreateNewBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, DateTime dateEnd, bool isBorrowed, string notes)
         {
+            return null;
+
             //TODO: Database Insert Borrowing
 
             //TODO: Return last created borrowing

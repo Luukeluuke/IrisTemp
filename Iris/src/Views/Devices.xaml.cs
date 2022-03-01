@@ -310,11 +310,11 @@ namespace Iris.src.Views
         /// </summary>
         private async void LoadDevices()
         {
-            LoadedDevices = await DatabaseHandler.SelectAllDevices(SelectedDeviceTypes.ToArray());
+            DataHandler.RefreshData();
+            LoadedDevices = DataHandler.Devices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
             DevicesDataGrid.ItemsSource = LoadedDevices;
         }
         #endregion
-
         #endregion
     }
 }
