@@ -7,15 +7,6 @@ using System.Windows.Input;
 
 namespace Iris.Database
 {
-    internal enum DeviceSelectType
-    {
-        Notebook = 1,
-        GigaCube = 2,
-        ERK_Meeting = 3,
-        Special = 4,
-        All = 5
-    }
-
     static internal class DatabaseHandler
     {
         #region Properties and Variables
@@ -40,6 +31,7 @@ namespace Iris.Database
             Connection.Close();
         }
 
+        #region Devices
         /// <summary>
         /// Insert a new device into the database.
         /// </summary>
@@ -78,23 +70,27 @@ namespace Iris.Database
         /// </summary>
         /// <param name="id">The ID of the device.</param>
         /// <returns>The device, otherwise null.</returns>
-        public static async Task<Device> SelectDevice(int id)
-        {
-            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
-                                                                                WHERE
-                                                                                    ID == {id}");
-            
-            if (reader is null)
-            {
-                return null;
-            }
-
-            reader.Read();
-            Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
-
-            await reader.CloseAsync();
-            return device;
-        }
+        //public static async Task<Device> SelectDevice(int id) //TODO: Verify if needed
+        //{
+        //    Global.MainWindow.Cursor = Cursors.Wait;
+        //
+        //    SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
+        //                                                                        WHERE
+        //                                                                            ID == {id}");
+        //    
+        //    if (reader is null)
+        //    {
+        //        return null;
+        //    }
+        //
+        //    reader.Read();
+        //    Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
+        //
+        //    await reader.CloseAsync();
+        //
+        //    Global.MainWindow.Cursor = Cursors.Arrow;
+        //    return device;
+        //}
 
         /// <summary>
         /// Select all devices out of the database.
@@ -102,6 +98,8 @@ namespace Iris.Database
         /// <returns>The devices, otherwise null.</returns>
         public static async Task<List<Device>> SelectAllDevices()
         {
+            Global.MainWindow.Cursor = Cursors.Wait;
+
             SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices");
         
             if (reader is null)
@@ -117,6 +115,8 @@ namespace Iris.Database
             }
 
             await reader.CloseAsync();
+
+            Global.MainWindow.Cursor = Cursors.Arrow;
             return devices;
         }
 
@@ -124,39 +124,49 @@ namespace Iris.Database
         /// Select all specific devices by the type out of the database.
         /// </summary>
         /// <returns>The devices, otherwise null.</returns>
-        public static async Task<List<Device>> SelectAllDevices(params DeviceType[] types)
-        {
-            #region Validation
-            if (types.Length == 0)
-            {
-                return null;
-            }
-            #endregion
+        //public static async Task<List<Device>> SelectAllDevices(params DeviceType[] types) //TODO: Verify if needed
+        //{
+        //    #region Validation
+        //    if (types.Length == 0)
+        //    {
+        //        return null;
+        //    }
+        //    #endregion
+        //
+        //    Global.MainWindow.Cursor = Cursors.Wait;
+        //
+        //    string where = string.Join(" OR ", Array.ConvertAll(types, v => $"Type == {(int)v}"));
+        //
+        //    SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
+        //                                                                        WHERE
+        //                                                                            {where}");
+        //
+        //    if (reader is null)
+        //    {
+        //        return null;
+        //    }
+        //
+        //    List<Device> devices = new();
+        //
+        //    while (reader.Read())
+        //    {
+        //        devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
+        //    }
+        //
+        //    await reader.CloseAsync();
+        //
+        //    Global.MainWindow.Cursor = Cursors.Arrow;
+        //    return devices;
+        //}
 
-            string where = string.Join(" OR ", Array.ConvertAll(types, v => $"Type == {(int)v}"));
-
-            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
-                                                                                WHERE
-                                                                                    {where}");
-
-            if (reader is null)
-            {
-                return null;
-            }
-
-            List<Device> devices = new();
-
-            while (reader.Read())
-            {
-                devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
-            }
-
-            await reader.CloseAsync();
-            return devices;
-        }
-
+        /// <summary>
+        /// Select the last created device. 
+        /// (With the highest ID)
+        /// </summary>
         public static async Task<Device> SelectLastDevice()
         {
+            Global.MainWindow.Cursor = Cursors.Wait;
+
             SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                 WHERE
                                                                                     ID == (SELECT MAX(ID) FROM TDevices)");
@@ -170,8 +180,59 @@ namespace Iris.Database
             Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
 
             await reader.CloseAsync();
+
+            Global.MainWindow.Cursor = Cursors.Arrow;
             return device;
         }
+        #endregion
+
+        #region Borrowings
+        /// <summary>
+        /// Insert a new borrowing into the database.
+        /// </summary>
+        /// <param name="deviceID">ID of the borrowed device.</param>
+        /// <param name="loaner">Name of the loaner of the borrowing.</param>
+        /// <param name="lenderName">Name of the lender.</param>
+        /// <param name="lenderPhone">Phone number of the lender.</param>
+        /// <param name="lenderEmail">Start date of the borrowing.</param>
+        /// <param name="dateStart">Start date of the borrowing.</param>
+        /// <param name="datePlannedEnd">Planned end of the borrowing.</param>
+        /// <param name="isBorrowed">Whether the borrowing is active. </param>
+        /// <param name="notes">Notes about the borrowing.</param>
+        public static void InsertBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        {
+            ExecuteNonQueryAsync($@"INSERT INTO TBorrowings 
+                                                (DeviceID, Loaner, Taker, LenderName, LenderPhone, LenderEmail, DateStart, DatePlannedEnd, DateEnd, Borrowed, Notes) 
+                                            VALUES 
+                                                ({deviceID}, '{loaner ?? Global.NullDBString}', '{taker ?? Global.NullDBString}', '{lenderName}', '{lenderPhone ?? Global.NullDBString}', '{lenderEmail ?? Global.NullDBString}', {dateStart}, {datePlannedEnd}, {dateEnd}, {(isBorrowed ? '1' : '0')}, '{notes ?? Global.NullDBString}')");
+        }
+
+        /// <summary>
+        /// Select the last created borrowing. 
+        /// (With the highest ID)
+        /// </summary>
+        public static async Task<Borrowing> SelectLastBorrowing()
+        {
+            Global.MainWindow.Cursor = Cursors.Wait;
+
+            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
+                                                                                WHERE
+                                                                                    ID == (SELECT MAX(ID) FROM TBorrowings)");
+
+            if (reader is null)
+            {
+                return null;
+            }
+
+            reader.Read();
+            Borrowing borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
+
+            await reader.CloseAsync();
+
+            Global.MainWindow.Cursor = Cursors.Arrow;
+            return borrowing;
+        }
+        #endregion
         #endregion
 
         #region Private
@@ -181,13 +242,9 @@ namespace Iris.Database
         /// <param name="sqlCommand">The SQL command.</param>
         private static async void ExecuteNonQueryAsync(string sqlCommand)
         {
-            Global.MainWindow.Cursor = Cursors.Wait;
-
             SqliteCommand command = Connection.CreateCommand();
             command.CommandText = sqlCommand;
             await command.ExecuteNonQueryAsync();
-
-            Global.MainWindow.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -197,14 +254,10 @@ namespace Iris.Database
         /// <returns>The reader.</returns>
         private static async Task<SqliteDataReader?> ExecuteReaderAsync(string sqlCommand)
         {
-            Global.MainWindow.Cursor = Cursors.Wait;
-
             SqliteCommand command = Connection.CreateCommand();
             command.CommandText = sqlCommand;
             SqliteDataReader? reader = await command.ExecuteReaderAsync();
-
-            Global.MainWindow.Cursor = Cursors.Arrow;
-
+            
             return reader;
         }
         #endregion

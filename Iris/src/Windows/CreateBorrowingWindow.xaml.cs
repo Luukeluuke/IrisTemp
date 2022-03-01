@@ -44,7 +44,17 @@ namespace Iris.src.Windows
                 return;
             }
 
-            await Borrowing.CreateNewBorrowing(LoanerTextBox.Text, LenderNameTextBox.Text, LenderPhoneTextBox.Text, LenderEMailTextBox.Text, FromDatePicker.SelectedDate.Value, ToDatePicker.SelectedDate.Value, InstantBorrowCheckBox.IsChecked.Value, new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text);
+            string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
+
+            await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+                                               string.IsNullOrWhiteSpace(LoanerTextBox.Text) ? null : LoanerTextBox.Text,
+                                               LenderNameTextBox.Text,
+                                               string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
+                                               string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? null : LenderEMailTextBox.Text,
+                                               FromDatePicker.SelectedDate.Value,
+                                               ToDatePicker.SelectedDate.Value,
+                                               InstantBorrowCheckBox.IsChecked.Value,
+                                               string.IsNullOrWhiteSpace(notes) ? null : notes);
 
             DataHandler.RefreshData();
         }
