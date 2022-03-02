@@ -85,6 +85,8 @@ namespace Iris.Structures
         /// <returns>Whether the device contains the given string.</returns>
         public bool Contains(string match)
         {
+            bool v = Name.Contains(match, StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
+
             return Name.Contains(match, StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
         }
 

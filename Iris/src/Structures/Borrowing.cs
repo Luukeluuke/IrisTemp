@@ -130,8 +130,8 @@ namespace Iris.Structures
                                             lenderName,
                                             lenderPhone,
                                             lenderEmail,
-                                            new DateTimeOffset(DateTime.ParseExact(dateStart.Date.ToString("dd.MM.yyyy"), "dd.MM.yyyy", CultureInfo.CurrentCulture)).ToUnixTimeSeconds(), //,  new DateTime(dateStart.Year, dateStart.Month, dateStart.Day).AddHours(1)
-                                            new DateTimeOffset(DateTime.ParseExact(datePlannedEnd.Date.ToString("dd.MM.yyyy"), "dd.MM.yyyy", CultureInfo.CurrentCulture)).ToUnixTimeSeconds(), //,  datePlannedEnd.Year, datePlannedEnd.Month, datePlannedEnd.Day).AddHours(1)
+                                            new DateTimeOffset(new DateTime(dateStart.Year, dateStart.Month, dateStart.Day).AddHours(1)).ToUnixTimeSeconds(),
+                                            new DateTimeOffset(new DateTime(datePlannedEnd.Year, datePlannedEnd.Month, datePlannedEnd.Day).AddHours(1)).ToUnixTimeSeconds(),
                                             -1,
                                             isBorrowed,
                                             notes);
@@ -147,22 +147,24 @@ namespace Iris.Structures
         public bool Contains(string match)
         {
             //TODO: Fix & test
+            
+            if (Device.Contains(match)) return true;
+            if (Loaner is not null && Loaner.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (Taker is not null && Taker.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (LenderName.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (LenderPhone is not null && LenderPhone.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (LenderEmail is not null && LenderEmail.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (DateStartString.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (DatePlannedEndString.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (DateEndString.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
+            if (Notes is not null && Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
 
-            return Device.Contains(match)
-                || Loaner is null ? false : Loaner.Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || Taker is null ? false : Taker.Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || LenderName.Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || LenderPhone is null ? false : LenderPhone.Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || LenderEmail is null ? false : LenderEmail.Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || DateStart.ToString("dd.MM.yyyy").Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || DatePlannedEnd.ToString("dd.MM.yyyy").Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || DateEnd is null ? false : DateEnd.Value.ToString("dd.MM.yyyy").Contains(match, StringComparison.CurrentCultureIgnoreCase)
-                || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
+            return false;
         }
 
         public override string ToString()
         {
-            return $"ID: '{ID}', DeviceID: '{DeviceID}', Lender-name: '{LenderName}'";
+            return $"ID: '{ID}', Device: '{Device.Name}', Lender-name: '{LenderName}'";
         }
         #endregion
         #endregion

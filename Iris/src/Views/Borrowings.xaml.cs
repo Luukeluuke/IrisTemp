@@ -117,11 +117,11 @@ namespace Iris.src.Views
             }
             if (FilterFromDatePicker.SelectedDate is not null)
             {
-                LoadedBorrowings = LoadedBorrowings.Where(b => b.DateStart >= FilterFromDatePicker.SelectedDate).ToList();
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.DateStart >= FilterFromDatePicker.SelectedDate.Value).ToList();
             }
             if (FilterToDatePicker.SelectedDate is not null)
             {
-                LoadedBorrowings = LoadedBorrowings.Where(b => b.DatePlannedEnd <= FilterToDatePicker.SelectedDate).ToList();
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.DatePlannedEnd <= FilterToDatePicker.SelectedDate.Value).ToList();
             }
             if (!FilterContainsTextBox.Text.Equals(""))
             {
@@ -132,7 +132,6 @@ namespace Iris.src.Views
             BorrowingsDataGrid.ItemsSource = LoadedBorrowings;
         }
         #endregion
-
         #endregion
     }
 }
