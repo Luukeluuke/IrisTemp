@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="src\Iris_devices.db" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignColors" Version="2.0.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.2" />
@@ -16,6 +20,12 @@
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.0.7" />
     <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.0.7" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Iris_devices.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
