@@ -44,6 +44,8 @@ namespace Iris.src.Windows
                 return;
             }
 
+            FromToDatePicker_SelectedDateChanged(null, null);
+
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
             await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
