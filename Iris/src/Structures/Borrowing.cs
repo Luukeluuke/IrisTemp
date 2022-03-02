@@ -1,6 +1,5 @@
 ﻿using Iris.Database;
 using System;
-using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Iris.Structures
@@ -146,8 +145,6 @@ namespace Iris.Structures
         /// <returns>Whether the borrowing contains the given string.</returns>
         public bool Contains(string match)
         {
-            //TODO: Fix & test
-            
             if (Device.Contains(match)) return true;
             if (Loaner is not null && Loaner.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
             if (Taker is not null && Taker.Contains(match, StringComparison.CurrentCultureIgnoreCase)) return true;
@@ -164,7 +161,7 @@ namespace Iris.Structures
 
         public override string ToString()
         {
-            return $"ID: '{ID}', Device: '{Device.Name}', Lender-name: '{LenderName}'";
+            return $"ID: '{ID}', Device: '{Device.Name}', Lender: '{LenderName}'";
         }
         #endregion
         #endregion

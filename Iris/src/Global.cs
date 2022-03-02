@@ -1,8 +1,8 @@
 ﻿using System;
+using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.ActiveDirectory;
 using System.Windows;
 using System.Windows.Media;
-using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.AccountManagement;
 
 namespace Iris
 {

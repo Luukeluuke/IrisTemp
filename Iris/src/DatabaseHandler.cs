@@ -121,15 +121,15 @@ namespace Iris.Database
             Global.MainWindow.Cursor = Cursors.Wait;
 
             SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices");
-        
+
             if (reader is null)
             {
                 return null;
             }
-        
+
             List<Device> devices = new();
-        
-            while(reader.Read())
+
+            while (reader.Read())
             {
                 devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
             }
@@ -315,7 +315,7 @@ namespace Iris.Database
             SqliteCommand command = Connection.CreateCommand();
             command.CommandText = sqlCommand;
             SqliteDataReader? reader = await command.ExecuteReaderAsync();
-            
+
             return reader;
         }
         #endregion

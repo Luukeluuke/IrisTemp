@@ -11,7 +11,7 @@ namespace Iris
     public partial class MainWindow : Window
     {
         #region Properties and Variables
-        private MenuTab SelectedMenuTab 
+        private MenuTab SelectedMenuTab
         {
             get => selectedMenuTab;
             set
