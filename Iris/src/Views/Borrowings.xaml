@@ -77,14 +77,14 @@
                     </Button>
                 </Grid>
             </Grid>
-            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged">
+            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Ausleihdatum" Binding="{Binding DateStart}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Geplante Rückgabe" Binding="{Binding DatePlannedEnd}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Ausleihdatum" Binding="{Binding DateStartString}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Geplante Rückgabe" Binding="{Binding DatePlannedEndString}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Herausgeber" Binding="{Binding Loaner}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Zurückgabedatum" Binding="{Binding EndDate}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Zurückgabedatum" Binding="{Binding EndDateString}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Annehmer" Binding="{Binding Taker}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}"></DataGridTextColumn>
                 </DataGrid.Columns>

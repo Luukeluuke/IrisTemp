@@ -1,6 +1,7 @@
 ﻿using Iris.Structures;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -20,15 +21,14 @@ namespace Iris.Database
         #region Constructors
         static DatabaseHandler()
         {
-            Connection = new("Data Source=Iris_devices.db");
-            try
-            {
-                Connection.Open();
-            }
-            catch
+            if (!File.Exists("Iris_devices.db"))
             {
                 IsConnected = false;
+                return;
             }
+
+            Connection = new("Data Source=Iris_devices.db");
+            Connection.Open();
         }
         #endregion
 
@@ -39,7 +39,10 @@ namespace Iris.Database
         /// </summary>
         public static void CloseDBConnection()
         {
-            Connection.Close();
+            if (IsConnected)
+            {
+                Connection.Close();
+            }
         }
 
         #region Devices

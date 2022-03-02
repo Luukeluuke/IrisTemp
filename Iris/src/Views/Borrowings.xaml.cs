@@ -36,6 +36,8 @@ namespace Iris.src.Views
         private void AddBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             new CreateBorrowingWindow().ShowDialog();
+
+            LoadBorrowings();
         }
         #endregion
 
@@ -53,6 +55,8 @@ namespace Iris.src.Views
             FilterToDatePicker.SelectedDate = null;
             FilterDeviceComboBox.SelectedIndex = -1;
             FilterContainsTextBox.Text = "";
+
+            LoadBorrowings();
         }
         #endregion
 

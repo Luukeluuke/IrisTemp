@@ -47,16 +47,19 @@ namespace Iris.Structures
         /// </summary>
         public DateTime DateStart { get; private set; }
         public long DateStartUnix { get; private set; }
+        public string DateStartString => DateStart.ToString("dd.MM.yyyy");
         /// <summary>
         /// Planned end of the borrowing.
         /// </summary>
         public DateTime DatePlannedEnd { get; private set; }
         public long DatePlannedEndUnix { get; private set; }
+        public string DatePlannedEndString => DatePlannedEnd.ToString("dd.MM.yyyy");
         /// <summary>
         /// The actual end of the borrowing.
         /// </summary>
         public DateTime? DateEnd { get; private set; }
         public long DateEndUnix { get; private set; }
+        public string DateEndString => DateEnd is null ? "" : DateEnd.Value.ToString("dd.MM.yyyy");
 
         /// <summary>
         /// Whether the borrowing is active. 
@@ -127,8 +130,8 @@ namespace Iris.Structures
                                             lenderName,
                                             lenderPhone,
                                             lenderEmail,
-                                            new DateTimeOffset(DateTime.ParseExact(dateStart.Date.ToString("dd.MM.yyyy"), "dd.MM.yyyy", CultureInfo.InvariantCulture)).ToUnixTimeSeconds(), //,  new DateTime(dateStart.Year, dateStart.Month, dateStart.Day).AddHours(1)
-                                            new DateTimeOffset(DateTime.ParseExact(datePlannedEnd.Date.ToString("dd.MM.yyyy"), "dd.MM.yyyy", CultureInfo.InvariantCulture)).ToUnixTimeSeconds(), //,  datePlannedEnd.Year, datePlannedEnd.Month, datePlannedEnd.Day).AddHours(1)
+                                            new DateTimeOffset(DateTime.ParseExact(dateStart.Date.ToString("dd.MM.yyyy"), "dd.MM.yyyy", CultureInfo.CurrentCulture)).ToUnixTimeSeconds(), //,  new DateTime(dateStart.Year, dateStart.Month, dateStart.Day).AddHours(1)
+                                            new DateTimeOffset(DateTime.ParseExact(datePlannedEnd.Date.ToString("dd.MM.yyyy"), "dd.MM.yyyy", CultureInfo.CurrentCulture)).ToUnixTimeSeconds(), //,  datePlannedEnd.Year, datePlannedEnd.Month, datePlannedEnd.Day).AddHours(1)
                                             -1,
                                             isBorrowed,
                                             notes);
