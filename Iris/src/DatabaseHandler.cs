@@ -10,13 +10,25 @@ namespace Iris.Database
     {
         #region Properties and Variables
         private static SqliteConnection Connection { get; set; }
+
+        /// <summary>
+        /// Whether has a connection to database.
+        /// </summary>
+        public static bool IsConnected { get; private set; } = true;
         #endregion
 
         #region Constructors
         static DatabaseHandler()
         {
             Connection = new("Data Source=Iris_devices.db");
-            Connection.Open();
+            try
+            {
+                Connection.Open();
+            }
+            catch
+            {
+                IsConnected = false;
+            }
         }
         #endregion
 

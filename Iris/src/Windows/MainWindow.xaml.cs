@@ -89,6 +89,12 @@ namespace Iris
         #region Window
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (!DatabaseHandler.IsConnected)
+            {
+                MessageBox.Show("Es konnte keine Verbindung zur Datenbank hergestellt werden.", "Keine Datenbank Verbindung", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+            }
+
             ChangeContentFrame(MenuTab.Startpage);
 
             Global.MainWindow = this;
