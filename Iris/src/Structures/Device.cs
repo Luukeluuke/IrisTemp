@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Iris.Structures
 {
-    internal enum DeviceType
+    public enum DeviceType
     {
         Notebook = 1,
         GigaCube = 2,
@@ -12,7 +12,7 @@ namespace Iris.Structures
         Special = 4
     }
 
-    internal class Device
+    public class Device
     {
         #region Properties and Variables
         /// <summary>

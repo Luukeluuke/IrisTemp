@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Iris.Structures
 {
-    internal class Borrowing
+    public class Borrowing
     {
         #region Properties and Variables
         /// <summary>
