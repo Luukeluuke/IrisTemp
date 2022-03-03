@@ -33,7 +33,7 @@
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Ausleiher:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="LenderNameTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="5 0 10 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                         <TextBlock Grid.Column="2"  VerticalAlignment="Center" Text="Gerät*:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <ComboBox x:Name="DeviceComboBox" IsEnabled="False" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" Width="120" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True"></ComboBox>
+                        <ComboBox x:Name="DeviceComboBox" IsEnabled="False" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True" DisplayMemberPath="Name"></ComboBox>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 0 0 15">
                         <Grid.ColumnDefinitions>

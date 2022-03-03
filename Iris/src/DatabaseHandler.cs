@@ -224,7 +224,17 @@ namespace Iris.Database
             ExecuteNonQueryAsync($@"INSERT INTO TBorrowings 
                                                 (DeviceID, Loaner, Taker, LenderName, LenderPhone, LenderEmail, DateStart, DatePlannedEnd, DateEnd, Borrowed, Notes) 
                                             VALUES 
-                                                ({deviceID}, '{loaner ?? Global.NullDBString}', '{taker ?? Global.NullDBString}', '{lenderName}', '{lenderPhone ?? Global.NullDBString}', '{lenderEmail ?? Global.NullDBString}', {dateStart}, {datePlannedEnd}, {dateEnd}, {(isBorrowed ? '1' : '0')}, '{notes ?? Global.NullDBString}')");
+                                                ({deviceID}, 
+                                                '{loaner ?? Global.NullDBString}', 
+                                                '{taker ?? Global.NullDBString}', 
+                                                '{lenderName}', 
+                                                '{lenderPhone ?? Global.NullDBString}', 
+                                                '{lenderEmail ?? Global.NullDBString}', 
+                                                {dateStart}, 
+                                                {datePlannedEnd}, 
+                                                {dateEnd}, 
+                                                {(isBorrowed ? '1' : '0')}, 
+                                                '{notes ?? Global.NullDBString}')");
         }
 
         /// <summary>
@@ -235,6 +245,29 @@ namespace Iris.Database
         {
             ExecuteNonQueryAsync($@"DELETE FROM TBorrowings
                                                 WHERE ID == {id}");
+        }
+
+        /// <summary>
+        /// Updates a borrowing in the database.
+        /// </summary>
+        /// <param name="id">ID of the device.</param>
+        public static void UpdateBorrowing(int id, int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        {
+            ExecuteNonQueryAsync($@"UPDATE TBorrowings
+                                                SET
+                                                    DeviceID = {deviceID}, 
+                                                    Loaner = '{loaner ?? Global.NullDBString}', 
+                                                    Taker = '{taker ?? Global.NullDBString}', 
+                                                    LenderName = '{lenderName}', 
+                                                    LenderPhone = '{lenderPhone ?? Global.NullDBString}',
+                                                    LenderEmail = '{lenderEmail ?? Global.NullDBString}',
+                                                    DateStart = {dateStart},
+                                                    DatePlannedEnd = {datePlannedEnd},
+                                                    DateEnd = {dateEnd},
+                                                    Borrowed = {(isBorrowed ? '1' : '0')},
+                                                    Notes = '{notes ?? Global.NullDBString}'
+                                                WHERE
+                                                    ID == {id}");
         }
 
         /// <summary>

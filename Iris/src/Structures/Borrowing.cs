@@ -159,6 +159,39 @@ namespace Iris.Structures
             return false;
         }
 
+        /// <summary>
+        /// Set the borrowing to device is borrowed.
+        /// </summary>
+        /// <exception cref="Exception">If the device is already borrowed, then it is invalid.</exception>
+        public void Borrow()
+        {
+            #region Validation
+            if (IsBorrowed)
+            {
+                throw new Exception("You tried to borrow a borrowing but it is already borrowed.");
+            }
+            #endregion
+
+            IsBorrowed = true;
+        }
+
+        /// <summary>
+        /// Set the borrowing to device taked back.
+        /// </summary>
+        /// <exception cref="Exception">If the device is already taked back, then it is invalid.</exception>
+        public void TakeBack()
+        {
+            #region Validation
+            if (IsBorrowed && DateEndUnix != -1)
+            {
+                throw new Exception("You tried to take a device of a borrowing back, but it is already taked back.");
+            }
+            #endregion
+
+            DateEnd = DateTime.Now;
+            DateEndUnix = new DateTimeOffset(DateEnd.Value).ToUnixTimeSeconds();
+        }
+
         public override string ToString()
         {
             return $"ID: '{ID}', Device: '{Device.Name}', Lender: '{LenderName}'";

@@ -77,20 +77,21 @@
                     </Button>
                 </Grid>
             </Grid>
-            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged">
+            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged" MouseDoubleClick="BorrowingsDataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Ausleihdatum" Binding="{Binding DateStartString}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Geplante Rückgabe" Binding="{Binding DatePlannedEndString}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Herausgeber" Binding="{Binding Loaner}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Zurückgabedatum" Binding="{Binding EndDateString}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Zurückgabedatum" Binding="{Binding DateEndString}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Annehmer" Binding="{Binding Taker}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="2" Margin="-5 5 0 -5" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -101,12 +102,17 @@
                         <TextBlock Text="Neue Ausleihe" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="DeleteBorrowingButton" Grid.Column="1" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteBorrowingButton_Click">
+                <Button x:Name="EditBorrowingButton" Grid.Column="1" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditBorrowingButton_Click">
+                    <Button.Content>
+                        <TextBlock Text="Ausleihe bearbeiten" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                    </Button.Content>
+                </Button>
+                <Button x:Name="DeleteBorrowingButton" Grid.Column="2" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteBorrowingButton_Click">
                     <Button.Content>
                         <TextBlock Text="Ausleihe löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="RefreshBorrowingsButton" Grid.Column="3" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshBorrowingsButton_Click">
+                <Button x:Name="RefreshBorrowingsButton" Grid.Column="4" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshBorrowingsButton_Click">
                     <Button.Content>
                         <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
