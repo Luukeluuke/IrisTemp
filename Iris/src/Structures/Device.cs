@@ -73,7 +73,7 @@ namespace Iris.Structures
         /// <returns>The created device.</returns>
         public static async Task<Device> CreateNewDevice(string name, string notes, DeviceType type)
         {
-            DatabaseHandler.InsertDevice(name, notes, type);
+            await DatabaseHandler.InsertDevice(name, notes, type);
 
             return await DatabaseHandler.SelectLastDevice();
         }

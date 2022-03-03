@@ -43,7 +43,7 @@ namespace Iris.Structures
         /// <returns>The device, otherwise null.</returns>
         public static Device GetDeviceByID(int id)
         {
-            return Devices.Where(d => d.ID.Equals(id)).FirstOrDefault();
+            return Devices.FirstOrDefault(d => d.ID.Equals(id));
         }
 
         /// <summary>

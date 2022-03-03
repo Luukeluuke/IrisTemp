@@ -68,7 +68,7 @@ namespace Iris.src.Views
         #endregion
 
         #region DeleteBorrowingsButton
-        private void DeleteBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void DeleteBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (SelectedBorrowing is null)
             {
@@ -78,7 +78,7 @@ namespace Iris.src.Views
 
             if (MessageBox.Show($"Soll die Ausleihe: \"{SelectedBorrowing.LenderName}, {SelectedBorrowing.Device.Name}, {SelectedBorrowing.DateStart:yyyy.dd.MM} - {SelectedBorrowing.DatePlannedEnd:yyyy.dd.MM}\" wirklich gelöscht werden?", $"{SelectedBorrowing.LenderName}, {SelectedBorrowing.Device.Name}, {SelectedBorrowing.DateStart:yyyy.dd.MM} - {SelectedBorrowing.DatePlannedEnd:yyyy.dd.MM} löschen", MessageBoxButton.YesNo, MessageBoxImage.Error).Equals(MessageBoxResult.Yes))
             {
-                DatabaseHandler.DeleteBorrowing(SelectedBorrowing.ID);
+                await DatabaseHandler.DeleteBorrowing(SelectedBorrowing.ID);
                 LoadBorrowings();
             }
         }

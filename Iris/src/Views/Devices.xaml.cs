@@ -159,7 +159,7 @@ namespace Iris.src.Views
         #endregion
 
         #region DeleteDeviceButton
-        private void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedDevice is null)
             {
@@ -175,7 +175,7 @@ namespace Iris.src.Views
 
             if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Warning).Equals(MessageBoxResult.Yes))
             {
-                DatabaseHandler.DeleteDevice(SelectedDevice.ID);
+                await DatabaseHandler.DeleteDevice(SelectedDevice.ID);
                 LoadDevices();
             }
         }
@@ -222,7 +222,7 @@ namespace Iris.src.Views
         #endregion
 
         #region EditDeviceConfirmButton
-        private void EditDeviceConfirmButton_Click(object sender, RoutedEventArgs e)
+        private async void EditDeviceConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(EditDeviceNameTextBox.Text))
             {
@@ -232,7 +232,7 @@ namespace Iris.src.Views
 
             int lastID = SelectedDevice.ID;
 
-            DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim());
+            await DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim());
             LoadDevices();
 
             DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();

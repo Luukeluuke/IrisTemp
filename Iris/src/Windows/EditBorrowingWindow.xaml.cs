@@ -34,7 +34,7 @@ namespace Iris.src.Windows
 
         #region Events
         #region ApplyButton
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(LenderNameTextBox.Text) || DeviceComboBox.SelectedIndex == -1 || FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)
             {
@@ -51,7 +51,7 @@ namespace Iris.src.Windows
             DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value;
             DateTime? dateEnd = EndDatePicker.SelectedDate;
 
-            DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+            await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                 Borrowing.DeviceID,
                 string.IsNullOrWhiteSpace(LoanerTextBox.Text) ? Global.NullDBString : LoanerTextBox.Text,
                 string.IsNullOrWhiteSpace(TakerTextBox.Text) ? Global.NullDBString : TakerTextBox.Text,
@@ -69,7 +69,7 @@ namespace Iris.src.Windows
         #endregion
 
         #region BorrowTakeButton
-        private void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
+        private async void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
         {
             if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1)
             {
@@ -79,7 +79,7 @@ namespace Iris.src.Windows
             {
                 Borrowing.TakeBack();
 
-                DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                     Borrowing.DeviceID,
                     Borrowing.Loaner,
                     Global.CurrentUser,
@@ -100,7 +100,7 @@ namespace Iris.src.Windows
                 DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value;
                 DateTime? dateEnd = EndDatePicker.SelectedDate;
 
-                DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                     Borrowing.DeviceID,
                     Global.CurrentUser,
                     Global.NullDBString,

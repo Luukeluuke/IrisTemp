@@ -123,7 +123,7 @@ namespace Iris.Structures
         /// <returns>The created borrowing.</returns>
         public static async Task<Borrowing> CreateNewBorrowing(int deviceID, string loaner, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string notes)
         {
-            DatabaseHandler.InsertBorrowing(deviceID,
+            await DatabaseHandler.InsertBorrowing(deviceID,
                                             loaner,
                                             null,
                                             lenderName,
