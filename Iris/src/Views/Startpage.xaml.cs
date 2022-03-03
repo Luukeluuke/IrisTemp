@@ -23,7 +23,7 @@ namespace Iris.src.Views
         private List<Borrowing> TooLateTakeBacks { get; set; }
         private Borrowing TooLateTakeBacksSelectedBorrowing { get; set; }
 
-        private List<Device> LoadedDevices { get; set; }
+        private List<DeviceAvailability> DeviceAvailabilities { get; set; }
         #endregion
 
         #region Constructors
@@ -89,6 +89,12 @@ namespace Iris.src.Views
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             LoadBorrowingsAndDevices();
+
+            DateTime now = DateTime.Now;
+
+            FromDatePicker.SelectedDate = now.Date;
+            ToDatePicker.SelectedDate = now.Date;
+            LoadDeviceAvailabilities();
         }
         #endregion
 
@@ -96,6 +102,14 @@ namespace Iris.src.Views
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             LoadBorrowingsAndDevices();
+        }
+        #endregion
+
+        #region DatePicker
+        private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LoadBorrowingsAndDevices();
+            LoadDeviceAvailabilities();
         }
         #endregion
         #endregion
@@ -109,8 +123,6 @@ namespace Iris.src.Views
         {
             DataHandler.RefreshData();
 
-            LoadedDevices = DataHandler.Devices;
-
             DateTime now = DateTime.Now;
 
             TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
@@ -120,6 +132,29 @@ namespace Iris.src.Views
             TodayLoansDataGrid.ItemsSource = TodayLoans;
             TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
             TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
+
+            LoadDeviceAvailabilities();
+        }
+
+        /// <summary>
+        /// Loads the availabilities of the devices.
+        /// </summary>
+        private void LoadDeviceAvailabilities()
+        {
+            if (FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null || ToDatePicker.SelectedDate.Value.Date < FromDatePicker.SelectedDate.Value.Date)
+            {
+                DeviceAvailabilitiesDataGrid.Items.Clear();
+                return;
+            }
+
+            List<DeviceAvailability> availabilities = new();
+            foreach (Device device in DataHandler.Devices)
+            {
+                availabilities.Add(new(device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date));
+            }
+
+            DeviceAvailabilities = availabilities;
+            DeviceAvailabilitiesDataGrid.ItemsSource = DeviceAvailabilities;
         }
         #endregion
         #endregion

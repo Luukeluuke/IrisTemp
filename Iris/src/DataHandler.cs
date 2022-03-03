@@ -53,13 +53,13 @@ namespace Iris.Structures
         /// <param name="startDate">The from date.</param>
         /// <param name="endDate">The to date.</param>
         /// <returns>Whether the device is availalbe in the given timespan.</returns>
-        public static bool IsDeviceAvailable(Device device, DateTime startDate, DateTime endDate, int? ignoreID = null)
+        public static bool IsDeviceAvailable(Device device, DateTime startDate, DateTime endDate, int? ignoreBorrowingID = null)
         {
             List<Borrowing> relevantBorrowings = Borrowings.Where(b => b.DeviceID.Equals(device.ID)).ToList();
 
-            if (ignoreID is not null)
+            if (ignoreBorrowingID is not null)
             {
-                relevantBorrowings = relevantBorrowings.Where(b => !b.ID.Equals(ignoreID)).ToList();
+                relevantBorrowings = relevantBorrowings.Where(b => !b.ID.Equals(ignoreBorrowingID)).ToList();
             }
 
             foreach (Borrowing borrowing in relevantBorrowings)
