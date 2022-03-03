@@ -58,7 +58,7 @@ namespace Iris.Structures
         /// </summary>
         public DateTime? DateEnd { get; private set; }
         public long DateEndUnix { get; private set; }
-        public string DateEndString => DateEnd is null ? "" : DateEnd.Value.ToString("dd.MM.yyyy");
+        public string DateEndString => DateEndUnix == -1 ? "" : DateEnd.Value.ToString("dd.MM.yyyy");
 
         /// <summary>
         /// Whether the borrowing is active. 
