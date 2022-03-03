@@ -28,7 +28,8 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Heute anstehende Ausleihen: " Margin="5 5 0 5" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                 <Border Grid.Row="1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" Margin="0 0 0 3">
-                    <ListBox></ListBox>
+                    <ListBox>
+                    </ListBox>
                 </Border>
             </Grid>
             <GridSplitter Grid.Row="1" Margin="0 5 0 5" Height="2" HorizontalAlignment="Stretch" ResizeDirection="Rows"></GridSplitter>

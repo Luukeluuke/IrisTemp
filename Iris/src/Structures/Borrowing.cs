@@ -128,7 +128,7 @@ namespace Iris.Structures
             int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
             int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
 
-            await DatabaseHandler.InsertBorrowing(deviceID,
+            return await DatabaseHandler.InsertBorrowing(deviceID,
                                             loaner,
                                             null,
                                             lenderName,
@@ -139,8 +139,6 @@ namespace Iris.Structures
                                             -1,
                                             isBorrowed,
                                             notes);
-
-            return await DatabaseHandler.SelectLastBorrowing();
         }
 
         /// <summary>

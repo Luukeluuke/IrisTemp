@@ -53,10 +53,11 @@ namespace Iris.Database
         /// <param name="name">Name of the device.</param>
         /// <param name="notes">Notes of the device.</param>
         /// <param name="type">Type of the device.</param>
-        public static async Task<bool> InsertDevice(string name, string notes, DeviceType type)
+        public static async Task<Device> InsertDevice(string name, string notes, DeviceType type)
         {
             try
             {
+
                 ExecuteNonQueryAsync($@"INSERT INTO TDevices 
                                                     (Type, Name, Notes) 
                                                 VALUES 
@@ -65,13 +66,28 @@ namespace Iris.Database
                                                     @notes)",
                                                     new SqliteParameter("@name", name),
                                                     new SqliteParameter("@notes", notes ?? Global.NullDBString));
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
+                                                                                    WHERE
+                                                                                        rowid == last_insert_rowid()");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                await reader.ReadAsync();
+                Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
+
+                await reader.CloseAsync();
+
+                return device;
             }
             catch
             {
-                return false;
+                return null;
             }
             
-            return true;
         }
 
         /// <summary>
@@ -188,40 +204,6 @@ namespace Iris.Database
 
             return devices;
         }
-
-        /// <summary>
-        /// Select the last created device. 
-        /// (With the highest ID)
-        /// </summary>
-        public static async Task<Device> SelectLastDevice()
-        {
-            Device device = null;
-
-            try
-            {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
-                                                                                    WHERE
-                                                                                        ID == (SELECT MAX(ID) FROM TDevices)");
-
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                await reader.ReadAsync();
-                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
-
-                await reader.CloseAsync();
-            }
-            finally
-            {
-                Global.MainWindow.Cursor = Cursors.Arrow;
-            }
-
-            return device;
-        }
         #endregion
 
         #region Borrowings
@@ -237,7 +219,7 @@ namespace Iris.Database
         /// <param name="datePlannedEnd">Planned end of the borrowing.</param>
         /// <param name="isBorrowed">Whether the borrowing is active. </param>
         /// <param name="notes">Notes about the borrowing.</param>
-        public static async Task<bool> InsertBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        public static async Task<Borrowing> InsertBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
         {
             try
             {
@@ -261,13 +243,26 @@ namespace Iris.Database
                                                     new SqliteParameter("@lenderPhone", lenderPhone ?? Global.NullDBString),
                                                     new SqliteParameter("@lenderEmail", lenderEmail ?? Global.NullDBString),
                                                     new SqliteParameter("@notes", notes ?? Global.NullDBString));
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
+                                                                                    WHERE
+                                                                                        rowid == last_insert_rowid()");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                reader.Read();
+                Borrowing borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
+
+                await reader.CloseAsync();
+                return borrowing;
             }
             catch
             {
-                return false;
+                return null;
             }
-
-            return true;
         }
 
         /// <summary>
@@ -359,40 +354,6 @@ namespace Iris.Database
             }
 
             return borrowings;
-        }
-
-        /// <summary>
-        /// Select the last created borrowing. 
-        /// (With the highest ID)
-        /// </summary>
-        public static async Task<Borrowing> SelectLastBorrowing()
-        {
-            Borrowing borrowing = null;
-
-            try
-            {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
-                                                                                    WHERE
-                                                                                        ID == (SELECT MAX(ID) FROM TBorrowings)");
-
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                reader.Read();
-                borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
-
-                await reader.CloseAsync();
-            }
-            finally
-            {
-                Global.MainWindow.Cursor = Cursors.Arrow;
-            }
-
-            return borrowing;
         }
         #endregion
         #endregion
