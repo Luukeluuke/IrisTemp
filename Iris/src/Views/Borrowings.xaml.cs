@@ -88,6 +88,9 @@ namespace Iris.src.Views
         private void BorrowingsDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             SelectedBorrowing = BorrowingsDataGrid.SelectedItem as Borrowing;
+
+            DeleteBorrowingButton.IsEnabled = SelectedBorrowing is not null;
+            EditBorrowingButton.IsEnabled = SelectedBorrowing is not null;
         }
 
         private void BorrowingsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)

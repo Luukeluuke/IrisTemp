@@ -165,6 +165,12 @@ namespace Iris.src.Windows
         #region Window
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Borrowing is null)
+            {
+                Close();
+                return;
+            }
+
             LenderNameTextBox.Text = Borrowing.LenderName;
             DeviceComboBox.Items.Add(Borrowing.Device);
             DeviceComboBox.SelectedIndex = 0;
