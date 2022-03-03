@@ -47,9 +47,14 @@ namespace Iris.src.Windows
                 return;
             }
 
-            DateTime dateStart = FromDatePicker.SelectedDate.Value;
-            DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value;
+            DateTime dateStart = FromDatePicker.SelectedDate.Value.Date;
+            DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value.Date;
             DateTime? dateEnd = EndDatePicker.SelectedDate;
+
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+
+            int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
+            int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
 
             await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                 Borrowing.DeviceID,
@@ -58,8 +63,8 @@ namespace Iris.src.Windows
                 LenderNameTextBox.Text,
                 string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? Global.NullDBString : LenderPhoneTextBox.Text,
                 string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? Global.NullDBString : LenderEMailTextBox.Text,
-                new DateTimeOffset(new DateTime(dateStart.Year, dateStart.Month, dateStart.Day)).ToUnixTimeSeconds(),
-                new DateTimeOffset(new DateTime(datePlannedEnd.Year, datePlannedEnd.Month, datePlannedEnd.Day)).ToUnixTimeSeconds(),
+                new DateTimeOffset(dateStart.AddHours(offsetStartDate)).ToUnixTimeSeconds(),
+                new DateTimeOffset(datePlannedEnd.AddHours(offsetPlannedEndDate)).ToUnixTimeSeconds(),
                 dateEnd is null ? -1 : new DateTimeOffset(new DateTime(dateEnd.Value.Year, dateEnd.Value.Month, dateEnd.Value.Day)).ToUnixTimeSeconds(),
                 Borrowing.IsBorrowed,
                 new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
@@ -198,6 +203,7 @@ namespace Iris.src.Windows
                 ToDatePicker.IsEnabled = false;
                 NotesRichTextBox.IsEnabled = false;
                 ApplyButton.IsEnabled = false;
+                DeviceAvailabilityTextBlock.Visibility = Visibility.Hidden;
             }
 
             BorrowTakeTextBlock.Text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "Zurücknehmen" : "Schließen" : "Ausleihen");

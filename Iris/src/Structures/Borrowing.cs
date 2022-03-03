@@ -123,14 +123,19 @@ namespace Iris.Structures
         /// <returns>The created borrowing.</returns>
         public static async Task<Borrowing> CreateNewBorrowing(int deviceID, string loaner, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string notes)
         {
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+
+            int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
+            int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
+
             await DatabaseHandler.InsertBorrowing(deviceID,
                                             loaner,
                                             null,
                                             lenderName,
                                             lenderPhone,
                                             lenderEmail,
-                                            new DateTimeOffset(new DateTime(dateStart.Year, dateStart.Month, dateStart.Day).AddHours(1)).ToUnixTimeSeconds(),
-                                            new DateTimeOffset(new DateTime(datePlannedEnd.Year, datePlannedEnd.Month, datePlannedEnd.Day).AddHours(1)).ToUnixTimeSeconds(),
+                                            new DateTimeOffset(dateStart.AddHours(offsetStartDate)).ToUnixTimeSeconds(),
+                                            new DateTimeOffset(datePlannedEnd.AddHours(offsetPlannedEndDate)).ToUnixTimeSeconds(),
                                             -1,
                                             isBorrowed,
                                             notes);

@@ -158,7 +158,7 @@ namespace Iris.Database
         /// <summary>
         /// Select all devices out of the database.
         /// </summary>
-        /// <returns>The devices, otherwise null.</returns>
+        /// <returns>The devices.</returns>
         public static async Task<List<Device>> SelectAllDevices()
         {
             List<Device> devices = new();
@@ -186,7 +186,7 @@ namespace Iris.Database
                 Global.MainWindow.Cursor = Cursors.Arrow;
             }
 
-            return devices.Count == 0 ? null : devices;
+            return devices;
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace Iris.Database
         /// <summary>
         /// Select all borrowings out of the database.
         /// </summary>
-        /// <returns>The borrowings, otherwise null.</returns>
+        /// <returns>The borrowings.</returns>
         public static async Task<List<Borrowing>> SelectAllBorrowings()
         {
             List<Borrowing> borrowings = new();
@@ -358,7 +358,7 @@ namespace Iris.Database
                 Global.MainWindow.Cursor = Cursors.Arrow;
             }
 
-            return borrowings.Count == 0 ? null : borrowings;
+            return borrowings;
         }
 
         /// <summary>
