@@ -5,12 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Iris.src.Views"
+             DataContext="{Binding RelativeSource={RelativeSource self}}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="500" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
     <Grid Background="{StaticResource MaterialDesignDarkBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition MinWidth="380" Width="0.1*"></ColumnDefinition>
+            <ColumnDefinition MinWidth="300" Width="0.1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0" Margin="5 5 7 5">
             <Grid.RowDefinitions>
@@ -27,10 +29,13 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Heute anstehende Ausleihen: " Margin="5 5 0 5" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                <Border Grid.Row="1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" Margin="0 0 0 3">
-                    <ListBox>
-                    </ListBox>
-                </Border>
+                <DataGrid x:Name="TodayLoansDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" MouseDoubleClick="TodayLoansDataGrid_MouseDoubleClick" SelectedCellsChanged="TodayLoansDataGrid_SelectedCellsChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
             <GridSplitter Grid.Row="1" Margin="0 5 0 5" Height="2" HorizontalAlignment="Stretch" ResizeDirection="Rows"></GridSplitter>
             <Grid Grid.Row="2">
@@ -39,9 +44,13 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Heute anstehende Rückgaben: " Margin="5 5 0 5" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                <Border Grid.Row="1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" Margin="0 0 0 3">
-                    <ListBox></ListBox>
-                </Border>
+                <DataGrid x:Name="TodayTakeBacksDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" MouseDoubleClick="TodayTakeBacksDataGrid_MouseDoubleClick" SelectedCellsChanged="TodayTakeBacksDataGrid_SelectedCellsChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
             <GridSplitter Grid.Row="3" Margin="0 5 0 5" Height="2"  HorizontalAlignment="Stretch" ResizeDirection="Rows"></GridSplitter>
             <Grid Grid.Row="4">
@@ -50,9 +59,13 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Verspätete Rückgaben: " Margin="5 5 0 5" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                <Border Grid.Row="1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2">
-                    <ListBox></ListBox>
-                </Border>
+                <DataGrid x:Name="TooLateTakeBacksDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" MouseDoubleClick="TooLateTakeBacksDataGrid_MouseDoubleClick" SelectedCellsChanged="TooLateTakeBacksDataGrid_SelectedCellsChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
             <Grid Grid.Row="5" Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
@@ -65,7 +78,7 @@
                         <TextBlock Text="Neue Ausleihe" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="RefreshButton" Grid.Column="2" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}">
+                <Button x:Name="RefreshButton" Grid.Column="2" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshButton_Click">
                     <Button.Content>
                         <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>

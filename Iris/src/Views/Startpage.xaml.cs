@@ -1,4 +1,8 @@
 ﻿using Iris.src.Windows;
+using Iris.Structures;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,7 +14,16 @@ namespace Iris.src.Views
     public partial class Startpage : UserControl
     {
         #region Properties and Variables
+        private List<Borrowing> TodayLoans { get; set; }
+        private Borrowing TodayLoansSelectedBorrowing { get; set; }
 
+        private List<Borrowing> TodayTakeBacks { get; set; }
+        private Borrowing TodayTakeBacksSelectedBorrowing { get; set; }
+
+        private List<Borrowing> TooLateTakeBacks { get; set; }
+        private Borrowing TooLateTakeBacksSelectedBorrowing { get; set; }
+
+        private List<Device> LoadedDevices { get; set; }
         #endregion
 
         #region Constructors
@@ -25,6 +38,88 @@ namespace Iris.src.Views
         private void NewBorrowingButton_Click(object sender, RoutedEventArgs e)
         {
             new CreateBorrowingWindow().ShowDialog();
+
+            LoadBorrowingsAndDevices();
+        }
+        #endregion
+
+        #region TodayLoansDataGrid
+        private void TodayLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            new EditBorrowingWindow(TodayLoansSelectedBorrowing).ShowDialog();
+
+            LoadBorrowingsAndDevices();
+        }
+
+        private void TodayLoansDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            TodayLoansSelectedBorrowing = TodayLoansDataGrid.SelectedItem as Borrowing;
+        }
+        #endregion
+
+        #region TodayTakeBacksDataGrid
+        private void TodayTakeBacksDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            new EditBorrowingWindow(TodayTakeBacksSelectedBorrowing).ShowDialog();
+
+            LoadBorrowingsAndDevices();
+        }
+
+        private void TodayTakeBacksDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            TodayTakeBacksSelectedBorrowing = TodayTakeBacksDataGrid.SelectedItem as Borrowing;
+        }
+        #endregion
+
+        #region TooLateTakeBacksDataGrid
+        private void TooLateTakeBacksDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            new EditBorrowingWindow(TooLateTakeBacksSelectedBorrowing).ShowDialog();
+
+            LoadBorrowingsAndDevices();
+        }
+
+        private void TooLateTakeBacksDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            TooLateTakeBacksSelectedBorrowing = TooLateTakeBacksDataGrid.SelectedItem as Borrowing;
+        }
+        #endregion
+
+        #region UserControl
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadBorrowingsAndDevices();
+        }
+        #endregion
+
+        #region RefreshButton
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadBorrowingsAndDevices();
+        }
+        #endregion
+        #endregion
+
+        #region Methods
+        #region Private
+        /// <summary>
+        /// Refreshs the <see cref="LoadedBorrowings"/> and <see cref="LoadedDevices"/>.
+        /// </summary>
+        private void LoadBorrowingsAndDevices()
+        {
+            DataHandler.RefreshData();
+
+            LoadedDevices = DataHandler.Devices;
+
+            DateTime now = DateTime.Now;
+
+            TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
+            TodayTakeBacks = DataHandler.Borrowings.Where(b => b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)).ToList();
+            TooLateTakeBacks = DataHandler.Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date).ToList();
+
+            TodayLoansDataGrid.ItemsSource = TodayLoans;
+            TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
+            TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
         }
         #endregion
         #endregion
