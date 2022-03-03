@@ -167,6 +167,12 @@ namespace Iris.src.Views
                 return;
             }
 
+            if (DataHandler.Borrowings.Any(b => b.DeviceID.Equals(SelectedDevice.ID)))
+            {
+                MessageBox.Show("Das ausgewählte Gerät kann nicht gelöscht werden, da bereits Ausleihen mit diesem Gerät existieren.", $"{SelectedDevice.Name} löschen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Warning).Equals(MessageBoxResult.Yes))
             {
                 DatabaseHandler.DeleteDevice(SelectedDevice.ID);
