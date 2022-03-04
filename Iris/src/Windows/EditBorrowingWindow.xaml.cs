@@ -1,6 +1,9 @@
 ﻿using Iris.Database;
 using Iris.Structures;
 using System;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -42,6 +45,18 @@ namespace Iris.src.Windows
                 MessageBox.Show("Bitte alle Pflichtfelder ausfüllen!", "Ausleihe bearbeiten fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (!string.IsNullOrWhiteSpace(LenderEMailTextBox.Text))
+            {
+                try
+                {
+                    MailAddress mail = new(LenderEMailTextBox.Text);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Die angegebene E-Mail Adresse ist ungültig.", "Ungültige E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
             if (!IsDeviceAvailable)
             {
                 MessageBox.Show("Das ausgewählte Gerät ist in dem angegebenem Zeitraum nicht verfügbar.", "Ausleihe bearbeiten fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -69,6 +84,8 @@ namespace Iris.src.Windows
                 dateEnd is null ? -1 : new DateTimeOffset(new DateTime(dateEnd.Value.Year, dateEnd.Value.Month, dateEnd.Value.Day)).ToUnixTimeSeconds(),
                 Borrowing.IsBorrowed,
                 new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
+
+            Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID);
 
             MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Ausleihe bearbeiten erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -194,6 +211,11 @@ namespace Iris.src.Windows
             {
                 LenderNameTextBox.IsEnabled = false;
                 FromDatePicker.IsEnabled = false;
+
+                if (Borrowing.DatePlannedEnd < DateTime.Now)
+                {
+                    SendEmailButton.Visibility = Visibility.Visible;
+                }
             }
             else if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1)
             {
@@ -208,6 +230,58 @@ namespace Iris.src.Windows
             }
 
             BorrowTakeTextBlock.Text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "Zurücknehmen" : "Schließen" : "Ausleihen");
+        }
+        #endregion
+
+        #region SendMailButton
+        private async void SendEmailButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Borrowing.LenderEmail))
+            {
+                MessageBox.Show("Es ist keine E-Mail Adresse angegeben.", "Fehlende E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (Borrowing.LastMailSent.HasValue && (DateTime.Now - Borrowing.LastMailSent).Value.TotalMinutes <= 5)
+            {
+                MessageBox.Show("Es wurde bereits eine Erinnerungs E-Mail innerhalb der letzten 5 Minuten an den Ausleiher gesendet.", "E-Mail Spam", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            using SmtpClient smtp = new();
+            using MailMessage mail = new();
+
+            smtp.Host = "172.28.0.43"; // TODO: Das könnte man noch dynamisch machen -> Guter Ausblick
+            smtp.Port = 25;
+            smtp.Credentials = CredentialCache.DefaultNetworkCredentials;
+            smtp.Timeout = 5000;
+
+            mail.From = new MailAddress("edv.iris@en-kreis.de"); // TODO: Das könnte man noch dynamisch machen -> Guter Ausblick
+            mail.Subject = $"Erinnerung an Rückgabe von Verleihgerät ({Borrowing.Device.Name})";
+            mail.Body = $"Guten Tag,\n\n" +
+                $"bitte denken Sie daran, das ausgeliehene Gerät ({Borrowing.Device.Name}) zurück zu bringen.\n" +
+                $"Ihr geplanter Ausleizeitraum: {Borrowing.DateStart.ToLongDateString()} bis {Borrowing.DatePlannedEnd.ToLongDateString()}.\n\n" +
+                $"Mit freundlichen Grüßen\n" +
+                $"Ihre EDV-Abteilung\n\n\n" +
+                $"Diese E-Mail-Adresse ist nicht für den Empfang von Nachrichten vorgesehen!\n" +
+                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird.";
+            
+            //mail.CC.Add(new MailAddress()); TODO: Hier könnte man noch die Email des Email senders rein packen...
+            mail.To.Add(new MailAddress(Borrowing.LenderEmail));
+
+            await Task.Run(() => 
+            { 
+                try
+                {
+                    smtp.Send(mail);
+
+                    Borrowing.LastMailSent = DateTime.Now;
+                }
+                catch (SmtpException)
+                {
+                    MessageBox.Show("Die E-Mail konnte nicht gesendet werden.", "E-Mail senden fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            });
         }
         #endregion
         #endregion

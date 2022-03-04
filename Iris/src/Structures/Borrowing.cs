@@ -69,6 +69,12 @@ namespace Iris.Structures
         /// Notes about the borrowing.
         /// </summary>
         public string Notes { get; private set; }
+
+        /// <summary>
+        /// Last time a remind e-mail was sent to the lender's email.
+        /// Null is the default value, it is setted when starting the program.
+        /// </summary>
+        public DateTime? LastMailSent { get; set; }
         #endregion
 
         #region Constructors
@@ -103,6 +109,8 @@ namespace Iris.Structures
 
             IsBorrowed = isBorrowed;
             Notes = notes.Equals(Global.NullDBString) ? null : notes;
+
+            LastMailSent = null;
         }
         #endregion
 

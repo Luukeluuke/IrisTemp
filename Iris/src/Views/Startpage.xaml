@@ -112,7 +112,7 @@
                 </Grid>
             </Grid>
             <Border Grid.Row="1" Margin="0 5 0 0" BorderThickness="5">
-                <DataGrid x:Name="DeviceAvailabilitiesDataGrid" Grid.Row="1" DataContext="{Binding DeviceAvailabilities}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" MouseDoubleClick="TodayTakeBacksDataGrid_MouseDoubleClick" SelectedCellsChanged="TodayTakeBacksDataGrid_SelectedCellsChanged" HeadersVisibility="None">
+                <DataGrid x:Name="DeviceAvailabilitiesDataGrid" Grid.Row="1" DataContext="{Binding DeviceAvailabilities}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" HeadersVisibility="None">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Device.Name}" Width="*"></DataGridTextColumn>
                         <DataGridTextColumn Binding="{Binding IsAvailableString}" Width="*"></DataGridTextColumn>

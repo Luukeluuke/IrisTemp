@@ -21,6 +21,7 @@
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="40"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Margin="0 0 0 15">
@@ -97,7 +98,14 @@
                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10 0 0 0" Text="Rückgabedatum:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <DatePicker x:Name="EndDatePicker" Grid.Column="3" IsEnabled="False" VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
                     </Grid>
-                    <Grid Grid.Row="6" Margin="0 2 0 -2">
+                    <Grid Grid.Row="6">
+                        <Button x:Name="SendEmailButton" Visibility="Collapsed" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="SendEmailButton_Click">
+                            <Button.Content>
+                                <TextBlock Text="Erinnerungs E-Mail an Ausleiher senden" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    <Grid Grid.Row="7" Margin="0 2 0 -2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="5"></ColumnDefinition>

@@ -1,5 +1,7 @@
 ﻿using Iris.Structures;
+using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -39,7 +41,18 @@ namespace Iris.src.Windows
                 MessageBox.Show("Bitte alle Pflichtfelder ausfüllen!", "Ausleihe erstellen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
+            if (!string.IsNullOrWhiteSpace(LenderEMailTextBox.Text))
+            {
+                try
+                {
+                    MailAddress mail = new(LenderEMailTextBox.Text);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Die angegebene E-Mail Adresse ist ungültig.", "Ungültige E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
             if (!IsDeviceAvailable)
             {
                 MessageBox.Show("Das ausgewählte Gerät ist in dem angegebenem Zeitraum nicht verfügbar.", "Ausleihe erstellen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);

@@ -323,6 +323,41 @@ namespace Iris.Database
         }
 
         /// <summary>
+        /// Select a borrowing by its ID out of the database.
+        /// </summary>
+        /// <param name="id">The ID of the borrowing.</param>
+        /// <returns>The borrowing, otherwise null.</returns>
+        public static async Task<Borrowing> SelectBorrowing(int id)
+        {
+            Borrowing borrowing = null;
+
+            try
+            {
+                Global.MainWindow.Cursor = Cursors.Wait;
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
+                                                                                    WHERE
+                                                                                        ID == {id}");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                await reader.ReadAsync();
+                borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
+
+                await reader.CloseAsync();
+            }
+            finally
+            {
+                Global.MainWindow.Cursor = Cursors.Arrow;
+            }
+
+            return borrowing;
+        }
+
+        /// <summary>
         /// Select all borrowings out of the database.
         /// </summary>
         /// <returns>The borrowings.</returns>
