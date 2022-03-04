@@ -24,10 +24,11 @@ namespace Iris.src.Windows
 
         #region Constructors
         /// <param name="borrowing">The borrowing which should be edited.</param>
-        public EditBorrowingWindow(Borrowing borrowing)
+        public EditBorrowingWindow(Borrowing borrowing, bool showEmailButton = false)
         {
-            InitializeComponent();
+            Owner = Global.MainWindow;
 
+            InitializeComponent();
             Borrowing = borrowing;
         }
         #endregion

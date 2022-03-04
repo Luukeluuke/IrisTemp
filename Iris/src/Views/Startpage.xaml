@@ -63,6 +63,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Geplante Rückgabe" Binding="{Binding DatePlannedEndString}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>

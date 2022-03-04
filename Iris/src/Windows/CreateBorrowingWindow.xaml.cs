@@ -24,6 +24,8 @@ namespace Iris.src.Windows
         #region Constructors
         public CreateBorrowingWindow()
         {
+            Owner = Global.MainWindow;
+
             InitializeComponent();
         }
         #endregion
