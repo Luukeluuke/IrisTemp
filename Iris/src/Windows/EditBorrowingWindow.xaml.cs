@@ -212,7 +212,7 @@ namespace Iris.src.Windows
                 LenderNameTextBox.IsEnabled = false;
                 FromDatePicker.IsEnabled = false;
 
-                if (Borrowing.DatePlannedEnd < DateTime.Now)
+                if (Borrowing.DatePlannedEnd < DateTime.Now.Date)
                 {
                     SendEmailButton.Visibility = Visibility.Visible;
                 }

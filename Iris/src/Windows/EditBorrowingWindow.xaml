@@ -83,7 +83,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Herausgeber:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Herausgeber:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
                         <TextBox x:Name="LoanerTextBox" Grid.Column="1" Margin="5 0 5 0" IsEnabled="False" VerticalAlignment="Center" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
                     <Grid Grid.Row="5" Margin="0 0 0 15">
@@ -93,9 +93,9 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Annehmer:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Annehmer:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
                         <TextBox x:Name="TakerTextBox" Grid.Column="1" Margin="5 0 5 0" IsEnabled="False" VerticalAlignment="Center" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
-                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10 0 0 0" Text="Rückgabedatum:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10 0 0 0" Text="Rückgabedatum:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
                         <DatePicker x:Name="EndDatePicker" Grid.Column="3" IsEnabled="False" VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
                     </Grid>
                     <Grid Grid.Row="6">
