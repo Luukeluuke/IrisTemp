@@ -88,6 +88,21 @@
                     <DataGridTextColumn Header="Annehmer" Binding="{Binding Taker}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
                 </DataGrid.Columns>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="0">
+                                <Setter Property="ToolTip" Value="Status: Reserviert"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="1">
+                                <Setter Property="ToolTip" Value="Status: Ausgeliehen"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="2">
+                                <Setter Property="ToolTip" Value="Status: Abgeschlossen"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
             </DataGrid>
             <Grid Grid.Row="2" Margin="-5 5 0 -5" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
