@@ -95,7 +95,7 @@
                         </Grid.ColumnDefinitions>
                         <Button x:Name="AddBorrowingConfirmButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddBorrowingConfirmButton_Click">
                             <Button.Content>
-                                <TextBlock Text="Ausleihe erstellen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                <TextBlock x:Name="AddBorrowingConfirmTextBlock" Text="Reservieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                             </Button.Content>
                         </Button>
                         <Button x:Name="AddBorrowingCancelButton" Grid.Column="2" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddBorrowingCancelButton_Click">

@@ -143,11 +143,13 @@ namespace Iris.src.Windows
         private void InstantBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             LoanerTextBox.Text = Global.CurrentUser;
+            AddBorrowingConfirmTextBlock.Text = "Ausleihen";
         }
 
         private void InstantBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             LoanerTextBox.Text = "";
+            AddBorrowingConfirmTextBlock.Text = "Reservieren";
         }
         #endregion
 
