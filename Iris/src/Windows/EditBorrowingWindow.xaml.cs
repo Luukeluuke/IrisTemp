@@ -276,7 +276,7 @@ namespace Iris.src.Windows
 
                     Borrowing.LastMailSent = DateTime.Now;
                 }
-                catch (SmtpException)
+                catch (SmtpException e)
                 {
                     MessageBox.Show("Die E-Mail konnte nicht gesendet werden.", "E-Mail senden fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;

@@ -15,7 +15,7 @@ namespace Iris.Structures
         /// <summary>
         /// Loaded borrowing out of the database.
         /// </summary>
-        public static List<Borrowing> Borrowings { get; private set; } = new(); //TODO: Remove this
+        public static List<Borrowing> Borrowings { get; private set; }
         #endregion
 
         #region Constructors
