@@ -65,12 +65,12 @@
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Enthält:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="FilterContainsTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
-                    <Button x:Name="RemoveFiltersButton" Grid.Column="5" Margin="10 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RemoveFiltersButton_Click">
+                    <Button x:Name="RemoveFiltersButton" Grid.Column="5" Margin="10 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RemoveFiltersButton_Click" ToolTip="Filter zurücksetzen">
                         <Button.Content>
                             <TextBlock Text="Zurücksetzen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         </Button.Content>
                     </Button>
-                    <Button x:Name="ApplyFiltersButton" Grid.Column="6" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="ApplyFiltersButton_Click">
+                    <Button x:Name="ApplyFiltersButton" Grid.Column="6" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="ApplyFiltersButton_Click" ToolTip="Filter anwenden">
                         <Button.Content>
                             <TextBlock Text="Anwenden" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         </Button.Content>
@@ -112,22 +112,22 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="AddBorrowingButton" Grid.Column="0" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddBorrowingButton_Click">
+                <Button x:Name="AddBorrowingButton" Grid.Column="0" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddBorrowingButton_Click" ToolTip="Erstelle eine neue Ausleihe">
                     <Button.Content>
                         <TextBlock Text="Neue Ausleihe" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="EditBorrowingButton" Grid.Column="1" IsEnabled="False" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditBorrowingButton_Click">
+                <Button x:Name="EditBorrowingButton" Grid.Column="1" IsEnabled="False" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditBorrowingButton_Click" ToolTip="Bearbeite die zurzeit ausgewählte Ausleihe">
                     <Button.Content>
                         <TextBlock Text="Ausleihe bearbeiten" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="DeleteBorrowingButton" Grid.Column="2" IsEnabled="False" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteBorrowingButton_Click">
+                <Button x:Name="DeleteBorrowingButton" Grid.Column="2" IsEnabled="False" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteBorrowingButton_Click" ToolTip="Lösche die zurzeit ausgewählte Ausleihe">
                     <Button.Content>
                         <TextBlock Text="Ausleihe löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="RefreshBorrowingsButton" Grid.Column="4" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshBorrowingsButton_Click">
+                <Button x:Name="RefreshBorrowingsButton" Grid.Column="4" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshBorrowingsButton_Click" ToolTip="Ausleihen neu laden">
                     <Button.Content>
                         <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>

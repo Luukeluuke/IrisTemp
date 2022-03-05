@@ -25,7 +25,7 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Filter:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Filter:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}" ToolTip="Wähle aus, welche Gerätetypen angezeigt werden sollen"></TextBlock>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <CheckBox x:Name="FilterNotebookCheckBox" Content="Notebook"  Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterNotebookCheckBox_Checked" Unchecked="FilterNotebookCheckBox_Unchecked"></CheckBox>
                     <CheckBox x:Name="FilterGigaCubeCheckBox" Content="GigaCube" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterGigaCubeCheckBox_Checked" Unchecked="FilterGigaCubeCheckBox_Unchecked"></CheckBox>
@@ -47,12 +47,12 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="DeleteDeviceButton" Grid.Column="1" Margin="5 0 0 5" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteDeviceButton_Click">
+                <Button x:Name="DeleteDeviceButton" Grid.Column="1" Margin="5 0 0 5" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteDeviceButton_Click" ToolTip="Lösche das zurzeit ausgewählte Gerät">
                     <Button.Content>
-                        <TextBlock Text="Ausgewähltes Gerät löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Text="Gerät löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="RefreshDevicesButton" Grid.Column="3" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshDevicesButton_Click">
+                <Button x:Name="RefreshDevicesButton" Grid.Column="3" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshDevicesButton_Click" ToolTip="Geräte neu laden">
                     <Button.Content>
                         <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
@@ -70,12 +70,12 @@
                     <ColumnDefinition Width="1.3*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="NewDeviceButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="NewDeviceButton_Click">
+                <Button x:Name="NewDeviceButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="NewDeviceButton_Click" ToolTip="Füge ein neues Gerät hinzu">
                     <Button.Content>
-                        <TextBlock Text="Neues Gerät hinzufügen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBlock Text="Gerät hinzufügen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
                 </Button>
-                <Button x:Name="EditDeviceButton" Grid.Column="1" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceButton_Click">
+                <Button x:Name="EditDeviceButton" Grid.Column="1" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceButton_Click" ToolTip="Bearbeite das zurzeit ausgewählte Gerät">
                     <Button.Content>
                         <TextBlock Text="Gerät bearbeiten" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     </Button.Content>
@@ -133,14 +133,14 @@
                             <ColumnDefinition Width="5"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="AddDeviceConfirmButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddDeviceConfirmButton_Click">
+                        <Button x:Name="AddDeviceConfirmButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddDeviceConfirmButton_Click" ToolTip="Neues Gerät hinzufügen">
                             <Button.Content>
                                 <TextBlock Text="Hinzufügen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button x:Name="AddDeviceCancelButton" Grid.Column="2" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddDeviceCancelButton_Click">
+                        <Button x:Name="AddDeviceCancelButton" Grid.Column="2" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddDeviceCancelButton_Click" ToolTip="Leere die obrigen Felder">
                             <Button.Content>
-                                <TextBlock Text="Abbrechen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                <TextBlock Text="Felder leeren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -197,14 +197,14 @@
                             <ColumnDefinition Width="5"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="EditDeviceConfirmButton" Grid.Column="0" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceConfirmButton_Click">
+                        <Button x:Name="EditDeviceConfirmButton" Grid.Column="0" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceConfirmButton_Click" ToolTip="Übernehme die Änderungen">
                             <Button.Content>
                                 <TextBlock Text="Übernehmen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button x:Name="EditDeviceCancelButton" Grid.Column="2" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceCancelButton_Click">
+                        <Button x:Name="EditDeviceCancelButton" Grid.Column="2" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceCancelButton_Click" ToolTip="Setze die Änderungen zurück">
                             <Button.Content>
-                                <TextBlock Text="Abbrechen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                <TextBlock Text="Zurücksetzen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                             </Button.Content>
                         </Button>
                     </Grid>

@@ -264,8 +264,9 @@ namespace Iris.src.Windows
                 $"Ihre EDV-Abteilung\n\n\n" +
                 $"Diese E-Mail-Adresse ist nicht für den Empfang von Nachrichten vorgesehen!\n" +
                 $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird.";
-            
-            //mail.CC.Add(new MailAddress()); TODO: Hier könnte man noch die Email des Email senders rein packen...
+
+            // TODO: Hier könnte man noch die Email des Email senders rein packen...
+            //mail.CC.Add(new MailAddress());
             mail.To.Add(new MailAddress(Borrowing.LenderEmail));
 
             await Task.Run(() => 
