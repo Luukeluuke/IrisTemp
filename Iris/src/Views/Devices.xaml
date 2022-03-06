@@ -1,12 +1,216 @@
 ﻿<UserControl x:Class="Iris.src.Views.Devices"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Iris.src.Views"
+             DataContext="{Binding RelativeSource={RelativeSource self}}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="450" d:DesignWidth="855"
+             Loaded="UserControl_Loaded">
+    <Grid Background="{StaticResource MaterialDesignDarkBackground}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="422" Width="*"></ColumnDefinition>
+            <ColumnDefinition MinWidth="355" Width="0.1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Margin="5 5 7 5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Margin="5 0 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Filter:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}" ToolTip="Wähle aus, welche Gerätetypen angezeigt werden sollen"></TextBlock>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox x:Name="FilterNotebookCheckBox" Content="Notebook"  Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterNotebookCheckBox_Checked" Unchecked="FilterNotebookCheckBox_Unchecked"></CheckBox>
+                    <CheckBox x:Name="FilterGigaCubeCheckBox" Content="GigaCube" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterGigaCubeCheckBox_Checked" Unchecked="FilterGigaCubeCheckBox_Unchecked"></CheckBox>
+                    <CheckBox x:Name="FilterERKMeetingCheckBox" Content="ERK-Meeting" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterERKMeetingCheckBox_Checked" Unchecked="FilterERKMeetingCheckBox_Unchecked"></CheckBox>
+                    <CheckBox x:Name="FilterSpecialCheckBox" Content="Spezial" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterSpecialCheckBox_Checked" Unchecked="FilterSpecialCheckBox_Unchecked"></CheckBox>
+                </StackPanel>
+            </Grid>
+            <DataGrid x:Name="DevicesDataGrid" Grid.Row="1" Margin="0 0 0 0" DataContext="{Binding LoadedDevices}" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="DevicesDataGrid_SelectedCellsChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Notizen" Binding="{Binding Notes}" Width="*"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid Grid.Row="2" Margin="-5 5 0 -5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="DeleteDeviceButton" Grid.Column="1" Margin="5 0 0 5" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteDeviceButton_Click" ToolTip="Lösche das zurzeit ausgewählte Gerät">
+                    <Button.Content>
+                        <TextBlock Text="Gerät löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                    </Button.Content>
+                </Button>
+                <Button x:Name="RefreshDevicesButton" Grid.Column="3" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshDevicesButton_Click" ToolTip="Geräte neu laden">
+                    <Button.Content>
+                        <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                    </Button.Content>
+                </Button>
+            </Grid>
+        </Grid>
+        <GridSplitter Grid.Column="0" Width="2" Margin="0 7 0 7"></GridSplitter>
+        <Grid Grid.Column="1" Margin="5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="{StaticResource MaterialDesignDarkBackground}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.3*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="NewDeviceButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="NewDeviceButton_Click" ToolTip="Füge ein neues Gerät hinzu">
+                    <Button.Content>
+                        <TextBlock Text="Gerät hinzufügen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                    </Button.Content>
+                </Button>
+                <Button x:Name="EditDeviceButton" Grid.Column="1" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceButton_Click" ToolTip="Bearbeite das zurzeit ausgewählte Gerät">
+                    <Button.Content>
+                        <TextBlock Text="Gerät bearbeiten" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                    </Button.Content>
+                </Button>
+            </Grid>
+            <Grid Grid.Row="1" Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
+                <!--#region NewDeviceGrid-->
+                <Grid x:Name="NewDeviceGrid" Margin="10 5 10 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätename:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBox x:Name="NewDeviceNameTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <ComboBox x:Name="NewDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True">
+                            <ComboBoxItem Content="Notebook" ></ComboBoxItem>
+                            <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
+                            <ComboBoxItem Content="ERK-Meeting" ></ComboBoxItem>
+                            <ComboBoxItem Content="Spezial" ></ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0 15 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Notizen:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <Border Grid.Row="1" Margin="-5 7 -5 0" BorderThickness="3" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
+                            <RichTextBox x:Name="NewDeviceNotesRichTextBox" Margin="5" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" VerticalScrollBarVisibility="Auto">
+                                <RichTextBox.Resources>
+                                    <Style TargetType="{x:Type Paragraph}">
+                                        <Setter Property="Margin" Value="0 0 0 2"/>
+                                    </Style>
+                                </RichTextBox.Resources>
+                            </RichTextBox>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="3" Margin="-5 5 -5 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="5"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="AddDeviceConfirmButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddDeviceConfirmButton_Click" ToolTip="Neues Gerät hinzufügen">
+                            <Button.Content>
+                                <TextBlock Text="Hinzufügen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="AddDeviceCancelButton" Grid.Column="2" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddDeviceCancelButton_Click" ToolTip="Leere die obrigen Felder">
+                            <Button.Content>
+                                <TextBlock Text="Felder leeren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Grid>
+                <!--#endregion-->
+                <!--#region EditDeviceGrid-->
+                <Grid x:Name="EditDeviceGrid" Margin="10 5 10 5" Visibility="Hidden">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätename:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <TextBox x:Name="EditDeviceNameTextBox" Grid.Column="1" IsEnabled="False" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Gerätetyp:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <ComboBox x:Name="EditDeviceTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" IsEnabled="False" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True">
+                            <ComboBoxItem Content="Notebook" ></ComboBoxItem>
+                            <ComboBoxItem Content="GigaCube" ></ComboBoxItem>
+                            <ComboBoxItem Content="ERK-Meeting" ></ComboBoxItem>
+                            <ComboBoxItem Content="Spezial" ></ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0 15 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Notizen:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                        <Border Grid.Row="1" Margin="-5 7 -5 0" BorderThickness="3" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
+                            <RichTextBox x:Name="EditDeviceNotesRichTextBox" IsEnabled="False" Margin="5" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" VerticalScrollBarVisibility="Auto">
+                                <RichTextBox.Resources>
+                                    <Style TargetType="{x:Type Paragraph}">
+                                        <Setter Property="Margin" Value="0 0 0 2"/>
+                                    </Style>
+                                </RichTextBox.Resources>
+                            </RichTextBox>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="3" Margin="-5 5 -5 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="5"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="EditDeviceConfirmButton" Grid.Column="0" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceConfirmButton_Click" ToolTip="Übernehme die Änderungen">
+                            <Button.Content>
+                                <TextBlock Text="Übernehmen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="EditDeviceCancelButton" Grid.Column="2" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="EditDeviceCancelButton_Click" ToolTip="Setze die Änderungen zurück">
+                            <Button.Content>
+                                <TextBlock Text="Zurücksetzen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Grid>
+                <!--#endregion-->
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

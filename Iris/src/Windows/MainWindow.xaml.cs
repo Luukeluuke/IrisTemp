@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using Iris.Database;
+using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Iris
 {
@@ -8,7 +11,7 @@ namespace Iris
     public partial class MainWindow : Window
     {
         #region Properties and Variables
-        private MenuTab SelectedMenuTab 
+        private MenuTab SelectedMenuTab
         {
             get => selectedMenuTab;
             set
@@ -41,24 +44,21 @@ namespace Iris
                         case MenuTab.Startpage:
                             {
                                 StartpageMenuButton.Background = Global.MaterialDesignDarkSeparatorBackground;
-
-                                //TODO: Change COntent frame
+                                ChangeContentFrame(MenuTab.Startpage);
 
                                 break;
                             }
                         case MenuTab.Borrowings:
                             {
                                 BorrowingsMenuButton.Background = Global.MaterialDesignDarkSeparatorBackground;
-
-                                //TODO: Change COntent frame
+                                ChangeContentFrame(MenuTab.Borrowings);
 
                                 break;
                             }
                         case MenuTab.Devices:
                             {
                                 DevicesMenuButton.Background = Global.MaterialDesignDarkSeparatorBackground;
-
-                                //TODO: Change COntent frame
+                                ChangeContentFrame(MenuTab.Devices);
 
                                 break;
                             }
@@ -86,6 +86,26 @@ namespace Iris
         #endregion
 
         #region Events
+        #region Window
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!DatabaseHandler.IsConnected)
+            {
+                MessageBox.Show("Es konnte keine Verbindung zur Datenbank hergestellt werden.", "Keine Datenbank Verbindung", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+            }
+
+            ChangeContentFrame(MenuTab.Startpage);
+
+            Global.MainWindow = this;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            DatabaseHandler.CloseDBConnection();
+        }
+        #endregion
+
         #region MenuButtons
         private void StartpageMenuButton_Click(object sender, RoutedEventArgs e)
         {
@@ -102,10 +122,41 @@ namespace Iris
             SelectedMenuTab = MenuTab.Devices;
         }
         #endregion
-
         #endregion
 
         #region Methods
+        #region Private
+        /// <summary>
+        /// Changes the active/visible UserControl of ContentGrid.
+        /// </summary>
+        /// <param name="menuTab">The menu tab you want to show.</param>
+        private void ChangeContentFrame(MenuTab menuTab)
+        {
+            string uriString = "";
+
+            switch (menuTab)
+            {
+                case MenuTab.Startpage:
+                    {
+                        uriString = "src/Views/Startpage.xaml";
+                        break;
+                    }
+                case MenuTab.Borrowings:
+                    {
+                        uriString = "src/Views/Borrowings.xaml";
+                        break;
+                    }
+                case MenuTab.Devices:
+                    {
+                        uriString = "src/Views/Devices.xaml";
+                        break;
+                    }
+            }
+
+            ContentGrid.Children.Clear();
+            ContentGrid.Children.Add(new Frame() { Source = new Uri(uriString, UriKind.Relative) });
+        }
+        #endregion
 
         #endregion
     }
