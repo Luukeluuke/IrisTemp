@@ -236,6 +236,8 @@ namespace Iris.src.Views
             LoadDevices();
 
             DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
+
+            MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Änderungen übernommen", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         #endregion
 
