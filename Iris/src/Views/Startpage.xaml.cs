@@ -23,6 +23,9 @@ namespace Iris.src.Views
         private List<Borrowing> TooLateTakeBacks { get; set; }
         private Borrowing TooLateTakeBacksSelectedBorrowing { get; set; }
 
+        private List<Borrowing> NotTookLoans { get; set; }
+        private Borrowing NotTookLoansSelectedBorrowing { get; set; }
+
         private List<DeviceAvailability> DeviceAvailabilities { get; set; }
         #endregion
 
@@ -85,6 +88,20 @@ namespace Iris.src.Views
         }
         #endregion
 
+        #region NotTookLoansDataGrid
+        private void NotTookLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            new EditBorrowingWindow(NotTookLoansSelectedBorrowing).ShowDialog();
+
+            LoadBorrowingsAndDevices();
+        }
+
+        private void NotTookLoansDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            NotTookLoansSelectedBorrowing = NotTookLoansDataGrid.SelectedItem as Borrowing;
+        }
+        #endregion
+
         #region DeviceAvailabilitiesDataGrid
         private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -119,7 +136,6 @@ namespace Iris.src.Views
             LoadBorrowingsAndDevices();
         }
         #endregion
-        #endregion
 
         #region Methods
         #region Private
@@ -135,10 +151,12 @@ namespace Iris.src.Views
             TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
             TodayTakeBacks = DataHandler.Borrowings.Where(b => b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)).ToList();
             TooLateTakeBacks = DataHandler.Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date).ToList();
+            NotTookLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart < now.Date).ToList();
 
             TodayLoansDataGrid.ItemsSource = TodayLoans;
             TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
             TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
+            NotTookLoansDataGrid.ItemsSource = NotTookLoans;
 
             LoadDeviceAvailabilities();
         }
@@ -170,7 +188,7 @@ namespace Iris.src.Views
             DeviceAvailabilitiesDataGrid.ItemsSource = DeviceAvailabilities;
         }
         #endregion
-
+        #endregion
         #endregion
     }
 }
