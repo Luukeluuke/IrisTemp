@@ -85,6 +85,14 @@ namespace Iris.src.Views
         }
         #endregion
 
+        #region DeviceAvailabilitiesDataGrid
+        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CreateBorrowingWindow createBorrowingWindow = new(((sender as DataGridRow).Item as DeviceAvailability).Device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
+            createBorrowingWindow.ShowDialog();
+        }
+        #endregion
+
         #region UserControl
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -162,6 +170,7 @@ namespace Iris.src.Views
             DeviceAvailabilitiesDataGrid.ItemsSource = DeviceAvailabilities;
         }
         #endregion
+
         #endregion
     }
 }

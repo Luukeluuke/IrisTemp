@@ -30,6 +30,13 @@ namespace Iris.src.Windows
 
             InitializeComponent();
         }
+
+        public CreateBorrowingWindow(Device preSelectedDevice, DateTime preSelectedStartDate, DateTime preSelectedEndDate) : this()
+        {
+            DeviceComboBox.SelectedItem = preSelectedDevice;
+            FromDatePicker.SelectedDate = preSelectedStartDate;
+            ToDatePicker.SelectedDate = preSelectedEndDate;
+        }
         #endregion
 
         #region Events

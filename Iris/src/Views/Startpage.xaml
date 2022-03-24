@@ -12,7 +12,7 @@
     <Grid Background="{StaticResource MaterialDesignDarkBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition MinWidth="320" Width="0.1*"></ColumnDefinition>
+            <ColumnDefinition MinWidth="300" Width="350"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0" Margin="5 5 7 5">
             <Grid.RowDefinitions>
@@ -117,6 +117,16 @@
                         <DataGridTextColumn Binding="{Binding Device.Name}" Width="*"></DataGridTextColumn>
                         <DataGridTextColumn Binding="{Binding IsAvailableString}" Width="*"></DataGridTextColumn>
                     </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                            <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"></EventSetter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource MaterialDesignDarkSeparatorBackground}"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}">
                             <Setter Property="FontSize" Value="15"></Setter>
