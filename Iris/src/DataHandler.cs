@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace Iris.Structures
 {
@@ -16,12 +17,31 @@ namespace Iris.Structures
         /// Loaded borrowing out of the database.
         /// </summary>
         public static List<Borrowing> Borrowings { get; private set; }
+
+        /// <summary>
+        /// When true, deletes borrowings which are older than <see cref="MaxNotLoanTime"/>.
+        /// </summary>
+        private static bool DeleteNotTookBorrowings { get; } = true;
+        /// <summary>
+        /// Says
+        /// </summary>
+        public static TimeSpan MaxNotTookBorrowingTime { get; } = new TimeSpan(3, 0, 0, 0);
         #endregion
 
         #region Constructors
         static DataHandler()
         {
             RefreshData();
+
+            if (DeleteNotTookBorrowings)
+            {
+                List<Borrowing> notTookBorrowings = Borrowings.Where(b => !b.IsBorrowed && b.DateStart < DateTime.Now.Date - MaxNotTookBorrowingTime).ToList();
+
+                foreach (Borrowing borrowing in notTookBorrowings)
+                {
+                    DatabaseHandler.DeleteBorrowing(borrowing.ID);
+                }
+            }
         }
         #endregion
 

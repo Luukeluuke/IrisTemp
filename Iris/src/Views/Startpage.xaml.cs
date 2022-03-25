@@ -115,8 +115,9 @@ namespace Iris.src.Views
         {
             LoadBorrowingsAndDevices();
 
-            DateTime now = DateTime.Now;
+            NotTookLoansTextBlock.ToolTip = $"Ausleihen welche nicht abgeholt wurden. Werden Automatisch nach {DataHandler.MaxNotTookBorrowingTime.TotalDays} Tagen gelöscht";
 
+            DateTime now = DateTime.Now;
             FromDatePicker.SelectedDate = now.Date;
             ToDatePicker.SelectedDate = now.Date;
             LoadDeviceAvailabilities();

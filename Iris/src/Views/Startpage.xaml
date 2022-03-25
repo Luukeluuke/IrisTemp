@@ -56,7 +56,7 @@
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MinWidth="350" Width="*"></ColumnDefinition>
-                    <ColumnDefinition MinWidth="445" Width="*"></ColumnDefinition>
+                    <ColumnDefinition MinWidth="370" Width="440"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Margin="0 0 8 0">
                     <Grid.RowDefinitions>
@@ -79,7 +79,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Nicht abgeholte Ausleihen: " HorizontalAlignment="Left" Margin="5 5 0 5" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource MaterialDesignDarkForeground}" ToolTip="Ausleihen welche nicht abgeholt wurden. Werden Automatisch nach 3 Tagen gelöscht"></TextBlock>
+                    <TextBlock x:Name="NotTookLoansTextBlock" Grid.Column="0" VerticalAlignment="Center" Text="Nicht abgeholte Ausleihen: " HorizontalAlignment="Left" Margin="5 5 0 5" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                     <DataGrid x:Name="NotTookLoansDataGrid" Grid.Row="1" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" MouseDoubleClick="NotTookLoansDataGrid_MouseDoubleClick" SelectedCellsChanged="NotTookLoansDataGrid_SelectedCellsChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>
