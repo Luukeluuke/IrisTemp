@@ -59,13 +59,15 @@ namespace Iris.Database
             {
 
                 ExecuteNonQueryAsync($@"INSERT INTO TDevices 
-                                                    (Type, Name, Notes) 
+                                                    (Type, Name, Notes, IsBlocked) 
                                                 VALUES 
                                                     ({(int)type}, 
                                                     @name,
-                                                    @notes)",
+                                                    @notes,
+                                                    @isBlocked)",
                                                     new SqliteParameter("@name", name),
-                                                    new SqliteParameter("@notes", notes ?? Global.NullDBString));
+                                                    new SqliteParameter("@notes", notes ?? Global.NullDBString),
+                                                    new SqliteParameter("@isBlocked", false));
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
@@ -77,7 +79,7 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
+                Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
 
                 await reader.CloseAsync();
 
@@ -115,18 +117,20 @@ namespace Iris.Database
         /// <param name="id">ID of the device.</param>
         /// <param name="name">"New" name of the device.</param>
         /// <param name="notes">"New" notes of the device.</param>
-        public static async Task<bool> UpdateDevice(int id, string name, string notes)
+        public static async Task<bool> UpdateDevice(int id, string name, string notes, bool isBlocked)
         {
             try
             {
                 ExecuteNonQueryAsync($@"UPDATE TDevices
                                                     SET
                                                         Name = @name, 
-                                                        Notes = @notes
+                                                        Notes = @notes,
+                                                        IsBlocked = @isBlocked
                                                     WHERE
                                                         ID == {id}",
                                                         new SqliteParameter("@name", name),
-                                                        new SqliteParameter("@notes", notes ?? Global.NullDBString));
+                                                        new SqliteParameter("@notes", notes ?? Global.NullDBString),
+                                                        new SqliteParameter("@isBlocked", isBlocked));
             }
             catch
             {
@@ -159,7 +163,7 @@ namespace Iris.Database
                 }
         
                 await reader.ReadAsync();
-                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
+                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
         
                 await reader.CloseAsync();
             }
@@ -192,7 +196,7 @@ namespace Iris.Database
 
                 while (await reader.ReadAsync())
                 {
-                    devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
+                    devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4)));
                 }
 
                 await reader.CloseAsync();

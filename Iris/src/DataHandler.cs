@@ -12,7 +12,25 @@ namespace Iris.Structures
         /// <summary>
         /// Loaded devices out of the database.
         /// </summary>
-        public static List<Device> Devices { get; private set; }
+        public static List<Device> AvailableDevices
+        {
+            get
+            {
+                return devices.Where(d => !d.IsBlocked).ToList();
+            }
+        }
+        public static List<Device> AllDevices
+        {
+            get
+            {
+                return devices;
+            }
+            private set
+            {
+                devices = value;
+            }
+        }
+        private static List<Device> devices;
         /// <summary>
         /// Loaded borrowing out of the database.
         /// </summary>
@@ -52,7 +70,7 @@ namespace Iris.Structures
         /// </summary>
         public static async void RefreshData()
         {
-            Devices = (await DatabaseHandler.SelectAllDevices()).OrderBy(a => a.Type).ToList();
+            AllDevices = (await DatabaseHandler.SelectAllDevices()).OrderBy(a => a.Type).ToList();
             Borrowings = (await DatabaseHandler.SelectAllBorrowings()).OrderBy(b => b.DateStart).ToList();
         }
 
@@ -63,7 +81,7 @@ namespace Iris.Structures
         /// <returns>The device, otherwise null.</returns>
         public static Device GetDeviceByID(int id)
         {
-            return Devices.FirstOrDefault(d => d.ID.Equals(id));
+            return AllDevices.FirstOrDefault(d => d.ID.Equals(id));
         }
 
         /// <summary>
@@ -91,6 +109,18 @@ namespace Iris.Structures
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Checks whether a device is currently borrowed and is not given back.
+        /// </summary>
+        /// <param name="device">Device to check.</param>
+        /// <returns>Whether the device is currently borrowed somewhere.</returns>
+        public static bool IsDeviceCurrentlyBorrowed(Device device)
+        {
+            //TODO: Wenn noch ausleihen für ein gesperrtes gerät geplant sind. da bei ausleihen meldung gerät ist gesperrt
+
+            return Borrowings.Any(b => b.Device.Equals(device) && b.IsBorrowed && b.DateEndUnix == -1);
         }
         #endregion
         #endregion

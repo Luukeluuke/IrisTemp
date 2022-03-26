@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Iris_devices.db" />
     <None Remove="src\Iris_devices.db" />
   </ItemGroup>
 

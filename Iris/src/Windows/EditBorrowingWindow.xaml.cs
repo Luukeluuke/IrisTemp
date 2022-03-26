@@ -94,11 +94,11 @@ namespace Iris.src.Windows
         #region BorrowTakeButton
         private async void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1)
+            if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1) //Fishied
             {
                 Close();
             }
-            else if (Borrowing.IsBorrowed)
+            else if (Borrowing.IsBorrowed) //Take back
             {
                 Borrowing.TakeBack();
 
@@ -115,13 +115,15 @@ namespace Iris.src.Windows
                     Borrowing.IsBorrowed,
                     new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
             }
-            else
+            else //Loan
             {
-                Borrowing.Borrow();
+                if (Borrowing.Device.IsBlocked)
+                {
+                    MessageBox.Show($"Das Gerät '{Borrowing.Device.Name}' kann nicht augeliehen werden, da es zurzeit gesperrt ist.", "Ausleihen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-                DateTime dateStart = FromDatePicker.SelectedDate.Value;
-                DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value;
-                DateTime? dateEnd = EndDatePicker.SelectedDate;
+                Borrowing.Borrow();
 
                 await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                     Borrowing.DeviceID,

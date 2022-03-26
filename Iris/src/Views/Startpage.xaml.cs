@@ -180,7 +180,7 @@ namespace Iris.src.Views
              }
 
             List<DeviceAvailability> availabilities = new();
-            foreach (Device device in DataHandler.Devices)
+            foreach (Device device in DataHandler.AvailableDevices)
             {
                 availabilities.Add(new(device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date));
             }

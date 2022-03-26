@@ -123,6 +123,7 @@ namespace Iris.src.Views
             {
                 //Enable controls
                 EditDeviceNameTextBox.IsEnabled = true;
+                EditDeviceBlockedCheckBox.IsEnabled = true;
                 EditDeviceNotesRichTextBox.IsEnabled = true;
                 EditDeviceCancelButton.IsEnabled = true;
                 EditDeviceConfirmButton.IsEnabled = true;
@@ -132,12 +133,14 @@ namespace Iris.src.Views
                 //Load data into controls
                 EditDeviceNameTextBox.Text = SelectedDevice.Name;
                 EditDeviceTypeComboBox.SelectedIndex = (int)SelectedDevice.Type - 1;
+                EditDeviceBlockedCheckBox.IsChecked = SelectedDevice.IsBlocked;
                 EditDeviceNotesRichTextBox.Document.Blocks.Clear();
                 EditDeviceNotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(SelectedDevice.Notes.Trim())));
             }
             else
             {
                 EditDeviceNameTextBox.IsEnabled = false;
+                EditDeviceBlockedCheckBox.IsEnabled = false;
                 EditDeviceNotesRichTextBox.IsEnabled = false;
                 EditDeviceCancelButton.IsEnabled = false;
                 EditDeviceConfirmButton.IsEnabled = false;
@@ -146,6 +149,7 @@ namespace Iris.src.Views
 
                 EditDeviceNameTextBox.Text = "";
                 EditDeviceTypeComboBox.SelectedIndex = -1;
+                EditDeviceBlockedCheckBox.IsChecked = false;
                 EditDeviceNotesRichTextBox.Document.Blocks.Clear();
             }
         }
@@ -230,9 +234,19 @@ namespace Iris.src.Views
                 return;
             }
 
+            //Check if device is currently borrowed somewhere, while trying to block
+            if (EditDeviceBlockedCheckBox.IsChecked.Value)
+            {
+                if (DataHandler.IsDeviceCurrentlyBorrowed(SelectedDevice))
+                {
+                    MessageBox.Show("Das Gerät ist momentan ausgeliehen und kann daher nicht gesperrt werden.", "Gerät kann nicht gesperrt werden", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
             int lastID = SelectedDevice.ID;
 
-            await DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim());
+            await DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), EditDeviceBlockedCheckBox.IsChecked.Value);
             LoadDevices();
 
             DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
@@ -319,10 +333,11 @@ namespace Iris.src.Views
         private async void LoadDevices()
         {
             DataHandler.RefreshData();
-            LoadedDevices = DataHandler.Devices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
+            LoadedDevices = DataHandler.AllDevices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
             DevicesDataGrid.ItemsSource = LoadedDevices;
         }
         #endregion
+
         #endregion
     }
 }

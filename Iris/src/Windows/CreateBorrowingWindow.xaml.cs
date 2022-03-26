@@ -20,7 +20,7 @@ namespace Iris.src.Windows
         /// </summary>
         private bool IsDeviceAvailable { get; set; } = false;
 
-        private List<Device> LoadedDevices => DataHandler.Devices;
+        private List<Device> LoadedDevices => DataHandler.AvailableDevices;
         #endregion
 
         #region Constructors
