@@ -93,12 +93,23 @@ namespace Iris.src.Windows
             Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID);
 
             MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Ausleihe bearbeiten erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            ApplyButton.IsEnabled = false;
         }
         #endregion
 
         #region BorrowTakeButton
         private async void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ApplyButton.IsEnabled)
+            {
+                string text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "zurückgenommen" : "geschlossen" : "ausgeliehen");
+                if (MessageBox.Show($"Es gibt ungespeicherte Änderungen. Soll die Ausleihe dennoch {text} werden?", "Ungespeicherte Änderungen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.No))
+                {
+                    return;
+                }
+            }
+
             if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1) //Fishied
             {
                 Close();
@@ -151,6 +162,15 @@ namespace Iris.src.Windows
         #region FromToDatePicker
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (Borrowing.IsBorrowed && !ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd))
+            {
+                ApplyButton.IsEnabled = true;
+            }
+            else if (Borrowing.IsBorrowed && ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd))
+            {
+                ApplyButton.IsEnabled = false;
+            }
+
             if (FromDatePicker.SelectedDate is not null && ToDatePicker.SelectedDate is not null)
             {
                 if (ToDatePicker.SelectedDate.Value < FromDatePicker.SelectedDate.Value)
@@ -267,6 +287,16 @@ namespace Iris.src.Windows
             }
 
             BorrowTakeTextBlock.Text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "Zurücknehmen" : "Schließen" : "Ausleihen");
+
+            LenderNameTextBlock.Foreground = LenderNameTextBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            DeviceTextBlock.Foreground = DeviceComboBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            LenderEMailTextBlock.Foreground = LenderEMailTextBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            LenderPhoneTextBlock.Foreground = LenderPhoneTextBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            FromTextBlock.Foreground = FromDatePicker.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            ToTextBlock.Foreground = ToDatePicker.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            NotesTextBlock.Foreground = NotesRichTextBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            LoanerTextBlock.Foreground = LoanerComboBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
+            TakerTextBlock.Foreground = TakerComboBox.IsEnabled ? Global.MaterialDesignDarkForeground : Global.MaterialDesignLightSeparatorBackground;
         }
         #endregion
 
@@ -322,6 +352,51 @@ namespace Iris.src.Windows
                     return;
                 }
             });
+        }
+        #endregion
+
+        #region NotesRichTextBox
+        private void NotesRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
+            if (!string.IsNullOrWhiteSpace(notes) && !notes.Equals(Borrowing.Notes))
+            {
+                ApplyButton.IsEnabled = true;
+            }
+            else
+            {
+                ApplyButton.IsEnabled = false;
+            }
+        }
+        #endregion
+
+        #region LenderEMailTextBox
+        private void LenderEMailTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string email = LenderEMailTextBox.Text;
+            if (!string.IsNullOrWhiteSpace(email) && !email.Equals(Borrowing.LenderEmail))
+            {
+                ApplyButton.IsEnabled = true;
+            }
+            else
+            {
+                ApplyButton.IsEnabled = false;
+            }
+        }
+        #endregion
+
+        #region LenderPhoneTextBox
+        private void LenderPhoneTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string phone = LenderPhoneTextBox.Text;
+            if (!string.IsNullOrWhiteSpace(phone) && !phone.Equals(Borrowing.LenderPhone))
+            {
+                ApplyButton.IsEnabled = true;
+            }
+            else
+            {
+                ApplyButton.IsEnabled = false;
+            }
         }
         #endregion
         #endregion

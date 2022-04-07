@@ -159,6 +159,8 @@ namespace Iris.src.Windows
             LoanerComboBox.SelectedItem = Global.CurrentUser;
             LoanerComboBox.ItemsSource = LoadedLoaners;
             LoanerComboBox.IsEnabled = true;
+            LoanerTextBlock.Text = "Herausgeber:*";
+            LoanerTextBlock.Foreground = Global.MaterialDesignDarkForeground;
 
             AddBorrowingConfirmTextBlock.Text = "Ausleihen";
         }
@@ -169,6 +171,8 @@ namespace Iris.src.Windows
             LoanerComboBox.SelectedIndex= -1;
             LoanerComboBox.ItemsSource = LoadedLoaners;
             LoanerComboBox.IsEnabled = false;
+            LoanerTextBlock.Text = "Herausgeber:";
+            LoanerTextBlock.Foreground = Global.MaterialDesignLightSeparatorBackground;
 
             AddBorrowingConfirmTextBlock.Text = "Reservieren";
         }
