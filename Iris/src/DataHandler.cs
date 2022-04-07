@@ -30,7 +30,7 @@ namespace Iris.Structures
             }
         }
         private static List<Device> devices;
-        
+
         /// <summary>
         /// Loaded borrowing out of the database.
         /// </summary>
@@ -109,7 +109,7 @@ namespace Iris.Structures
             {
                 if ((startDate >= borrowing.DateStart) && (startDate <= borrowing.DatePlannedEnd)) return false;
                 if ((endDate >= borrowing.DateStart) && (endDate <= borrowing.DatePlannedEnd)) return false;
-                
+
                 if ((startDate < borrowing.DateStart && endDate > borrowing.DatePlannedEnd)) return false;
             }
 

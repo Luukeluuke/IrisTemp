@@ -88,7 +88,7 @@ namespace Iris.Database
             {
                 return null;
             }
-            
+
         }
 
         /// <summary>
@@ -151,26 +151,26 @@ namespace Iris.Database
             try
             {
                 Global.MainWindow.Cursor = Cursors.Wait;
-        
+
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
                                                                                         ID == {id}");
-                
+
                 if (reader is null)
                 {
                     return null;
                 }
-        
+
                 await reader.ReadAsync();
                 device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
-        
+
                 await reader.CloseAsync();
             }
             finally
             {
                 Global.MainWindow.Cursor = Cursors.Arrow;
             }
-        
+
             return device;
         }
 

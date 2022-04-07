@@ -64,7 +64,7 @@ namespace Iris.src.Windows
         {
             if (SelectedLoaner is null)
             {
-                MessageBox.Show("Es ist kein Herausgeber ausgewählt!", "Herausgeber löschen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);   
+                MessageBox.Show("Es ist kein Herausgeber ausgewählt!", "Herausgeber löschen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

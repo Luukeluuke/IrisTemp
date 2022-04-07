@@ -176,17 +176,17 @@ namespace Iris.src.Views
         /// </summary>
         private void LoadDeviceAvailabilities()
         {
-             if (FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)
-             {
-                 DeviceAvailabilitiesDataGrid.ItemsSource = null;
-                 return;
-             }
-             else if (ToDatePicker.SelectedDate.Value.Date < FromDatePicker.SelectedDate.Value.Date)
-             {
+            if (FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)
+            {
+                DeviceAvailabilitiesDataGrid.ItemsSource = null;
+                return;
+            }
+            else if (ToDatePicker.SelectedDate.Value.Date < FromDatePicker.SelectedDate.Value.Date)
+            {
                 MessageBox.Show("Der angegebene Zeitraum ist ungültig.", "Ungültiger Zeitraum", MessageBoxButton.OK, MessageBoxImage.Warning);
                 DeviceAvailabilitiesDataGrid.ItemsSource = null;
                 return;
-             }
+            }
 
             List<DeviceAvailability> availabilities = new();
             foreach (Device device in DataHandler.AvailableDevices)

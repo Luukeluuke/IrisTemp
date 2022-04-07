@@ -168,7 +168,7 @@ namespace Iris.src.Windows
         private void InstantBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             LoadedLoaners.Remove(Global.CurrentUser);
-            LoanerComboBox.SelectedIndex= -1;
+            LoanerComboBox.SelectedIndex = -1;
             LoanerComboBox.ItemsSource = LoadedLoaners;
             LoanerComboBox.IsEnabled = false;
             LoanerTextBlock.Text = "Herausgeber:";

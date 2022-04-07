@@ -186,8 +186,8 @@ namespace Iris.src.Windows
 
                 if (DeviceComboBox.SelectedIndex != -1)
                 {
-                    IsDeviceAvailable = DataHandler.IsDeviceAvailable(DeviceComboBox.SelectedItem as Device, 
-                        FromDatePicker.SelectedDate.Value, 
+                    IsDeviceAvailable = DataHandler.IsDeviceAvailable(DeviceComboBox.SelectedItem as Device,
+                        FromDatePicker.SelectedDate.Value,
                         ToDatePicker.SelectedDate.Value,
                         Borrowing.ID);
 
@@ -231,7 +231,7 @@ namespace Iris.src.Windows
             NotesRichTextBox.Document.Blocks.Clear();
             NotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(Borrowing.Notes)));
             EndDatePicker.SelectedDate = Borrowing.DateEndUnix == -1 ? null : Borrowing.DateEnd;
-            
+
             if (!Borrowing.IsBorrowed)
             {
                 TakerComboBox.IsEnabled = false;
@@ -338,8 +338,8 @@ namespace Iris.src.Windows
             //mail.CC.Add(new MailAddress());
             mail.To.Add(new MailAddress(Borrowing.LenderEmail));
 
-            await Task.Run(() => 
-            { 
+            await Task.Run(() =>
+            {
                 try
                 {
                     smtp.Send(mail);
