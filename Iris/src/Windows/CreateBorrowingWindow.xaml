@@ -32,9 +32,7 @@
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Ausleiher:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="LenderNameTextBox" Grid.Column="1" materialDesign:HintAssist.Hint="Vorname Nachname" VerticalAlignment="Center" Margin="5 0 10 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Gerät*:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <ComboBox x:Name="DeviceComboBox" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True" SelectionChanged="DeviceComboBox_SelectionChanged" DisplayMemberPath="Name" Grid.ColumnSpan="4">
-                            
-                        </ComboBox>
+                        <ComboBox x:Name="DeviceComboBox" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True" SelectionChanged="DeviceComboBox_SelectionChanged" DisplayMemberPath="Name" Grid.ColumnSpan="4"></ComboBox>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 0 0 15">
                         <Grid.ColumnDefinitions>
@@ -83,8 +81,8 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Herausgeber:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
-                        <TextBox x:Name="LoanerTextBox" Grid.Column="1" Margin="5 0 5 0" IsEnabled="False" VerticalAlignment="Center" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                        <TextBlock x:Name="LoanerTextBlock" Grid.Row="0" VerticalAlignment="Center" Text="Herausgeber:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
+                        <ComboBox x:Name="LoanerComboBox" Grid.Column="1" IsEnabled="False" VerticalAlignment="Center" Margin="5 0 5 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True"></ComboBox>
                         <CheckBox x:Name="InstantBorrowCheckBox" Grid.Column="2" Content="Sofort ausleihen" Margin="5 0 2 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="InstantBorrowCheckBox_Checked" Unchecked="InstantBorrowCheckBox_Unchecked"></CheckBox>
                     </Grid>
                     <Grid Grid.Row="5" Margin="0 2 0 -2">

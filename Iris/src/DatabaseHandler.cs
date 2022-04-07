@@ -57,15 +57,16 @@ namespace Iris.Database
         {
             try
             {
-
-                ExecuteNonQueryAsync($@"INSERT INTO TDevices 
-                                                    (Type, Name, Notes) 
+                ExecuteNonQuery($@"INSERT INTO TDevices 
+                                                    (Type, Name, Notes, IsBlocked) 
                                                 VALUES 
                                                     ({(int)type}, 
                                                     @name,
-                                                    @notes)",
+                                                    @notes,
+                                                    @isBlocked)",
                                                     new SqliteParameter("@name", name),
-                                                    new SqliteParameter("@notes", notes ?? Global.NullDBString));
+                                                    new SqliteParameter("@notes", notes ?? Global.NullDBString),
+                                                    new SqliteParameter("@isBlocked", false));
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
@@ -77,7 +78,7 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
+                Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
 
                 await reader.CloseAsync();
 
@@ -87,7 +88,7 @@ namespace Iris.Database
             {
                 return null;
             }
-            
+
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace Iris.Database
         {
             try
             {
-                ExecuteNonQueryAsync($@"DELETE FROM TDevices
+                ExecuteNonQuery($@"DELETE FROM TDevices
                                                     WHERE ID == {id}");
             }
             catch
@@ -115,18 +116,20 @@ namespace Iris.Database
         /// <param name="id">ID of the device.</param>
         /// <param name="name">"New" name of the device.</param>
         /// <param name="notes">"New" notes of the device.</param>
-        public static async Task<bool> UpdateDevice(int id, string name, string notes)
+        public static async Task<bool> UpdateDevice(int id, string name, string notes, bool isBlocked)
         {
             try
             {
-                ExecuteNonQueryAsync($@"UPDATE TDevices
+                ExecuteNonQuery($@"UPDATE TDevices
                                                     SET
                                                         Name = @name, 
-                                                        Notes = @notes
+                                                        Notes = @notes,
+                                                        IsBlocked = @isBlocked
                                                     WHERE
                                                         ID == {id}",
                                                         new SqliteParameter("@name", name),
-                                                        new SqliteParameter("@notes", notes ?? Global.NullDBString));
+                                                        new SqliteParameter("@notes", notes ?? Global.NullDBString),
+                                                        new SqliteParameter("@isBlocked", isBlocked));
             }
             catch
             {
@@ -148,26 +151,26 @@ namespace Iris.Database
             try
             {
                 Global.MainWindow.Cursor = Cursors.Wait;
-        
+
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
                                                                                         ID == {id}");
-                
+
                 if (reader is null)
                 {
                     return null;
                 }
-        
+
                 await reader.ReadAsync();
-                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1));
-        
+                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
+
                 await reader.CloseAsync();
             }
             finally
             {
                 Global.MainWindow.Cursor = Cursors.Arrow;
             }
-        
+
             return device;
         }
 
@@ -192,7 +195,7 @@ namespace Iris.Database
 
                 while (await reader.ReadAsync())
                 {
-                    devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1)));
+                    devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4)));
                 }
 
                 await reader.CloseAsync();
@@ -223,7 +226,7 @@ namespace Iris.Database
         {
             try
             {
-                ExecuteNonQueryAsync($@"INSERT INTO TBorrowings 
+                ExecuteNonQuery($@"INSERT INTO TBorrowings 
                                                     (DeviceID, Loaner, Taker, LenderName, LenderPhone, LenderEmail, DateStart, DatePlannedEnd, DateEnd, Borrowed, Notes) 
                                                 VALUES 
                                                     ({deviceID}, 
@@ -273,7 +276,7 @@ namespace Iris.Database
         {
             try
             {
-                ExecuteNonQueryAsync($@"DELETE FROM TBorrowings
+                ExecuteNonQuery($@"DELETE FROM TBorrowings
                                                     WHERE ID == {id}");
             }
             catch
@@ -292,7 +295,7 @@ namespace Iris.Database
         {
             try
             {
-                ExecuteNonQueryAsync($@"UPDATE TBorrowings
+                ExecuteNonQuery($@"UPDATE TBorrowings
                                                     SET
                                                         DeviceID = {deviceID}, 
                                                         Loaner = @loaner, 
@@ -391,6 +394,133 @@ namespace Iris.Database
             return borrowings;
         }
         #endregion
+
+        #region Loaner
+        /// <summary>
+        /// Insert a new loaner into the database.
+        /// </summary>
+        /// <param name="name">Name of the loaner.</param>
+        public static async Task<Loaner> InsertLoaner(string name)
+        {
+            try
+            {
+                ExecuteNonQuery($@"INSERT INTO TLoaners
+                                                    (Name) 
+                                                VALUES 
+                                                    (@name)",
+                                                    new SqliteParameter("@name", name));
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners
+                                                                                    WHERE
+                                                                                        rowid == last_insert_rowid()");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                await reader.ReadAsync();
+                Loaner loaner = new(reader.GetInt32(0), reader.GetString(1));
+
+                await reader.CloseAsync();
+
+                return loaner;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+        /// <summary>
+        /// Deletes a loaner by its ID out of the database.
+        /// </summary>
+        /// <param name="id">ID of the loaner.</param>
+        public static async Task<bool> DeleteLoaner(int id)
+        {
+            try
+            {
+                ExecuteNonQuery($@"DELETE FROM TLoaners
+                                                    WHERE ID == {id}");
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Select a loaner by its ID out of the database.
+        /// </summary>
+        /// <param name="id">The ID of the loaner.</param>
+        /// <returns>The loaner, otherwise null.</returns>
+        public static async Task<Loaner> SelectLoaner(int id)
+        {
+            Loaner loaner = null;
+
+            try
+            {
+                Global.MainWindow.Cursor = Cursors.Wait;
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners
+                                                                                    WHERE
+                                                                                        ID == {id}");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                await reader.ReadAsync();
+                loaner = new(reader.GetInt32(0), reader.GetString(1));
+
+                await reader.CloseAsync();
+            }
+            finally
+            {
+                Global.MainWindow.Cursor = Cursors.Arrow;
+            }
+
+            return loaner;
+        }
+
+        /// <summary>
+        /// Select all loaners out of the database.
+        /// </summary>
+        /// <returns>The loaners.</returns>
+        public static async Task<List<Loaner>> SelectAllLoaners()
+        {
+            List<Loaner> loaners = new();
+
+            try
+            {
+                Global.MainWindow.Cursor = Cursors.Wait;
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                while (await reader.ReadAsync())
+                {
+                    loaners.Add(new(reader.GetInt32(0), reader.GetString(1)));
+                }
+
+                await reader.CloseAsync();
+            }
+            finally
+            {
+                Global.MainWindow.Cursor = Cursors.Arrow;
+            }
+
+            return loaners;
+        }
+        #endregion
         #endregion
 
         #region Private
@@ -398,7 +528,7 @@ namespace Iris.Database
         /// Executes a command on the database.
         /// </summary>
         /// <param name="sqlCommand">The SQL command.</param>
-        private static async void ExecuteNonQueryAsync(string sqlCommand, params SqliteParameter[] paramter)
+        private static async void ExecuteNonQuery(string sqlCommand, params SqliteParameter[] paramter)
         {
             SqliteCommand command = Connection.CreateCommand();
             command.CommandText = sqlCommand;

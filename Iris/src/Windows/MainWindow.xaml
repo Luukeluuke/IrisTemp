@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Iris"
         mc:Ignorable="d"
-        Title="Iris VGV" MinHeight="600" Height="820" MinWidth="1140" Width="1140"
+        Title="Iris VGV" MinHeight="600" Height="820" MinWidth="1240" Width="1140"
         Background="{StaticResource MaterialDesignDarkBackground}"
         Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">

@@ -1,0 +1,85 @@
+﻿<Window x:Class="Iris.src.Windows.EditLoanerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Iris.src.Windows"
+        DataContext="{Binding RelativeSource={RelativeSource self}}"
+        mc:Ignorable="d"
+        Title="Iris VGV - Herausgeber" MinHeight="420" MinWidth="480" Height="420" Width="500"
+        Background="{StaticResource MaterialDesignDarkBackground}"
+        Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
+    <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+        <Border BorderThickness="1 0 1 1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
+            <Border Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Herausgeber:" FontFamily="Segoe UI Semibold" FontSize="15" Margin="5 0 0 5"  Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                    <Grid Grid.Row="1" Margin="0 0 0 5">
+                        <DataGrid x:Name="LoanerDataGrid" DataContext="{Binding LoadedLoaners}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="LoanerDataGrid_SelectedCellsChanged" HeadersVisibility="None">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Name}" Width="*"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="5"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="5"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="0 0 0 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Neuer Herausgeber:*" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                            <TextBox x:Name="LoanerNameTextBox" Grid.Column="1" Margin="5 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                        </Grid>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="5"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="AddLoanerButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="AddLoanerButton_Click" ToolTip="Herausgeber mit oben angegebenem Namen hinzufügen">
+                                <Button.Content>
+                                    <TextBlock Text="Herausgeber hinzufügen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                </Button.Content>
+                            </Button>
+                            <Button x:Name="DeleteLoanerButton" Grid.Column="2" IsEnabled="False" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DeleteLoanerButton_Click" ToolTip="Ausgewählten Herausgeber löschen">
+                                <Button.Content>
+                                    <TextBlock Text="Herausgeber löschen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Row="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="RefreshButton" Grid.Column="0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RefreshButton_Click">
+                                <Button.Content>
+                                    <TextBlock Text="Aktualisieren" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                </Button.Content>
+                            </Button>
+                            <Button x:Name="CloseButton" Grid.Column="2" Margin="5 0 0 0" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="CloseButton_Click">
+                                <Button.Content>
+                                    <TextBlock Text="Abbrechen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Border>
+    </Grid>
+</Window>

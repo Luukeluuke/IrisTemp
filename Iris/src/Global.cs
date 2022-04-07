@@ -13,6 +13,7 @@ namespace Iris
         public static SolidColorBrush? MaterialDesignDarkBackground { get; private set; }
         public static SolidColorBrush? MaterialDesignDarkForeground { get; private set; }
         public static SolidColorBrush? MaterialDesignDarkSeparatorBackground { get; private set; }
+        public static SolidColorBrush? MaterialDesignLightSeparatorBackground { get; private set; }
         #endregion
 
         /// <summary>
@@ -49,6 +50,7 @@ namespace Iris
             MaterialDesignDarkBackground = Application.Current.FindResource("MaterialDesignDarkBackground") as SolidColorBrush;
             MaterialDesignDarkForeground = Application.Current.FindResource("MaterialDesignDarkForeground") as SolidColorBrush;
             MaterialDesignDarkSeparatorBackground = Application.Current.FindResource("MaterialDesignDarkSeparatorBackground") as SolidColorBrush;
+            MaterialDesignLightSeparatorBackground = Application.Current.FindResource("MaterialDesignLightSeparatorBackground") as SolidColorBrush;
         }
 
         /// <summary>

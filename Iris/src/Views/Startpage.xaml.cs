@@ -23,6 +23,9 @@ namespace Iris.src.Views
         private List<Borrowing> TooLateTakeBacks { get; set; }
         private Borrowing TooLateTakeBacksSelectedBorrowing { get; set; }
 
+        private List<Borrowing> NotTookLoans { get; set; }
+        private Borrowing NotTookLoansSelectedBorrowing { get; set; }
+
         private List<DeviceAvailability> DeviceAvailabilities { get; set; }
         #endregion
 
@@ -85,13 +88,36 @@ namespace Iris.src.Views
         }
         #endregion
 
+        #region NotTookLoansDataGrid
+        private void NotTookLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            new EditBorrowingWindow(NotTookLoansSelectedBorrowing).ShowDialog();
+
+            LoadBorrowingsAndDevices();
+        }
+
+        private void NotTookLoansDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            NotTookLoansSelectedBorrowing = NotTookLoansDataGrid.SelectedItem as Borrowing;
+        }
+        #endregion
+
+        #region DeviceAvailabilitiesDataGrid
+        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CreateBorrowingWindow createBorrowingWindow = new(((sender as DataGridRow).Item as DeviceAvailability).Device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
+            createBorrowingWindow.ShowDialog();
+        }
+        #endregion
+
         #region UserControl
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             LoadBorrowingsAndDevices();
 
-            DateTime now = DateTime.Now;
+            NotTookLoansTextBlock.ToolTip = $"Ausleihen welche nicht abgeholt wurden. Werden Automatisch nach {DataHandler.MaxNotTookBorrowingTime.TotalDays} Tagen gelöscht";
 
+            DateTime now = DateTime.Now;
             FromDatePicker.SelectedDate = now.Date;
             ToDatePicker.SelectedDate = now.Date;
             LoadDeviceAvailabilities();
@@ -111,6 +137,14 @@ namespace Iris.src.Views
             LoadBorrowingsAndDevices();
         }
         #endregion
+
+        #region LoanerButton
+        private void EditLoanerButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditLoanerWindow editLoanerWindow = new EditLoanerWindow();
+            editLoanerWindow.ShowDialog();
+        }
+        #endregion
         #endregion
 
         #region Methods
@@ -127,10 +161,12 @@ namespace Iris.src.Views
             TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
             TodayTakeBacks = DataHandler.Borrowings.Where(b => b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)).ToList();
             TooLateTakeBacks = DataHandler.Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date).ToList();
+            NotTookLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart < now.Date).ToList();
 
             TodayLoansDataGrid.ItemsSource = TodayLoans;
             TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
             TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
+            NotTookLoansDataGrid.ItemsSource = NotTookLoans;
 
             LoadDeviceAvailabilities();
         }
@@ -140,20 +176,20 @@ namespace Iris.src.Views
         /// </summary>
         private void LoadDeviceAvailabilities()
         {
-             if (FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)
-             {
-                 DeviceAvailabilitiesDataGrid.ItemsSource = null;
-                 return;
-             }
-             else if (ToDatePicker.SelectedDate.Value.Date < FromDatePicker.SelectedDate.Value.Date)
-             {
+            if (FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)
+            {
+                DeviceAvailabilitiesDataGrid.ItemsSource = null;
+                return;
+            }
+            else if (ToDatePicker.SelectedDate.Value.Date < FromDatePicker.SelectedDate.Value.Date)
+            {
                 MessageBox.Show("Der angegebene Zeitraum ist ungültig.", "Ungültiger Zeitraum", MessageBoxButton.OK, MessageBoxImage.Warning);
                 DeviceAvailabilitiesDataGrid.ItemsSource = null;
                 return;
-             }
+            }
 
             List<DeviceAvailability> availabilities = new();
-            foreach (Device device in DataHandler.Devices)
+            foreach (Device device in DataHandler.AvailableDevices)
             {
                 availabilities.Add(new(device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date));
             }

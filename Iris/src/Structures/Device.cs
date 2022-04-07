@@ -31,6 +31,10 @@ namespace Iris.Structures
         /// The type of the device.
         /// </summary>
         public DeviceType Type { get; private set; }
+        /// <summary>
+        /// Blocked state of the device.
+        /// </summary>
+        public bool IsBlocked { get; private set; }
         #endregion
 
         #region Constructors
@@ -44,6 +48,7 @@ namespace Iris.Structures
             Name = name;
             Notes = notes;
             Type = type;
+            IsBlocked = false;
         }
 
         /// <summary>
@@ -53,12 +58,13 @@ namespace Iris.Structures
         /// <param name="name">The name of the device.</param>
         /// <param name="notes">The notes of the device.</param>
         /// <param name="typeId">The device typeId.</param>
-        public Device(int id, string name, string notes, int typeId)
+        public Device(int id, string name, string notes, int typeId, bool isBlocked)
         {
             ID = id;
             Name = name;
             Notes = notes.Equals(Global.NullDBString) ? null : notes;
             Type = (DeviceType)typeId;
+            IsBlocked = isBlocked;
         }
         #endregion
 
@@ -83,14 +89,12 @@ namespace Iris.Structures
         /// <returns>Whether the device contains the given string.</returns>
         public bool Contains(string match)
         {
-            bool v = Name.Contains(match, StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
-
             return Name.Contains(match, StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public override string ToString()
         {
-            return $"ID: '{ID}', Typ: '{Type}', Name: '{Name}'";
+            return $"ID: '{ID}', Type: '{Type}', Name: '{Name}'";
         }
         #endregion
         #endregion
