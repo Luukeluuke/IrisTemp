@@ -138,6 +138,15 @@ namespace Iris.src.Views
         }
         #endregion
 
+        #region LoanerButton
+        private void EditLoanerButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditLoanerWindow editLoanerWindow = new EditLoanerWindow();
+            editLoanerWindow.ShowDialog();
+        }
+        #endregion
+        #endregion
+
         #region Methods
         #region Private
         /// <summary>
@@ -188,7 +197,6 @@ namespace Iris.src.Views
             DeviceAvailabilities = availabilities;
             DeviceAvailabilitiesDataGrid.ItemsSource = DeviceAvailabilities;
         }
-        #endregion
         #endregion
         #endregion
     }

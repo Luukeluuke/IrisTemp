@@ -177,7 +177,7 @@ namespace Iris.src.Views
                 return;
             }
 
-            if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Warning).Equals(MessageBoxResult.Yes))
+            if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
                 await DatabaseHandler.DeleteDevice(SelectedDevice.ID);
                 LoadDevices();

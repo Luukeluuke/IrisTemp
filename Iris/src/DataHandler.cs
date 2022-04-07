@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 
 namespace Iris.Structures
 {
@@ -31,11 +30,11 @@ namespace Iris.Structures
             }
         }
         private static List<Device> devices;
+        
         /// <summary>
         /// Loaded borrowing out of the database.
         /// </summary>
         public static List<Borrowing> Borrowings { get; private set; }
-
         /// <summary>
         /// When true, deletes borrowings which are older than <see cref="MaxNotLoanTime"/>.
         /// </summary>
@@ -44,6 +43,11 @@ namespace Iris.Structures
         /// Says
         /// </summary>
         public static TimeSpan MaxNotTookBorrowingTime { get; } = new TimeSpan(3, 0, 0, 0);
+
+        /// <summary>
+        /// Loaded loaners out of the database.
+        /// </summary>
+        public static List<Loaner> Loaners { get; private set; }
         #endregion
 
         #region Constructors
@@ -72,6 +76,7 @@ namespace Iris.Structures
         {
             AllDevices = (await DatabaseHandler.SelectAllDevices()).OrderBy(a => a.Type).ToList();
             Borrowings = (await DatabaseHandler.SelectAllBorrowings()).OrderBy(b => b.DateStart).ToList();
+            Loaners = (await DatabaseHandler.SelectAllLoaners()).OrderBy(l => l.Name).ToList();
         }
 
         /// <summary>
@@ -104,7 +109,7 @@ namespace Iris.Structures
             {
                 if ((startDate >= borrowing.DateStart) && (startDate <= borrowing.DatePlannedEnd)) return false;
                 if ((endDate >= borrowing.DateStart) && (endDate <= borrowing.DatePlannedEnd)) return false;
-
+                
                 if ((startDate < borrowing.DateStart && endDate > borrowing.DatePlannedEnd)) return false;
             }
 
