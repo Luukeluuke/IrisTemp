@@ -1,6 +1,7 @@
 ﻿using Iris.Structures;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,12 +22,14 @@ namespace Iris.src.Windows
         private bool IsDeviceAvailable { get; set; } = false;
 
         private List<Device> LoadedDevices => DataHandler.AvailableDevices;
+        private List<string> LoadedLoaners { get; init; }
         #endregion
 
         #region Constructors
         public CreateBorrowingWindow()
         {
             Owner = Global.MainWindow;
+            LoadedLoaners = DataHandler.Loaners.Select(l => l.Name).ToList();
 
             InitializeComponent();
         }
@@ -71,7 +74,7 @@ namespace Iris.src.Windows
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
             await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
-                                               string.IsNullOrWhiteSpace(LoanerTextBox.Text) ? null : LoanerTextBox.Text,
+                                               string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
                                                LenderNameTextBox.Text,
                                                string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
                                                string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? null : LenderEMailTextBox.Text,
@@ -149,13 +152,21 @@ namespace Iris.src.Windows
         #region InstantBorrowCheckBox
         private void InstantBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            LoanerTextBox.Text = Global.CurrentUser;
+            LoadedLoaners.Add(Global.CurrentUser);
+            LoanerComboBox.SelectedItem = Global.CurrentUser;
+            LoanerComboBox.ItemsSource = LoadedLoaners;
+            LoanerComboBox.IsEnabled = true;
+
             AddBorrowingConfirmTextBlock.Text = "Ausleihen";
         }
 
         private void InstantBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            LoanerTextBox.Text = "";
+            LoadedLoaners.Remove(Global.CurrentUser);
+            LoanerComboBox.SelectedIndex= -1;
+            LoanerComboBox.ItemsSource = LoadedLoaners;
+            LoanerComboBox.IsEnabled = false;
+
             AddBorrowingConfirmTextBlock.Text = "Reservieren";
         }
         #endregion
@@ -171,6 +182,7 @@ namespace Iris.src.Windows
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DeviceComboBox.ItemsSource = LoadedDevices;
+            LoanerComboBox.ItemsSource = LoadedLoaners;
         }
         #endregion
         #endregion
