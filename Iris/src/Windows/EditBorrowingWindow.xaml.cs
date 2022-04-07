@@ -1,6 +1,8 @@
 ﻿using Iris.Database;
 using Iris.Structures;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -23,6 +25,7 @@ namespace Iris.src.Windows
         private bool IsDeviceAvailable { get; set; } = true;
 
         private Borrowing Borrowing { get; set; }
+        private List<string> LoadedTakers { get; init; }
         #endregion
 
         #region Constructors
@@ -30,6 +33,8 @@ namespace Iris.src.Windows
         public EditBorrowingWindow(Borrowing borrowing, bool showEmailButton = false)
         {
             Owner = Global.MainWindow;
+
+            LoadedTakers = DataHandler.Loaners.Select(l => l.Name).ToList();
 
             InitializeComponent();
             Borrowing = borrowing;
@@ -74,8 +79,8 @@ namespace Iris.src.Windows
 
             await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                 Borrowing.DeviceID,
-                string.IsNullOrWhiteSpace(LoanerTextBox.Text) ? Global.NullDBString : LoanerTextBox.Text,
-                string.IsNullOrWhiteSpace(TakerTextBox.Text) ? Global.NullDBString : TakerTextBox.Text,
+                string.IsNullOrWhiteSpace(Borrowing.Loaner) ? Global.NullDBString : Borrowing.Loaner,
+                string.IsNullOrWhiteSpace(Borrowing.Taker) ? Global.NullDBString : Borrowing.Taker,
                 LenderNameTextBox.Text,
                 string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? Global.NullDBString : LenderPhoneTextBox.Text,
                 string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? Global.NullDBString : LenderEMailTextBox.Text,
@@ -105,7 +110,7 @@ namespace Iris.src.Windows
                 await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                     Borrowing.DeviceID,
                     Borrowing.Loaner,
-                    Global.CurrentUser,
+                    TakerComboBox.Text,
                     Borrowing.LenderName,
                     Borrowing.LenderPhone,
                     Borrowing.LenderEmail,
@@ -127,7 +132,7 @@ namespace Iris.src.Windows
 
                 await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                     Borrowing.DeviceID,
-                    Global.CurrentUser,
+                    LoanerComboBox.Text,
                     Global.NullDBString,
                     Borrowing.LenderName,
                     Borrowing.LenderPhone,
@@ -205,14 +210,39 @@ namespace Iris.src.Windows
             ToDatePicker.SelectedDate = Borrowing.DatePlannedEnd;
             NotesRichTextBox.Document.Blocks.Clear();
             NotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(Borrowing.Notes)));
-            LoanerTextBox.Text = Borrowing.Loaner;
-            TakerTextBox.Text = Borrowing.Taker;
             EndDatePicker.SelectedDate = Borrowing.DateEndUnix == -1 ? null : Borrowing.DateEnd;
             
+            if (!Borrowing.IsBorrowed)
+            {
+                TakerComboBox.IsEnabled = false;
+                LoanerComboBox.IsEnabled = true;
+
+                if (!LoadedTakers.Contains(Global.CurrentUser))
+                {
+                    LoadedTakers.Add(Global.CurrentUser);
+                }
+                LoanerComboBox.ItemsSource = LoadedTakers;
+                LoanerComboBox.SelectedItem = Global.CurrentUser;
+            }
+            else
+            {
+                LoanerComboBox.Items.Add(Borrowing.Taker);
+                LoanerComboBox.SelectedIndex = 0;
+            }
+
             if (Borrowing.IsBorrowed && Borrowing.DateEndUnix == -1)
             {
                 LenderNameTextBox.IsEnabled = false;
                 FromDatePicker.IsEnabled = false;
+                TakerComboBox.IsEnabled = true;
+
+                //Set taker
+                if (!LoadedTakers.Contains(Global.CurrentUser))
+                {
+                    LoadedTakers.Add(Global.CurrentUser);
+                }
+                TakerComboBox.ItemsSource = LoadedTakers;
+                TakerComboBox.SelectedItem = Global.CurrentUser;
 
                 if (Borrowing.DatePlannedEnd < DateTime.Now.Date)
                 {
@@ -227,8 +257,13 @@ namespace Iris.src.Windows
                 FromDatePicker.IsEnabled = false;
                 ToDatePicker.IsEnabled = false;
                 NotesRichTextBox.IsEnabled = false;
+                TakerComboBox.IsEnabled = false;
                 ApplyButton.IsEnabled = false;
                 DeviceAvailabilityTextBlock.Visibility = Visibility.Hidden;
+
+                //Set taker
+                TakerComboBox.Items.Add(Borrowing.Taker);
+                TakerComboBox.SelectedIndex = 0;
             }
 
             BorrowTakeTextBlock.Text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "Zurücknehmen" : "Schließen" : "Ausleihen");
@@ -265,7 +300,9 @@ namespace Iris.src.Windows
                 $"Mit freundlichen Grüßen\n" +
                 $"Ihre EDV-Abteilung\n\n\n" +
                 $"Diese E-Mail-Adresse ist nicht für den Empfang von Nachrichten vorgesehen!\n" +
-                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird.";
+                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird."; // TODO: Wild wäre hier noch einen Custom Mail Editor als extra tab oder so vllt Einstellungen (würde auch für smtp usw passen) -> Email Templates
+
+            // TODO: Email für Reservierungsbestätigung
 
             // TODO: Hier könnte man noch die Email des Email senders rein packen...
             //mail.CC.Add(new MailAddress());

@@ -82,7 +82,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="Herausgeber:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
-                        <ComboBox x:Name="LoanerComboBox" Text="yfdf" Grid.Column="1" IsEnabled="False" VerticalAlignment="Center" Margin="5 0 5 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True"></ComboBox>
+                        <ComboBox x:Name="LoanerComboBox" Grid.Column="1" IsEnabled="False" VerticalAlignment="Center" Margin="5 0 5 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True"></ComboBox>
                         <CheckBox x:Name="InstantBorrowCheckBox" Grid.Column="2" Content="Sofort ausleihen" Margin="5 0 2 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="InstantBorrowCheckBox_Checked" Unchecked="InstantBorrowCheckBox_Unchecked"></CheckBox>
                     </Grid>
                     <Grid Grid.Row="5" Margin="0 2 0 -2">

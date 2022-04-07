@@ -22,6 +22,8 @@ namespace Iris.src.Windows
         #region Constructors
         public EditLoanerWindow()
         {
+            Owner = Global.MainWindow;
+
             InitializeComponent();
         }
         #endregion

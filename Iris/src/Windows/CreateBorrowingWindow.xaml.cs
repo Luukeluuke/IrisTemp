@@ -152,7 +152,10 @@ namespace Iris.src.Windows
         #region InstantBorrowCheckBox
         private void InstantBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            LoadedLoaners.Add(Global.CurrentUser);
+            if (!LoadedLoaners.Contains(Global.CurrentUser))
+            {
+                LoadedLoaners.Add(Global.CurrentUser);
+            }
             LoanerComboBox.SelectedItem = Global.CurrentUser;
             LoanerComboBox.ItemsSource = LoadedLoaners;
             LoanerComboBox.IsEnabled = true;
