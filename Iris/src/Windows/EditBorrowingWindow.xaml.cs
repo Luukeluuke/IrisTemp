@@ -246,7 +246,7 @@ namespace Iris.src.Windows
             }
             else
             {
-                LoanerComboBox.Items.Add(Borrowing.Taker);
+                LoanerComboBox.Items.Add(Borrowing.Loaner);
                 LoanerComboBox.SelectedIndex = 0;
             }
 
