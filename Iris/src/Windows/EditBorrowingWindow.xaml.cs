@@ -318,12 +318,12 @@ namespace Iris.src.Windows
             using SmtpClient smtp = new();
             using MailMessage mail = new();
 
-            smtp.Host = "172.28.0.43"; // TODO: Das könnte man noch dynamisch machen -> Guter Ausblick
+            smtp.Host = "172.28.0.43"; // TODO: Dynamic
             smtp.Port = 25;
             smtp.Credentials = CredentialCache.DefaultNetworkCredentials;
             smtp.Timeout = 5000;
 
-            mail.From = new MailAddress("edv.iris@en-kreis.de"); // TODO: Das könnte man noch dynamisch machen -> Guter Ausblick
+            mail.From = new MailAddress("adv.iris@en-kreis.de"); // TODO: Dynamic
             mail.Subject = $"Erinnerung an Rückgabe von Verleihgerät ({Borrowing.Device.Name})";
             mail.Body = $"Guten Tag,\n\n" +
                 $"bitte denken Sie daran, das ausgeliehene Gerät ({Borrowing.Device.Name}) zurück zu bringen.\n" +
@@ -331,11 +331,10 @@ namespace Iris.src.Windows
                 $"Mit freundlichen Grüßen\n" +
                 $"Ihre EDV-Abteilung\n\n\n" +
                 $"Diese E-Mail-Adresse ist nicht für den Empfang von Nachrichten vorgesehen!\n" +
-                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird."; // TODO: Wild wäre hier noch einen Custom Mail Editor als extra tab oder so vllt Einstellungen (würde auch für smtp usw passen) -> Email Templates
+                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird."; // TODO: E-Mail settings
 
-            // TODO: Email für Reservierungsbestätigung
+            // TODO: E-Mail for reservation confirmation
 
-            // TODO: Hier könnte man noch die Email des Email senders rein packen...
             //mail.CC.Add(new MailAddress());
             mail.To.Add(new MailAddress(Borrowing.LenderEmail));
 
