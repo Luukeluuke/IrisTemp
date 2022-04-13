@@ -123,8 +123,6 @@ namespace Iris.Structures
         /// <returns>Whether the device is currently borrowed somewhere.</returns>
         public static bool IsDeviceCurrentlyBorrowed(Device device)
         {
-            //TODO: Wenn noch ausleihen für ein gesperrtes gerät geplant sind. da bei ausleihen meldung gerät ist gesperrt
-
             return Borrowings.Any(b => b.Device.Equals(device) && b.IsBorrowed && b.DateEndUnix == -1);
         }
         #endregion

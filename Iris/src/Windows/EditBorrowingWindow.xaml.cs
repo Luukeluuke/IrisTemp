@@ -30,7 +30,7 @@ namespace Iris.src.Windows
 
         #region Constructors
         /// <param name="borrowing">The borrowing which should be edited.</param>
-        public EditBorrowingWindow(Borrowing borrowing, bool showEmailButton = false)
+        public EditBorrowingWindow(Borrowing borrowing)
         {
             Owner = Global.MainWindow;
 
@@ -162,11 +162,11 @@ namespace Iris.src.Windows
         #region FromToDatePicker
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Borrowing.IsBorrowed && !ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd))
+            if (!(FromDatePicker.SelectedDate.Equals(Borrowing.DateStart)) || !(ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd)))
             {
                 ApplyButton.IsEnabled = true;
             }
-            else if (Borrowing.IsBorrowed && ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd))
+            else if (FromDatePicker.SelectedDate.Equals(Borrowing.DateStart) || ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd))
             {
                 ApplyButton.IsEnabled = false;
             }
@@ -177,6 +177,7 @@ namespace Iris.src.Windows
                 {
                     DeviceAvailabilityTextBlock.Foreground = new SolidColorBrush(Colors.Red);
                     DeviceAvailabilityTextBlock.Text = "Ungültige Zeitspanne";
+                    IsDeviceAvailable = false;
                     return;
                 }
                 else
@@ -246,7 +247,7 @@ namespace Iris.src.Windows
             }
             else
             {
-                LoanerComboBox.Items.Add(Borrowing.Taker);
+                LoanerComboBox.Items.Add(Borrowing.Loaner);
                 LoanerComboBox.SelectedIndex = 0;
             }
 
