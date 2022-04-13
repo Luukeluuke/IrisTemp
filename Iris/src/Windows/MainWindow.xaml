@@ -5,33 +5,37 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Iris"
+        xmlns:views="clr-namespace:Iris.src.Views"
         mc:Ignorable="d"
         Title="Iris VGV" MinHeight="600" Height="820" MinWidth="1240" Width="1140"
         Background="{StaticResource MaterialDesignDarkBackground}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="Window_Loaded" Closed="Window_Closed">
-    <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Background="{StaticResource MaterialDesignDarkBackground}">
-            <Button x:Name="StartpageMenuButton" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="StartpageMenuButton_Click">
-                <Button.Content>
-                    <TextBlock Text="Start" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                </Button.Content>
+    <DockPanel Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+        <StackPanel Orientation="Horizontal" Background="{StaticResource MaterialDesignDarkBackground}" Height="35" DockPanel.Dock="Top">
+            <Button x:Name="StartpageMenuButton" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Foreground="{StaticResource MaterialDesignDarkForeground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="StartpageMenuButton_Click">
+                Start
             </Button>
-            <Button x:Name="BorrowingsMenuButton" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="BorrowingsMenuButton_Click">
-                <Button.Content>
-                    <TextBlock Text="Ausleihen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                </Button.Content>
+            <Button x:Name="BorrowingsMenuButton" Background="{StaticResource MaterialDesignDarkBackground}" Foreground="{StaticResource MaterialDesignDarkForeground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="BorrowingsMenuButton_Click">
+                Ausleihen
             </Button>
-            <Button x:Name="DevicesMenuButton" Background="{StaticResource MaterialDesignDarkBackground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DevicesMenuButton_Click" Cursor="Hand">
-                <Button.Content>
-                    <TextBlock Text="Geräte" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                </Button.Content>
+            <Button x:Name="DevicesMenuButton" Background="{StaticResource MaterialDesignDarkBackground}" Foreground="{StaticResource MaterialDesignDarkForeground}" BorderThickness="0" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="DevicesMenuButton_Click">
+                Geräte
             </Button>
         </StackPanel>
-        <Grid Grid.Row="1" x:Name="ContentGrid" Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
-        </Grid>
-    </Grid>
+
+        <ContentControl x:Name="MainView" Content="{Binding SelectedMenuTab}" DockPanel.Dock="Bottom" Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type views:Startpage}">
+                    <views:Startpage/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type views:Borrowings}">
+                    <views:Borrowings/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type views:Devices}">
+                    <views:Devices/>
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+    </DockPanel>
 </Window>
