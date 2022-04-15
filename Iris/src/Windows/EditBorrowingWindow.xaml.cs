@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Iris.src.Windows
@@ -30,9 +31,9 @@ namespace Iris.src.Windows
 
         #region Constructors
         /// <param name="borrowing">The borrowing which should be edited.</param>
-        public EditBorrowingWindow(Borrowing borrowing)
+        public EditBorrowingWindow(Borrowing borrowing, Window owner)
         {
-            Owner = Global.MainWindow;
+            Owner = owner;
 
             LoadedTakers = DataHandler.Loaners.Select(l => l.Name).ToList();
 
@@ -68,33 +69,48 @@ namespace Iris.src.Windows
                 return;
             }
 
-            DateTime dateStart = FromDatePicker.SelectedDate.Value.Date;
-            DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value.Date;
-            DateTime? dateEnd = EndDatePicker.SelectedDate;
 
-            TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+            Owner.Cursor = Cursors.Wait;
+            try
+            {
+                DateTime dateStart = FromDatePicker.SelectedDate.Value.Date;
+                DateTime datePlannedEnd = ToDatePicker.SelectedDate.Value.Date;
+                DateTime? dateEnd = EndDatePicker.SelectedDate;
 
-            int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
-            int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
+                TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
 
-            await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
-                Borrowing.DeviceID,
-                string.IsNullOrWhiteSpace(Borrowing.Loaner) ? Global.NullDBString : Borrowing.Loaner,
-                string.IsNullOrWhiteSpace(Borrowing.Taker) ? Global.NullDBString : Borrowing.Taker,
-                LenderNameTextBox.Text,
-                string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? Global.NullDBString : LenderPhoneTextBox.Text,
-                string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? Global.NullDBString : LenderEMailTextBox.Text,
-                new DateTimeOffset(dateStart.AddHours(offsetStartDate)).ToUnixTimeSeconds(),
-                new DateTimeOffset(datePlannedEnd.AddHours(offsetPlannedEndDate)).ToUnixTimeSeconds(),
-                dateEnd is null ? -1 : new DateTimeOffset(new DateTime(dateEnd.Value.Year, dateEnd.Value.Month, dateEnd.Value.Day)).ToUnixTimeSeconds(),
-                Borrowing.IsBorrowed,
-                new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
+                int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
+                int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
 
-            Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID);
+                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+                    Borrowing.DeviceID,
+                    string.IsNullOrWhiteSpace(Borrowing.Loaner) ? Global.NullDBString : Borrowing.Loaner,
+                    string.IsNullOrWhiteSpace(Borrowing.Taker) ? Global.NullDBString : Borrowing.Taker,
+                    LenderNameTextBox.Text,
+                    string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? Global.NullDBString : LenderPhoneTextBox.Text,
+                    string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? Global.NullDBString : LenderEMailTextBox.Text,
+                    new DateTimeOffset(dateStart.AddHours(offsetStartDate)).ToUnixTimeSeconds(),
+                    new DateTimeOffset(datePlannedEnd.AddHours(offsetPlannedEndDate)).ToUnixTimeSeconds(),
+                    dateEnd is null ? -1 : new DateTimeOffset(new DateTime(dateEnd.Value.Year, dateEnd.Value.Month, dateEnd.Value.Day)).ToUnixTimeSeconds(),
+                    Borrowing.IsBorrowed,
+                    new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
 
-            MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Ausleihe bearbeiten erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
+                Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID);
 
-            ApplyButton.IsEnabled = false;
+                Owner.Cursor = Cursors.Arrow;
+
+                MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Ausleihe bearbeiten erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                ApplyButton.IsEnabled = false;
+            }
+            catch (Exception x)
+            {
+                //TODO: Fehler anzeigen
+            }
+            finally
+            {
+                Owner.Cursor = Cursors.Arrow;
+            }
         }
         #endregion
 

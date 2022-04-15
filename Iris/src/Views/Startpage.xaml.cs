@@ -3,8 +3,10 @@ using Iris.Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Iris.src.Views
 {
@@ -38,20 +40,20 @@ namespace Iris.src.Views
 
         #region Events
         #region NewBorrowingButton
-        private void NewBorrowingButton_Click(object sender, RoutedEventArgs e)
+        private async void NewBorrowingButton_Click(object sender, RoutedEventArgs e)
         {
-            new CreateBorrowingWindow().ShowDialog();
+            new CreateBorrowingWindow(Window.GetWindow(this)).ShowDialog();
 
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
         #endregion
 
         #region TodayLoansDataGrid
-        private void TodayLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void TodayLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            new EditBorrowingWindow(TodayLoansSelectedBorrowing).ShowDialog();
+            new EditBorrowingWindow(TodayLoansSelectedBorrowing, Window.GetWindow(this)).ShowDialog();
 
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
 
         private void TodayLoansDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -61,11 +63,11 @@ namespace Iris.src.Views
         #endregion
 
         #region TodayTakeBacksDataGrid
-        private void TodayTakeBacksDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void TodayTakeBacksDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            new EditBorrowingWindow(TodayTakeBacksSelectedBorrowing).ShowDialog();
+            new EditBorrowingWindow(TodayTakeBacksSelectedBorrowing, Window.GetWindow(this)).ShowDialog();
 
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
 
         private void TodayTakeBacksDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -75,11 +77,11 @@ namespace Iris.src.Views
         #endregion
 
         #region TooLateTakeBacksDataGrid
-        private void TooLateTakeBacksDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void TooLateTakeBacksDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            new EditBorrowingWindow(TooLateTakeBacksSelectedBorrowing).ShowDialog();
+            new EditBorrowingWindow(TooLateTakeBacksSelectedBorrowing, Window.GetWindow(this)).ShowDialog();
 
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
 
         private void TooLateTakeBacksDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -89,11 +91,11 @@ namespace Iris.src.Views
         #endregion
 
         #region NotTookLoansDataGrid
-        private void NotTookLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void NotTookLoansDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            new EditBorrowingWindow(NotTookLoansSelectedBorrowing).ShowDialog();
+            new EditBorrowingWindow(NotTookLoansSelectedBorrowing, Window.GetWindow(this)).ShowDialog();
 
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
 
         private void NotTookLoansDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -105,15 +107,15 @@ namespace Iris.src.Views
         #region DeviceAvailabilitiesDataGrid
         private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            CreateBorrowingWindow createBorrowingWindow = new(((sender as DataGridRow).Item as DeviceAvailability).Device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
+            CreateBorrowingWindow createBorrowingWindow = new(Window.GetWindow(this), ((sender as DataGridRow).Item as DeviceAvailability).Device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
             createBorrowingWindow.ShowDialog();
         }
         #endregion
 
         #region UserControl
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
 
             NotTookLoansTextBlock.ToolTip = $"Ausleihen welche nicht abgeholt wurden. Werden Automatisch nach {DataHandler.MaxNotTookBorrowingTime.TotalDays} Tagen gelöscht";
 
@@ -125,23 +127,23 @@ namespace Iris.src.Views
         #endregion
 
         #region RefreshButton
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
         #endregion
 
         #region DatePicker
-        private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        private async void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            LoadBorrowingsAndDevices();
+            await LoadBorrowingsAndDevices();
         }
         #endregion
 
         #region LoanerButton
         private void EditLoanerButton_Click(object sender, RoutedEventArgs e)
         {
-            EditLoanerWindow editLoanerWindow = new EditLoanerWindow();
+            EditLoanerWindow editLoanerWindow = new EditLoanerWindow(Window.GetWindow(this));
             editLoanerWindow.ShowDialog();
         }
         #endregion
@@ -152,23 +154,35 @@ namespace Iris.src.Views
         /// <summary>
         /// Refreshs the <see cref="LoadedBorrowings"/> and <see cref="LoadedDevices"/>.
         /// </summary>
-        private void LoadBorrowingsAndDevices()
+        private async Task LoadBorrowingsAndDevices()
         {
-            DataHandler.RefreshData();
+            Window.GetWindow(this).Cursor = Cursors.Wait;
+            try
+            {
+                await DataHandler.RefreshData();
 
-            DateTime now = DateTime.Now;
+                DateTime now = DateTime.Now;
 
-            TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
-            TodayTakeBacks = DataHandler.Borrowings.Where(b => b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)).ToList();
-            TooLateTakeBacks = DataHandler.Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date).ToList();
-            NotTookLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart < now.Date).ToList();
+                TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
+                TodayTakeBacks = DataHandler.Borrowings.Where(b => b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)).ToList();
+                TooLateTakeBacks = DataHandler.Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date).ToList();
+                NotTookLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart < now.Date).ToList();
 
-            TodayLoansDataGrid.ItemsSource = TodayLoans;
-            TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
-            TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
-            NotTookLoansDataGrid.ItemsSource = NotTookLoans;
+                TodayLoansDataGrid.ItemsSource = TodayLoans;
+                TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
+                TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
+                NotTookLoansDataGrid.ItemsSource = NotTookLoans;
 
-            LoadDeviceAvailabilities();
+                LoadDeviceAvailabilities();
+            }
+            catch (Exception x)
+            {
+                //TODO: Fehler anzeigen
+            }
+            finally
+            {
+                Window.GetWindow(this).Cursor = Cursors.Arrow;
+            }
         }
 
         /// <summary>

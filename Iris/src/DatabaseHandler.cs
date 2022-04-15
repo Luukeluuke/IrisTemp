@@ -148,28 +148,17 @@ namespace Iris.Database
         {
             Device device = null;
 
-            try
-            {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
+            using SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
                                                                                         ID == {id}");
 
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                await reader.ReadAsync();
-                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
-
-                await reader.CloseAsync();
-            }
-            finally
+            if (reader is null)
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                return null;
             }
+
+            await reader.ReadAsync();
+            device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
 
             return device;
         }
@@ -182,27 +171,16 @@ namespace Iris.Database
         {
             List<Device> devices = new();
 
-            try
+            using SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices");
+
+            if (reader is null)
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices");
-
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                while (await reader.ReadAsync())
-                {
-                    devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4)));
-                }
-
-                await reader.CloseAsync();
+                return null;
             }
-            finally
+
+            while (await reader.ReadAsync())
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4)));
             }
 
             return devices;
@@ -334,29 +312,18 @@ namespace Iris.Database
         {
             Borrowing borrowing = null;
 
-            try
-            {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
+            using SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
                                                                                     WHERE
                                                                                         ID == {id}");
 
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                await reader.ReadAsync();
-                borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
-
-                await reader.CloseAsync();
-            }
-            finally
+            if (reader is null)
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                return null;
             }
 
+            await reader.ReadAsync();
+            borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
+         
             return borrowing;
         }
 
@@ -367,28 +334,17 @@ namespace Iris.Database
         public static async Task<List<Borrowing>> SelectAllBorrowings()
         {
             List<Borrowing> borrowings = new();
-
-            try
+                        
+            using SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings");
+            
+            if (reader is null)
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings");
-
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                while (reader.Read())
-                {
-                    borrowings.Add(new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11)));
-                }
-
-                await reader.CloseAsync();
+                return null;
             }
-            finally
+            
+            while (reader.Read())
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                borrowings.Add(new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11)));
             }
 
             return borrowings;
@@ -461,28 +417,19 @@ namespace Iris.Database
         {
             Loaner loaner = null;
 
-            try
-            {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners
+            SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners
                                                                                     WHERE
                                                                                         ID == {id}");
 
-                if (reader is null)
-                {
-                    return null;
-                }
-
-                await reader.ReadAsync();
-                loaner = new(reader.GetInt32(0), reader.GetString(1));
-
-                await reader.CloseAsync();
-            }
-            finally
+            if (reader is null)
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                return null;
             }
+
+            await reader.ReadAsync();
+            loaner = new(reader.GetInt32(0), reader.GetString(1));
+
+            await reader.CloseAsync();
 
             return loaner;
         }
@@ -495,12 +442,8 @@ namespace Iris.Database
         {
             List<Loaner> loaners = new();
 
-            try
+            using (SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners"))
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
-
-                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners");
-
                 if (reader is null)
                 {
                     return null;
@@ -510,12 +453,6 @@ namespace Iris.Database
                 {
                     loaners.Add(new(reader.GetInt32(0), reader.GetString(1)));
                 }
-
-                await reader.CloseAsync();
-            }
-            finally
-            {
-                Global.MainWindow.Cursor = Cursors.Arrow;
             }
 
             return loaners;

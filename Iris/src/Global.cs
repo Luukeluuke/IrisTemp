@@ -25,11 +25,6 @@ namespace Iris
         /// Represents a null value string. Used for database.
         /// </summary>
         public static string NullDBString { get; } = "$NuLL$";
-
-        /// <summary>
-        /// The main window of the application.
-        /// </summary>
-        public static Window MainWindow { get; internal set; }
         #endregion
 
         #region Constructors

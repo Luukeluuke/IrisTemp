@@ -8,6 +8,7 @@
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         mc:Ignorable="d"
         Title="Iris VGV - Neue Ausleihe" MinHeight="420" MinWidth="480" Height="420" Width="500"
+        ShowInTaskbar="False"
         Background="{StaticResource MaterialDesignDarkBackground}"
         Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
