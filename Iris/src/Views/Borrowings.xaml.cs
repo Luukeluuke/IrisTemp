@@ -134,7 +134,7 @@ namespace Iris.src.Views
         /// </summary>
         private async Task LoadBorrowings()
         {
-            Window.GetWindow(this).Cursor = Cursors.Wait;
+            Application.Current.MainWindow.Cursor = Cursors.Wait;
             try
             {
                 await DataHandler.RefreshData();
@@ -168,7 +168,7 @@ namespace Iris.src.Views
             }
             finally
             {
-                Window.GetWindow(this).Cursor = Cursors.Arrow;
+                Application.Current.MainWindow.Cursor = Cursors.Arrow;
             }
         }
         #endregion
