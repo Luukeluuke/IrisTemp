@@ -1,7 +1,10 @@
 ﻿using Iris.Database;
 using Iris.Structures;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Iris.src.Windows
 {
@@ -20,9 +23,9 @@ namespace Iris.src.Windows
         #endregion
 
         #region Constructors
-        public EditLoanerWindow()
+        public EditLoanerWindow(Window owner)
         {
-            Owner = Global.MainWindow;
+            Owner = owner;
 
             InitializeComponent();
         }
@@ -37,9 +40,9 @@ namespace Iris.src.Windows
         #endregion
 
         #region RefreshButton
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshLoaners();
+            await RefreshLoaners();
         }
         #endregion
 
@@ -71,7 +74,7 @@ namespace Iris.src.Windows
             if (MessageBox.Show($"Soll der Herausgeber: '{SelectedLoaner.Name}' wirklich gelöscht werden?", $"{SelectedLoaner.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
                 await DatabaseHandler.DeleteLoaner(SelectedLoaner.ID);
-                RefreshLoaners();
+                await RefreshLoaners();
             }
         }
         #endregion
@@ -86,7 +89,7 @@ namespace Iris.src.Windows
             }
 
             await Loaner.CreateNewLoaner(LoanerNameTextBox.Text);
-            RefreshLoaners();
+            await RefreshLoaners();
 
             LoanerNameTextBox.Text = "";
         }
@@ -98,11 +101,23 @@ namespace Iris.src.Windows
         /// <summary>
         /// Refreshs the loaners.
         /// </summary>
-        private void RefreshLoaners()
+        private async Task RefreshLoaners()
         {
-            DataHandler.RefreshData();
+            Owner.Cursor = Cursors.Wait;
+            try
+            {
+                await DataHandler.RefreshData();
 
-            LoanerDataGrid.ItemsSource = LoadedLoaners;
+                LoanerDataGrid.ItemsSource = LoadedLoaners;
+            }
+            catch (Exception x)
+            {
+                //TOOD: Fehler anzeigen
+            }
+            finally
+            {
+                Owner.Cursor = Cursors.Arrow;
+            }
         }
         #endregion
         #endregion

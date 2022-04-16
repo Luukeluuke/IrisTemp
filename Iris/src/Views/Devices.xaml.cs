@@ -1,10 +1,12 @@
 ﻿using Iris.Database;
 using Iris.Structures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace Iris.src.Views
 {
@@ -332,9 +334,21 @@ namespace Iris.src.Views
         /// </summary>
         private async void LoadDevices()
         {
-            DataHandler.RefreshData();
-            LoadedDevices = DataHandler.AllDevices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
-            DevicesDataGrid.ItemsSource = LoadedDevices;
+            Application.Current.MainWindow.Cursor = Cursors.Wait;
+            try
+            {
+                await DataHandler.RefreshData();
+                LoadedDevices = DataHandler.AllDevices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
+                DevicesDataGrid.ItemsSource = LoadedDevices;
+            }
+            catch (Exception x)
+            {
+                //TODO: Fehler anzeigen
+            }
+            finally
+            {
+                Application.Current.MainWindow.Cursor = Cursors.Arrow;
+            }
         }
         #endregion
 

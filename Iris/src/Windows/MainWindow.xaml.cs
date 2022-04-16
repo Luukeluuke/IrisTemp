@@ -96,8 +96,6 @@ namespace Iris
             }
 
             ChangeContentFrame(MenuTab.Startpage);
-
-            Global.MainWindow = this;
         }
 
         private void Window_Closed(object sender, EventArgs e)

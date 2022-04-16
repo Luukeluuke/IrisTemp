@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Iris.Structures
 {
@@ -53,17 +54,18 @@ namespace Iris.Structures
         #region Constructors
         static DataHandler()
         {
-            RefreshData();
-
-            if (DeleteNotTookBorrowings)
-            {
-                List<Borrowing> notTookBorrowings = Borrowings.Where(b => !b.IsBorrowed && b.DateStart < DateTime.Now.Date - MaxNotTookBorrowingTime).ToList();
-
-                foreach (Borrowing borrowing in notTookBorrowings)
-                {
-                    DatabaseHandler.DeleteBorrowing(borrowing.ID);
-                }
-            }
+            //TODO: keine asynchronen sachen in constructor machen
+            //RefreshData();
+            //
+            //if (DeleteNotTookBorrowings)
+            //{
+            //    List<Borrowing> notTookBorrowings = Borrowings.Where(b => !b.IsBorrowed && b.DateStart < DateTime.Now.Date - MaxNotTookBorrowingTime).ToList();
+            //
+            //    foreach (Borrowing borrowing in notTookBorrowings)
+            //    {
+            //        DatabaseHandler.DeleteBorrowing(borrowing.ID);
+            //    }
+            //}
         }
         #endregion
 
@@ -72,7 +74,7 @@ namespace Iris.Structures
         /// <summary>
         /// Refresh the devices and borrowing out of the database.
         /// </summary>
-        public static async void RefreshData()
+        public static async Task RefreshData()
         {
             AllDevices = (await DatabaseHandler.SelectAllDevices()).OrderBy(a => a.Type).ToList();
             Borrowings = (await DatabaseHandler.SelectAllBorrowings()).OrderBy(b => b.DateStart).ToList();

@@ -6,6 +6,7 @@ using System.Net.Mail;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Iris.src.Windows
@@ -26,15 +27,15 @@ namespace Iris.src.Windows
         #endregion
 
         #region Constructors
-        public CreateBorrowingWindow()
+        public CreateBorrowingWindow(Window owner)
         {
-            Owner = Global.MainWindow;
+            Owner = owner;
             LoadedLoaners = DataHandler.Loaners.Select(l => l.Name).ToList();
 
             InitializeComponent();
         }
 
-        public CreateBorrowingWindow(Device preSelectedDevice, DateTime preSelectedStartDate, DateTime preSelectedEndDate) : this()
+        public CreateBorrowingWindow(Window owner, Device preSelectedDevice, DateTime preSelectedStartDate, DateTime preSelectedEndDate) : this(owner)
         {
             DeviceComboBox.SelectedItem = preSelectedDevice;
             FromDatePicker.SelectedDate = preSelectedStartDate;
@@ -83,7 +84,20 @@ namespace Iris.src.Windows
                                                InstantBorrowCheckBox.IsChecked.Value,
                                                string.IsNullOrWhiteSpace(notes) ? null : notes);
 
-            DataHandler.RefreshData();
+
+            Owner.Cursor = Cursors.Wait;
+            try
+            {
+                await DataHandler.RefreshData();
+            }
+            catch (Exception x)
+            {
+                //TODO: Fehler anzeigen
+            }
+            finally
+            {
+                Owner.Cursor = Cursors.Arrow;
+            }
 
             Close();
         }
