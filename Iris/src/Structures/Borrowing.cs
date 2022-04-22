@@ -95,11 +95,11 @@ namespace Iris.Structures
         {
             ID = id;
             DeviceID = deviceID;
-            Loaner = loaner.Equals(Global.NullDBString) ? null : loaner;
-            Taker = taker.Equals(Global.NullDBString) ? null : taker;
+            Loaner = loaner;
+            Taker = taker;
             LenderName = lenderName;
-            LenderPhone = lenderPhone.Equals(Global.NullDBString) ? null : lenderPhone;
-            LenderEmail = lenderEmail.Equals(Global.NullDBString) ? null : lenderEmail;
+            LenderPhone = lenderPhone;
+            LenderEmail = lenderEmail;
 
             DateStartUnix = dateStart;
             DateStart = DateTimeOffset.FromUnixTimeSeconds(dateStart).DateTime;
@@ -109,7 +109,7 @@ namespace Iris.Structures
             DateEnd = DateTimeOffset.FromUnixTimeSeconds(dateEnd).DateTime; ;
 
             IsBorrowed = isBorrowed;
-            Notes = notes.Equals(Global.NullDBString) ? null : notes;
+            Notes = notes;
 
             LastMailSent = null;
         }

@@ -65,7 +65,7 @@ namespace Iris.Database
                                                     @notes,
                                                     @isBlocked)",
                                                     new SqliteParameter("@name", name),
-                                                    new SqliteParameter("@notes", notes ?? Global.NullDBString),
+                                                    new SqliteParameter("@notes", string.IsNullOrWhiteSpace(notes) ? DBNull.Value : notes),
                                                     new SqliteParameter("@isBlocked", false));
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
@@ -78,7 +78,11 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                Device device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
+                Device device = new(id: reader.GetInt32(0)
+                                  , name: await reader.GetFieldValueOrNullAsync<string>(2)
+                                  , notes: await reader.GetFieldValueOrNullAsync<string>(3)
+                                  , typeId: await reader.GetFieldValueOrNullAsync<int>(1)
+                                  , isBlocked: await reader.GetFieldValueOrNullAsync<bool>(4));
 
                 await reader.CloseAsync();
 
@@ -128,7 +132,7 @@ namespace Iris.Database
                                                     WHERE
                                                         ID == {id}",
                                                         new SqliteParameter("@name", name),
-                                                        new SqliteParameter("@notes", notes ?? Global.NullDBString),
+                                                        new SqliteParameter("@notes", string.IsNullOrWhiteSpace(notes) ? DBNull.Value : notes),
                                                         new SqliteParameter("@isBlocked", isBlocked));
             }
             catch
@@ -162,7 +166,11 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                device = new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4));
+                device = new(id: reader.GetInt32(0)
+                           , name: await reader.GetFieldValueOrNullAsync<string>(2)
+                           , notes: await reader.GetFieldValueOrNullAsync<string>(3)
+                           , typeId: await reader.GetFieldValueOrNullAsync<int>(1)
+                           , isBlocked: await reader.GetFieldValueOrNullAsync<bool>(4));
 
                 await reader.CloseAsync();
             }
@@ -195,7 +203,11 @@ namespace Iris.Database
 
                 while (await reader.ReadAsync())
                 {
-                    devices.Add(new(reader.GetInt32(0), reader.GetString(2), reader.GetString(3), reader.GetInt32(1), reader.GetBoolean(4)));
+                    devices.Add(new(id: reader.GetInt32(0)
+                                  , name: await reader.GetFieldValueOrNullAsync<string>(2)
+                                  , notes: await reader.GetFieldValueOrNullAsync<string>(3)
+                                  , typeId: await reader.GetFieldValueOrNullAsync<int>(1)
+                                  , isBlocked: await reader.GetFieldValueOrNullAsync<bool>(4)));
                 }
 
                 await reader.CloseAsync();
@@ -240,12 +252,12 @@ namespace Iris.Database
                                                     {dateEnd}, 
                                                     {(isBorrowed ? '1' : '0')}, 
                                                     @notes)",
-                                                    new SqliteParameter("@loaner", loaner ?? Global.NullDBString),
-                                                    new SqliteParameter("@taker", taker ?? Global.NullDBString),
+                                                    new SqliteParameter("@loaner", string.IsNullOrWhiteSpace(loaner) ? DBNull.Value : loaner),
+                                                    new SqliteParameter("@taker", string.IsNullOrWhiteSpace(taker) ? DBNull.Value : taker),
                                                     new SqliteParameter("@lenderName", lenderName),
-                                                    new SqliteParameter("@lenderPhone", lenderPhone ?? Global.NullDBString),
-                                                    new SqliteParameter("@lenderEmail", lenderEmail ?? Global.NullDBString),
-                                                    new SqliteParameter("@notes", notes ?? Global.NullDBString));
+                                                    new SqliteParameter("@lenderPhone", string.IsNullOrWhiteSpace(lenderPhone) ? DBNull.Value : lenderPhone),
+                                                    new SqliteParameter("@lenderEmail", string.IsNullOrWhiteSpace(lenderEmail) ? DBNull.Value : lenderEmail),
+                                                    new SqliteParameter("@notes", string.IsNullOrWhiteSpace(notes) ? DBNull.Value : notes));
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
                                                                                     WHERE
@@ -257,7 +269,18 @@ namespace Iris.Database
                 }
 
                 reader.Read();
-                Borrowing borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
+                Borrowing borrowing = new(id: reader.GetInt32(0)
+                                        , deviceID: reader.GetInt32(1)
+                                        , loaner: await reader.GetFieldValueOrNullAsync<string>(2)
+                                        , await reader.GetFieldValueOrNullAsync<string>(3)
+                                        , await reader.GetFieldValueOrNullAsync<string>(4)
+                                        , await reader.GetFieldValueOrNullAsync<string>(5)
+                                        , await reader.GetFieldValueOrNullAsync<string>(6)
+                                        , dateStart: await reader.GetFieldValueOrNullAsync<Int64>(7)
+                                        , datePlannedEnd: await reader.GetFieldValueOrNullAsync<Int64>(8)
+                                        , dateEnd: await reader.GetFieldValueOrNullAsync<Int64>(9)
+                                        , isBorrowed: await reader.GetFieldValueOrNullAsync<bool>(10)
+                                        , notes: await reader.GetFieldValueOrNullAsync<string>(11));
 
                 await reader.CloseAsync();
                 return borrowing;
@@ -310,12 +333,12 @@ namespace Iris.Database
                                                         Notes = @notes
                                                     WHERE
                                                         ID == {id}",
-                                                        new SqliteParameter("@loaner", loaner ?? Global.NullDBString),
-                                                        new SqliteParameter("@taker", taker ?? Global.NullDBString),
+                                                        new SqliteParameter("@loaner", string.IsNullOrWhiteSpace(loaner) ? DBNull.Value : loaner),
+                                                        new SqliteParameter("@taker", string.IsNullOrWhiteSpace(taker) ? DBNull.Value : taker),
                                                         new SqliteParameter("@lenderName", lenderName),
-                                                        new SqliteParameter("@lenderPhone", lenderPhone ?? Global.NullDBString),
-                                                        new SqliteParameter("@lenderEmail", lenderEmail ?? Global.NullDBString),
-                                                        new SqliteParameter("@notes", notes ?? Global.NullDBString));
+                                                        new SqliteParameter("@lenderPhone", string.IsNullOrWhiteSpace(lenderPhone) ? DBNull.Value : lenderPhone),
+                                                        new SqliteParameter("@lenderEmail", string.IsNullOrWhiteSpace(lenderEmail) ? DBNull.Value : lenderEmail),
+                                                        new SqliteParameter("@notes", string.IsNullOrWhiteSpace(notes) ? DBNull.Value : notes));
             }
             catch
             {
@@ -348,7 +371,18 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                borrowing = new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11));
+                borrowing = new(id: reader.GetInt32(0)
+                              , deviceID: reader.GetInt32(1)
+                              , loaner: await reader.GetFieldValueOrNullAsync<string>(2)
+                              , await reader.GetFieldValueOrNullAsync<string>(3)
+                              , await reader.GetFieldValueOrNullAsync<string>(4)
+                              , await reader.GetFieldValueOrNullAsync<string>(5)
+                              , await reader.GetFieldValueOrNullAsync<string>(6)
+                              , dateStart: await reader.GetFieldValueOrNullAsync<Int64>(7)
+                              , datePlannedEnd: await reader.GetFieldValueOrNullAsync<Int64>(8)
+                              , dateEnd: await reader.GetFieldValueOrNullAsync<Int64>(9)
+                              , isBorrowed: await reader.GetFieldValueOrNullAsync<bool>(10)
+                              , notes: await reader.GetFieldValueOrNullAsync<string>(11));
 
                 await reader.CloseAsync();
             }
@@ -381,7 +415,18 @@ namespace Iris.Database
 
                 while (reader.Read())
                 {
-                    borrowings.Add(new(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5), reader.GetString(6), reader.GetInt64(7), reader.GetInt64(8), reader.GetInt64(9), reader.GetBoolean(10), reader.GetString(11)));
+                    borrowings.Add(new(id: reader.GetInt32(0)
+                                     , deviceID: reader.GetInt32(1)
+                                     , loaner: await reader.GetFieldValueOrNullAsync<string>(2)
+                                     , await reader.GetFieldValueOrNullAsync<string>(3)
+                                     , await reader.GetFieldValueOrNullAsync<string>(4)
+                                     , await reader.GetFieldValueOrNullAsync<string>(5)
+                                     , await reader.GetFieldValueOrNullAsync<string>(6)
+                                     , dateStart: await reader.GetFieldValueOrNullAsync<Int64>(7)
+                                     , datePlannedEnd: await reader.GetFieldValueOrNullAsync<Int64>(8)
+                                     , dateEnd: await reader.GetFieldValueOrNullAsync<Int64>(9)
+                                     , isBorrowed: await reader.GetFieldValueOrNullAsync<bool>(10)
+                                     , notes: await reader.GetFieldValueOrNullAsync<string>(11)));
                 }
 
                 await reader.CloseAsync();
@@ -420,7 +465,7 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                Loaner loaner = new(reader.GetInt32(0), reader.GetString(1));
+                Loaner loaner = new(reader.GetInt32(0), await reader.GetFieldValueOrNullAsync<string>(1));
 
                 await reader.CloseAsync();
 
@@ -475,7 +520,7 @@ namespace Iris.Database
                 }
 
                 await reader.ReadAsync();
-                loaner = new(reader.GetInt32(0), reader.GetString(1));
+                loaner = new(reader.GetInt32(0), await reader.GetFieldValueOrNullAsync<string>(1));
 
                 await reader.CloseAsync();
             }
@@ -508,7 +553,7 @@ namespace Iris.Database
 
                 while (await reader.ReadAsync())
                 {
-                    loaners.Add(new(reader.GetInt32(0), reader.GetString(1)));
+                    loaners.Add(new(reader.GetInt32(0), await reader.GetFieldValueOrNullAsync<string>(1)));
                 }
 
                 await reader.CloseAsync();
@@ -552,5 +597,17 @@ namespace Iris.Database
         }
         #endregion
         #endregion
+    }
+
+
+    public static class SqliteDataReaderExtensions
+    {
+        public static async Task<T?> GetFieldValueOrNullAsync<T>(this SqliteDataReader reader, int ordinal)
+        {
+            if (await reader.IsDBNullAsync(ordinal))
+                return default(T?);
+
+            return await reader.GetFieldValueAsync<T>(ordinal);
+        }
     }
 }

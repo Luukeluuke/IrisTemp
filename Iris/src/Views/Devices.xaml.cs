@@ -135,7 +135,7 @@ namespace Iris.src.Views
                 EditDeviceTypeComboBox.SelectedIndex = (int)SelectedDevice.Type - 1;
                 EditDeviceBlockedCheckBox.IsChecked = SelectedDevice.IsBlocked;
                 EditDeviceNotesRichTextBox.Document.Blocks.Clear();
-                EditDeviceNotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(SelectedDevice.Notes.Trim())));
+                EditDeviceNotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(SelectedDevice.Notes?.Trim())));
             }
             else
             {
