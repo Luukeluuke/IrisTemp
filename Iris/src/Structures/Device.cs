@@ -26,7 +26,7 @@ namespace Iris.Structures
         /// <summary>
         /// Editable notes of the device.
         /// </summary>
-        public string Notes { get; private set; }
+        public string? Notes { get; private set; }
         /// <summary>
         /// The type of the device.
         /// </summary>
@@ -42,14 +42,9 @@ namespace Iris.Structures
         /// <param name="name">The name of the device.</param>
         /// <param name="notes">The notes of the device.</param>
         /// <param name="type">The device type.</param>
-        public Device(int id, string name, string notes, DeviceType type)
-        {
-            ID = id;
-            Name = name;
-            Notes = notes;
-            Type = type;
-            IsBlocked = false;
-        }
+        public Device(int id, string name, string? notes, DeviceType type)
+            : this (id, name, notes, (int)type, false)
+        { }
 
         /// <summary>
         /// Used for database.
@@ -58,11 +53,11 @@ namespace Iris.Structures
         /// <param name="name">The name of the device.</param>
         /// <param name="notes">The notes of the device.</param>
         /// <param name="typeId">The device typeId.</param>
-        public Device(int id, string name, string notes, int typeId, bool isBlocked)
+        public Device(int id, string name, string? notes, int typeId, bool isBlocked)
         {
             ID = id;
             Name = name;
-            Notes = notes.Equals(Global.NullDBString) ? null : notes;
+            Notes = notes;
             Type = (DeviceType)typeId;
             IsBlocked = isBlocked;
         }
@@ -89,7 +84,13 @@ namespace Iris.Structures
         /// <returns>Whether the device contains the given string.</returns>
         public bool Contains(string match)
         {
-            return Name.Contains(match, StringComparison.CurrentCultureIgnoreCase) || Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase);
+            if (Name.Contains(match, StringComparison.CurrentCultureIgnoreCase))
+                return true;
+
+            if (Notes != null && Notes.Contains(match, StringComparison.CurrentCultureIgnoreCase))
+                return true;
+
+            return false;
         }
 
         public override string ToString()
