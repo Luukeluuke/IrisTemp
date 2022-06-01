@@ -98,22 +98,13 @@ namespace Iris.Structures
         /// <returns>Whether the device is availalbe in the given timespan.</returns>
         public static bool IsDeviceAvailable(Device device, DateTime startDate, DateTime endDate, int? ignoreBorrowingID = null)
         {
-            List<Borrowing> relevantBorrowings = Borrowings.Where(b => b.DeviceID.Equals(device.ID)).ToList();
-
-            if (ignoreBorrowingID is not null)
+            return !Borrowings.Any(b =>
             {
-                relevantBorrowings = relevantBorrowings.Where(b => !b.ID.Equals(ignoreBorrowingID)).ToList();
-            }
+                if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID)
+                    return false;
 
-            foreach (Borrowing borrowing in relevantBorrowings)
-            {
-                if ((startDate >= borrowing.DateStart) && (startDate <= borrowing.DatePlannedEnd)) return false;
-                if ((endDate >= borrowing.DateStart) && (endDate <= borrowing.DatePlannedEnd)) return false;
-
-                if ((startDate < borrowing.DateStart && endDate > borrowing.DatePlannedEnd)) return false;
-            }
-
-            return true;
+                return (startDate < b.DatePlannedEnd && endDate > b.DateStart);
+            });
         }
 
         /// <summary>
