@@ -103,7 +103,7 @@ namespace Iris.Structures
                 if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID)
                     return false;
 
-                return (startDate < b.DatePlannedEnd && endDate > b.DateStart);
+                return (startDate <= b.DatePlannedEnd && endDate >= b.DateStart);
             });
         }
 
