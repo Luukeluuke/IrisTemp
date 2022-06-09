@@ -107,6 +107,8 @@ namespace Iris.src.Views
         {
             CreateBorrowingWindow createBorrowingWindow = new(((sender as DataGridRow).Item as DeviceAvailability).Device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
             createBorrowingWindow.ShowDialog();
+
+            RefreshButton_Click(null, null);
         }
         #endregion
 
