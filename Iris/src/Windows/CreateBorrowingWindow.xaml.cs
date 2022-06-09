@@ -73,7 +73,7 @@ namespace Iris.src.Windows
 
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
-            await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+            Borrowing borrowing = await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
                                                string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
                                                LenderNameTextBox.Text,
                                                string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
@@ -84,6 +84,8 @@ namespace Iris.src.Windows
                                                string.IsNullOrWhiteSpace(notes) ? null : notes);
 
             DataHandler.RefreshData();
+
+            Global.CopyBorrowingEMailString(borrowing);
 
             Close();
         }
@@ -192,6 +194,7 @@ namespace Iris.src.Windows
             LoanerComboBox.ItemsSource = LoadedLoaners;
         }
         #endregion
+
         #endregion
     }
 }

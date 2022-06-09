@@ -399,6 +399,13 @@ namespace Iris.src.Windows
             }
         }
         #endregion
+
+        #region CopyContentButton
+        private void CopyContentButton_Click(object sender, RoutedEventArgs e)
+        {
+            Global.CopyBorrowingEMailString(Borrowing);
+        }
+        #endregion
         #endregion
     }
 }

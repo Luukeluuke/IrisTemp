@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Iris.Structures;
+using System;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
 using System.Windows;
@@ -41,6 +42,36 @@ namespace Iris
         #endregion
 
         #region Methods
+        #region Public
+        /// <summary>
+        /// Creates a E-Mail string for a borrowing and copies it to the clipboard.
+        /// </summary>
+        public static void CopyBorrowingEMailString(Borrowing borrowing)
+        {
+            string bString = string.Empty;
+
+            switch (borrowing.Device.Type)
+            {
+                case DeviceType.Notebook:
+                case DeviceType.GigaCube:
+                case DeviceType.Special:
+                    {
+                        bString = $"{borrowing.Device.Name} - {borrowing.LenderName} - {borrowing.DateStart:d} bis {borrowing.DatePlannedEnd:d}";
+                        break;
+                    }
+                case DeviceType.ERK_Meeting:
+                    { 
+                        bString = $"{borrowing.Device.Notes.Split("\r\n")[0]}@en-kreis.de (Benutzername für den Login) - {borrowing.LenderName} - {borrowing.DateStart:d} bis {borrowing.DatePlannedEnd:d}";
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            Clipboard.SetText(bString, TextDataFormat.Text);
+        }
+        #endregion
+        
         #region Private
         /// <summary>
         /// Loads the three primary MaterialDesing colors.
