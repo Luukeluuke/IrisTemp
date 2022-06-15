@@ -100,8 +100,10 @@ namespace Iris.Structures
         {
             return !Borrowings.Any(b =>
             {
-                if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID)
+                if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID || (b.DatePlannedEnd.Equals(endDate) && b.DateEndUnix != -1))
+                {
                     return false;
+                }
 
                 return (startDate <= b.DatePlannedEnd && endDate >= b.DateStart);
             });
