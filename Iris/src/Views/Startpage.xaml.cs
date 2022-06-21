@@ -134,7 +134,13 @@ namespace Iris.src.Views
         #endregion
 
         #region DatePicker
-        private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        private void FromDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
+            LoadBorrowingsAndDevices();
+        }
+
+        private void ToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadBorrowingsAndDevices();
         }
@@ -200,6 +206,7 @@ namespace Iris.src.Views
             DeviceAvailabilitiesDataGrid.ItemsSource = DeviceAvailabilities;
         }
         #endregion
+
         #endregion
     }
 }

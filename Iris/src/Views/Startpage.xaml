@@ -134,9 +134,9 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Von:" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                    <DatePicker x:Name="FromDatePicker" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" SelectedDateChanged="FromToDatePicker_SelectedDateChanged"></DatePicker>
+                    <DatePicker x:Name="FromDatePicker" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" SelectedDateChanged="FromDatePicker_SelectedDateChanged"></DatePicker>
                     <TextBlock Grid.Column="2" Margin="10 0 0 0" VerticalAlignment="Center" Text="Bis:" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                    <DatePicker x:Name="ToDatePicker" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" SelectedDateChanged="FromToDatePicker_SelectedDateChanged"></DatePicker>
+                    <DatePicker x:Name="ToDatePicker" Grid.Column="3" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" SelectedDateChanged="ToDatePicker_SelectedDateChanged"></DatePicker>
                 </Grid>
             </Grid>
             <Border Grid.Row="1" Margin="0 5 0 0" BorderThickness="5">
