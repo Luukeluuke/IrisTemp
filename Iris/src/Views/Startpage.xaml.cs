@@ -14,19 +14,16 @@ namespace Iris.src.Views
     public partial class Startpage : UserControl
     {
         #region Properties and Variables
-        private List<Borrowing> TodayLoans { get; set; }
         private Borrowing TodayLoansSelectedBorrowing { get; set; }
 
-        private List<Borrowing> TodayTakeBacks { get; set; }
         private Borrowing TodayTakeBacksSelectedBorrowing { get; set; }
 
-        private List<Borrowing> TooLateTakeBacks { get; set; }
         private Borrowing TooLateTakeBacksSelectedBorrowing { get; set; }
 
-        private List<Borrowing> NotTookLoans { get; set; }
         private Borrowing NotTookLoansSelectedBorrowing { get; set; }
 
-        private List<DeviceAvailability> DeviceAvailabilities { get; set; }
+
+        private IEnumerable<DeviceAvailability> DeviceAvailabilities { get; set; }
         #endregion
 
         #region Constructors
@@ -98,17 +95,17 @@ namespace Iris.src.Views
 
         private void NotTookLoansDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            NotTookLoansSelectedBorrowing = NotTookLoansDataGrid.SelectedItem as Borrowing;
+            NotTookLoansSelectedBorrowing = (NotTookLoansDataGrid.SelectedItem as Borrowing)!;
         }
         #endregion
 
         #region DeviceAvailabilitiesDataGrid
         private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            CreateBorrowingWindow createBorrowingWindow = new(((sender as DataGridRow).Item as DeviceAvailability).Device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
+            CreateBorrowingWindow createBorrowingWindow = new(((sender as DataGridRow)!.Item as DeviceAvailability)!.Device, FromDatePicker.SelectedDate!.Value.Date, ToDatePicker.SelectedDate!.Value.Date);
             createBorrowingWindow.ShowDialog();
 
-            RefreshButton_Click(null, null);
+            RefreshButton_Click(sender, e);
         }
         #endregion
 
@@ -163,18 +160,12 @@ namespace Iris.src.Views
         private void LoadBorrowingsAndDevices()
         {
             DataHandler.RefreshData();
-
             DateTime now = DateTime.Now;
 
-            TodayLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date)).ToList();
-            TodayTakeBacks = DataHandler.Borrowings.Where(b => b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)).ToList();
-            TooLateTakeBacks = DataHandler.Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date).ToList();
-            NotTookLoans = DataHandler.Borrowings.Where(b => !b.IsBorrowed && b.DateStart < now.Date).ToList();
-
-            TodayLoansDataGrid.ItemsSource = TodayLoans;
-            TodayTakeBacksDataGrid.ItemsSource = TodayTakeBacks;
-            TooLateTakeBacksDataGrid.ItemsSource = TooLateTakeBacks;
-            NotTookLoansDataGrid.ItemsSource = NotTookLoans;
+            TodayLoansDataGrid.ItemsSource = DataHandler.GetTodayLoans(now);
+            TodayTakeBacksDataGrid.ItemsSource = DataHandler.GetTodayTakeBacks(now);
+            TooLateTakeBacksDataGrid.ItemsSource = DataHandler.GetTooLateTakeBacks(now);
+            NotTookLoansDataGrid.ItemsSource = DataHandler.GetNotTookLoans(now);
 
             LoadDeviceAvailabilities();
         }
@@ -196,14 +187,7 @@ namespace Iris.src.Views
                 return;
             }
 
-            List<DeviceAvailability> availabilities = new();
-            foreach (Device device in DataHandler.AvailableDevices)
-            {
-                availabilities.Add(new(device, FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date));
-            }
-
-            DeviceAvailabilities = availabilities;
-            DeviceAvailabilitiesDataGrid.ItemsSource = DeviceAvailabilities;
+            DeviceAvailabilitiesDataGrid.ItemsSource = DataHandler.GetDeviceAvailabilities(FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
         }
         #endregion
 

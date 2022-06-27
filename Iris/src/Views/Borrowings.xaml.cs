@@ -17,7 +17,7 @@ namespace Iris.src.Views
         /// <summary>
         /// The ItemSource for <see cref="BorrowingsDataGrid"/>.
         /// </summary>
-        private List<Borrowing> LoadedBorrowings { get; set; }
+        private IEnumerable<Borrowing> LoadedBorrowings { get; set; }
         /// <summary>
         /// The currently selected borrowing in <see cref="BorrowingsDataGrid"/>.
         /// </summary>
@@ -78,7 +78,7 @@ namespace Iris.src.Views
 
             if (MessageBox.Show($"Soll die Ausleihe: \"{SelectedBorrowing.LenderName}, {SelectedBorrowing.Device.Name}, {SelectedBorrowing.DateStart:yyyy.dd.MM} - {SelectedBorrowing.DatePlannedEnd:yyyy.dd.MM}\" wirklich gelöscht werden?", $"{SelectedBorrowing.LenderName}, {SelectedBorrowing.Device.Name}, {SelectedBorrowing.DateStart:yyyy.dd.MM} - {SelectedBorrowing.DatePlannedEnd:yyyy.dd.MM} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
-                await DatabaseHandler.DeleteBorrowing(SelectedBorrowing.ID);
+                DatabaseHandler.DeleteBorrowing(SelectedBorrowing.ID);
                 LoadBorrowings();
             }
         }
@@ -133,24 +133,24 @@ namespace Iris.src.Views
         {
             DataHandler.RefreshData();
 
-            LoadedBorrowings = DataHandler.Borrowings;
+            LoadedBorrowings = DataHandler.Borrowings!;
 
             #region Filter
             if (FilterDeviceComboBox.SelectedIndex != -1)
             {
-                LoadedBorrowings = LoadedBorrowings.Where(b => b.Device.Type.Equals((DeviceType)(FilterDeviceComboBox.SelectedIndex + 1))).ToList();
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.Device.Type.Equals((DeviceType)(FilterDeviceComboBox.SelectedIndex + 1)));
             }
             if (FilterFromDatePicker.SelectedDate is not null)
             {
-                LoadedBorrowings = LoadedBorrowings.Where(b => b.DateStart >= FilterFromDatePicker.SelectedDate.Value).ToList();
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.DateStart >= FilterFromDatePicker.SelectedDate.Value);
             }
             if (FilterToDatePicker.SelectedDate is not null)
             {
-                LoadedBorrowings = LoadedBorrowings.Where(b => b.DatePlannedEnd <= FilterToDatePicker.SelectedDate.Value).ToList();
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.DatePlannedEnd <= FilterToDatePicker.SelectedDate.Value);
             }
             if (!FilterContainsTextBox.Text.Equals(""))
             {
-                LoadedBorrowings = LoadedBorrowings.Where(b => b.Contains(FilterContainsTextBox.Text)).ToList();
+                LoadedBorrowings = LoadedBorrowings.Where(b => b.Contains(FilterContainsTextBox.Text));
             }
             #endregion
 

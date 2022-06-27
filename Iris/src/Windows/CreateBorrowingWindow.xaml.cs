@@ -21,7 +21,7 @@ namespace Iris.src.Windows
         /// </summary>
         private bool IsDeviceAvailable { get; set; } = false;
 
-        private List<Device> LoadedDevices => DataHandler.AvailableDevices;
+        private IEnumerable<Device> LoadedDevices => DataHandler.AvailableDevices;
         private List<string> LoadedLoaners { get; init; }
         #endregion
 

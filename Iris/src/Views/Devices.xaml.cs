@@ -64,11 +64,11 @@ namespace Iris.src.Views
         /// <summary>
         /// The ItemSource for <see cref="DevicesDataGrid"/>.
         /// </summary>
-        private List<Device> LoadedDevices { get; set; }
+        private IEnumerable<Device>? LoadedDevices { get; set; }
         /// <summary>
         /// The currently selected device in <see cref="DevicesDataGrid"/>.
         /// </summary>
-        private Device SelectedDevice { get; set; }
+        private Device? SelectedDevice { get; set; }
 
         private List<DeviceType> SelectedDeviceTypes { get; set; }
 
@@ -179,7 +179,7 @@ namespace Iris.src.Views
 
             if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
-                await DatabaseHandler.DeleteDevice(SelectedDevice.ID);
+                DatabaseHandler.DeleteDevice(SelectedDevice.ID);
                 LoadDevices();
             }
         }
@@ -246,7 +246,7 @@ namespace Iris.src.Views
 
             int lastID = SelectedDevice.ID;
 
-            await DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), EditDeviceBlockedCheckBox.IsChecked.Value);
+            DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), EditDeviceBlockedCheckBox.IsChecked.Value);
             LoadDevices();
 
             DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
@@ -333,7 +333,7 @@ namespace Iris.src.Views
         private async void LoadDevices()
         {
             DataHandler.RefreshData();
-            LoadedDevices = DataHandler.AllDevices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
+            LoadedDevices = DataHandler.Devices.Where(d => SelectedDeviceTypes.Contains(d.Type));
             DevicesDataGrid.ItemsSource = LoadedDevices;
         }
         #endregion

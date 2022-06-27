@@ -24,7 +24,7 @@ namespace Iris.src.Windows
         /// </summary>
         private bool IsDeviceAvailable { get; set; } = true;
 
-        private Borrowing Borrowing { get; set; }
+        private Borrowing? Borrowing { get; set; }
         private List<string> LoadedTakers { get; init; }
         #endregion
 
@@ -77,7 +77,7 @@ namespace Iris.src.Windows
             int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
             int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
 
-            await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+            DatabaseHandler.UpdateBorrowing(Borrowing.ID,
                 Borrowing.DeviceID,
                 string.IsNullOrWhiteSpace(Borrowing.Loaner) ? Global.NullDBString : Borrowing.Loaner,
                 string.IsNullOrWhiteSpace(Borrowing.Taker) ? Global.NullDBString : Borrowing.Taker,
@@ -90,7 +90,7 @@ namespace Iris.src.Windows
                 Borrowing.IsBorrowed,
                 new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
 
-            Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID);
+            Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID)!;
 
             MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Ausleihe bearbeiten erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -103,56 +103,35 @@ namespace Iris.src.Windows
         {
             if (ApplyButton.IsEnabled)
             {
-                string text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "zurückgenommen" : "geschlossen" : "ausgeliehen");
+                string text = (Borrowing!.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "zurückgenommen" : "geschlossen" : "ausgeliehen");
                 if (MessageBox.Show($"Es gibt ungespeicherte Änderungen. Soll die Ausleihe dennoch {text} werden?", "Ungespeicherte Änderungen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.No))
                 {
                     return;
                 }
             }
 
-            if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1) //Fishied
+            if (Borrowing!.IsBorrowed && Borrowing.DateEndUnix != -1) //Fishied
             {
                 Close();
             }
-            else if (Borrowing.IsBorrowed) //Take back
+            else
             {
-                Borrowing.TakeBack();
+                string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
-                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
-                    Borrowing.DeviceID,
-                    Borrowing.Loaner,
-                    TakerComboBox.Text,
-                    Borrowing.LenderName,
-                    Borrowing.LenderPhone,
-                    Borrowing.LenderEmail,
-                    Borrowing.DateStartUnix,
-                    Borrowing.DatePlannedEndUnix,
-                    Borrowing.DateEndUnix,
-                    Borrowing.IsBorrowed,
-                    new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
-            }
-            else //Loan
-            {
-                if (Borrowing.Device.IsBlocked)
+                if (Borrowing.IsBorrowed) //Take back
                 {
-                    MessageBox.Show($"Das Gerät '{Borrowing.Device.Name}' kann nicht augeliehen werden, da es zurzeit gesperrt ist.", "Ausleihen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    DataHandler.TakeBack(Borrowing, notes, TakerComboBox.Text);
                 }
+                else
+                {
+                    if (Borrowing.Device.IsBlocked)
+                    {
+                        MessageBox.Show($"Das Gerät '{Borrowing.Device.Name}' kann nicht augeliehen werden, da es zurzeit gesperrt ist.", "Ausleihen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
-                Borrowing.Borrow();
-
-                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
-                    Borrowing.DeviceID,
-                    LoanerComboBox.Text,
-                    Global.NullDBString,
-                    Borrowing.LenderName,
-                    Borrowing.LenderPhone,
-                    Borrowing.LenderEmail,
-                    Borrowing.DateStartUnix,
-                    Borrowing.DatePlannedEndUnix,
-                    -1,
-                    Borrowing.IsBorrowed,
-                    Borrowing.Notes);
+                    DataHandler.Borrow(Borrowing, notes, LoanerComboBox.Text);
+                }
             }
 
             Close();

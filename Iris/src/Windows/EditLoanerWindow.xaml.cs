@@ -11,7 +11,7 @@ namespace Iris.src.Windows
     public partial class EditLoanerWindow : Window
     {
         #region Properties and Variables
-        private List<Loaner> LoadedLoaners => DataHandler.Loaners;
+        private IEnumerable<Loaner> LoadedLoaners => DataHandler.Loaners;
 
         /// <summary>
         /// The currently selected loaner in <see cref="LoanerDataGrid"/>.
@@ -70,7 +70,7 @@ namespace Iris.src.Windows
 
             if (MessageBox.Show($"Soll der Herausgeber: '{SelectedLoaner.Name}' wirklich gelöscht werden?", $"{SelectedLoaner.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
-                await DatabaseHandler.DeleteLoaner(SelectedLoaner.ID);
+                DatabaseHandler.DeleteLoaner(SelectedLoaner.ID);
                 RefreshLoaners();
             }
         }
