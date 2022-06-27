@@ -50,18 +50,20 @@ namespace Iris
         {
             string bString = string.Empty;
 
+            string plannedEndString = borrowing.DatePlannedEnd.Year == 2800 ? "unbestimmt" : $"{borrowing.DatePlannedEnd:d}";
+            
             switch (borrowing.Device.Type)
             {
                 case DeviceType.Notebook:
                 case DeviceType.GigaCube:
                 case DeviceType.Special:
                     {
-                        bString = $"{borrowing.Device.Name} - {borrowing.LenderName} - {borrowing.DateStart:d} bis {borrowing.DatePlannedEnd:d}";
+                        bString = $"{borrowing.Device.Name} - {borrowing.LenderName} - {borrowing.DateStart:d} bis {plannedEndString}";
                         break;
                     }
                 case DeviceType.ERK_Meeting:
                     { 
-                        bString = $"{borrowing.Device.Notes.Split("\r\n")[0]}@en-kreis.de (Benutzername für den Login) - {borrowing.LenderName} - {borrowing.DateStart:d} bis {borrowing.DatePlannedEnd:d}";
+                        bString = $"{borrowing.Device.Notes.Split("\r\n")[0]}@en-kreis.de (Benutzername für den Login) - {borrowing.LenderName} - {borrowing.DateStart:d} bis {plannedEndString}";
                         break;
                     }
                 default:

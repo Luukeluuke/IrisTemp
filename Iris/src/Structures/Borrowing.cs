@@ -130,7 +130,7 @@ namespace Iris.Structures
         /// <param name="isBorrowed">Whether the borrowing is active. </param>
         /// <param name="notes">Notes about the borrowing.</param>
         /// <returns>The created borrowing.</returns>
-        public static async Task<Borrowing> CreateNewBorrowing(int deviceID, string loaner, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string notes)
+        public static async Task<Borrowing?> CreateNewBorrowing(int deviceID, string loaner, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string notes)
         {
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
 

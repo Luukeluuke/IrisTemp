@@ -18,6 +18,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="40"></RowDefinition>
@@ -60,6 +61,9 @@
                         <TextBlock x:Name="DeviceAvailabilityTextBlock" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="15"></TextBlock>
                     </Grid>
                     <Grid Grid.Row="3" Margin="0 0 0 10">
+                        <CheckBox x:Name="PermanentBorrowCheckBox" Grid.Column="2" Content="Dauerhaft ausleihen" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="PermanentBorrowCheckBox_Checked" Unchecked="PermanentBorrowCheckBox_Unchecked"></CheckBox>
+                    </Grid>
+                    <Grid Grid.Row="4" Margin="0 0 0 10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
@@ -75,7 +79,7 @@
                             </RichTextBox>
                         </Border>
                     </Grid>
-                    <Grid Grid.Row="4" Margin="0 0 0 15">
+                    <Grid Grid.Row="5" Margin="0 0 0 15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -85,7 +89,7 @@
                         <ComboBox x:Name="LoanerComboBox" Grid.Column="1" IsEnabled="False" VerticalAlignment="Center" Margin="5 0 5 0" MinWidth="100" Width="Auto" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" materialDesign:RippleAssist.IsDisabled="True"></ComboBox>
                         <CheckBox x:Name="InstantBorrowCheckBox" Grid.Column="2" Content="Sofort ausleihen" Margin="5 0 2 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="InstantBorrowCheckBox_Checked" Unchecked="InstantBorrowCheckBox_Unchecked"></CheckBox>
                     </Grid>
-                    <Grid Grid.Row="5" Margin="0 2 0 -2">
+                    <Grid Grid.Row="6" Margin="0 2 0 -2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="5"></ColumnDefinition>

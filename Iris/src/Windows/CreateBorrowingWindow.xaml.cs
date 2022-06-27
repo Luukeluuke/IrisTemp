@@ -23,6 +23,8 @@ namespace Iris.src.Windows
 
         private IEnumerable<Device> LoadedDevices => DataHandler.AvailableDevices;
         private List<string> LoadedLoaners { get; init; }
+
+        private DateTime? lastSelectedToDate;
         #endregion
 
         #region Constructors
@@ -128,7 +130,7 @@ namespace Iris.src.Windows
 
                 if (DeviceComboBox.SelectedIndex != -1)
                 {
-                    IsDeviceAvailable = DataHandler.IsDeviceAvailable(DeviceComboBox.SelectedItem as Device, FromDatePicker.SelectedDate.Value, ToDatePicker.SelectedDate.Value);
+                    IsDeviceAvailable = DataHandler.IsDeviceAvailable((DeviceComboBox.SelectedItem as Device)!, FromDatePicker.SelectedDate.Value, ToDatePicker.SelectedDate.Value);
 
                     if (IsDeviceAvailable)
                     {
@@ -195,6 +197,22 @@ namespace Iris.src.Windows
         }
         #endregion
 
+        #region PermanentBorrowCheckBox
+        private void PermanentBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ToDatePicker.IsEnabled = true;
+
+            ToDatePicker.SelectedDate = lastSelectedToDate!.Value;
+        }
+
+        private void PermanentBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            lastSelectedToDate = ToDatePicker.SelectedDate;
+            
+            ToDatePicker.IsEnabled = false;
+            ToDatePicker.SelectedDate = new DateTime(2800, 1, 1);
+        }
+        #endregion
         #endregion
     }
 }
