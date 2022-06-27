@@ -46,7 +46,7 @@ namespace Iris
         /// <summary>
         /// Creates a E-Mail string for a borrowing and copies it to the clipboard.
         /// </summary>
-        public static void CopyBorrowingEMailString(Borrowing borrowing)
+        public static void CopyBorrowingEMailString(Borrowing? borrowing)
         {
             string bString = string.Empty;
 

@@ -25,6 +25,8 @@ namespace Iris.src.Windows
         private List<string> LoadedLoaners { get; init; }
 
         private DateTime? lastSelectedToDate;
+
+        private List<MultiBorrowingTimeSpan> multiBorrowingTimeSpans = new();
         #endregion
 
         #region Constructors
@@ -48,10 +50,18 @@ namespace Iris.src.Windows
         #region AddBorrowingConfirmButton
         private async void AddBorrowingConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(LenderNameTextBox.Text) || DeviceComboBox.SelectedIndex == -1 || FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)
+            if (string.IsNullOrWhiteSpace(LenderNameTextBox.Text) || DeviceComboBox.SelectedIndex == -1 || (!MultipleBorrowCheckBox.IsChecked!.Value && (FromDatePicker.SelectedDate is null || ToDatePicker.SelectedDate is null)))
             {
                 MessageBox.Show("Bitte alle Pflichtfelder ausfüllen!", "Ausleihe erstellen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
+            }
+            else if (MultipleBorrowCheckBox.IsChecked.Value)
+            {
+                if (MultipleBorrowTimeSpansDataGrid.Items.Count == 0)
+                {
+                    MessageBox.Show("Es muss mindestens ein Zeitraum angegeben werden!", "Ausleihe erstellen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
             if (!string.IsNullOrWhiteSpace(LenderEMailTextBox.Text))
             {
@@ -75,19 +85,37 @@ namespace Iris.src.Windows
 
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
-            Borrowing borrowing = await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
-                                               string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
-                                               LenderNameTextBox.Text,
-                                               string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
-                                               string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? null : LenderEMailTextBox.Text,
-                                               FromDatePicker.SelectedDate.Value,
-                                               ToDatePicker.SelectedDate.Value,
-                                               InstantBorrowCheckBox.IsChecked.Value,
-                                               string.IsNullOrWhiteSpace(notes) ? null : notes);
+            if (MultipleBorrowCheckBox.IsChecked.Value)
+            {
+                foreach (MultiBorrowingTimeSpan timeSpan in MultipleBorrowTimeSpansDataGrid.Items)
+                {
+                    Global.CopyBorrowingEMailString(await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+                                   string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
+                                   LenderNameTextBox.Text,
+                                   string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
+                                   string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? null : LenderEMailTextBox.Text,
+                                   timeSpan.Start,
+                                   timeSpan.End,
+                                   false,
+                                   string.IsNullOrWhiteSpace(notes) ? null : notes));
+                }
+            }
+            else
+            {
+                Borrowing? borrowing = await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+                                                   string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
+                                                   LenderNameTextBox.Text,
+                                                   string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
+                                                   string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? null : LenderEMailTextBox.Text,
+                                                   FromDatePicker.SelectedDate.Value,
+                                                   ToDatePicker.SelectedDate.Value,
+                                                   InstantBorrowCheckBox.IsChecked.Value,
+                                                   string.IsNullOrWhiteSpace(notes) ? null : notes);
+
+                Global.CopyBorrowingEMailString(borrowing);
+            }
 
             DataHandler.RefreshData();
-
-            Global.CopyBorrowingEMailString(borrowing);
 
             Close();
         }
@@ -185,6 +213,7 @@ namespace Iris.src.Windows
         #region DeviceComboBox
         private void DeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            DataHandler.ReleaseTemporaryBlocks();
             FromToDatePicker_SelectedDateChanged(sender, e);
         }
         #endregion
@@ -200,19 +229,99 @@ namespace Iris.src.Windows
         #region PermanentBorrowCheckBox
         private void PermanentBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
+            MultipleBorrowCheckBox.IsEnabled = true;
+
             ToDatePicker.IsEnabled = true;
 
-            ToDatePicker.SelectedDate = lastSelectedToDate!.Value;
+            ToDatePicker.SelectedDate = lastSelectedToDate;
         }
 
         private void PermanentBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
         {
+            MultipleBorrowCheckBox.IsEnabled = false;
+            MultipleBorrowCheckBox.IsChecked = false;
+
             lastSelectedToDate = ToDatePicker.SelectedDate;
             
             ToDatePicker.IsEnabled = false;
             ToDatePicker.SelectedDate = new DateTime(2800, 1, 1);
         }
         #endregion
+
+        #region MultipleBorrowCheckBox
+        private void MultipleBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PermanentBorrowCheckBox.IsEnabled = true;
+
+            MultipleBorrowingGrid.Visibility = Visibility.Collapsed;
+
+            FromDateTextBlock.Text = "Von:*";
+            ToDateTextBlock.Text = "Bis:*";
+        }
+
+        private void MultipleBorrowCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            PermanentBorrowCheckBox.IsEnabled = false;
+            PermanentBorrowCheckBox.IsChecked = false;
+            InstantBorrowCheckBox.IsEnabled = false;
+            InstantBorrowCheckBox.IsChecked = false;
+
+            MultipleBorrowingGrid.Visibility = Visibility.Visible;
+
+            FromDateTextBlock.Text = "Von:";
+            ToDateTextBlock.Text = "Bis:";
+        }
+        #endregion
+
+        #region AddRemoveBorrowingTimeSpan Buttons
+        private void AddBorrowingTimeSpanButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FromDatePicker.SelectedDate is not null && ToDatePicker.SelectedDate is not null)
+            {
+                if (!IsDeviceAvailable)
+                {
+                    MessageBox.Show("Das ausgewählte Gerät ist in dem angegebenem Zeitraum nicht verfügbar.", "Zeitraum hinzufügen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                MultiBorrowingTimeSpan ts = new(FromDatePicker.SelectedDate.Value, ToDatePicker.SelectedDate.Value);
+                MultipleBorrowTimeSpansDataGrid.Items.Add(ts);
+                DataHandler.TemporaryBlock((DeviceComboBox.SelectedItem as Device), ts);
+
+                FromDatePicker.SelectedDate = null;
+                ToDatePicker.SelectedDate = null;
+            }
+        }
+
+        private void RemoveBorrowingTimeSpanButton_Click(object sender, RoutedEventArgs e)
+        {
+            MultiBorrowingTimeSpan item = MultipleBorrowTimeSpansDataGrid.SelectedItem as MultiBorrowingTimeSpan;
+
+            if (item is not null)
+            {
+                MultipleBorrowTimeSpansDataGrid.Items.Remove(item);
+                DataHandler.ReleaseTemporaryBlock(DeviceComboBox.SelectedItem as Device, item);
+            }
+        }
+        #endregion
+        #endregion
+    }
+
+    public class MultiBorrowingTimeSpan
+    {
+        #region Properties
+        public DateTime Start { get; init; }
+        public DateTime End { get; init; }
+
+        public string TimeSpanString => $"{Start.Date:d}-{End.Date:d}";
+        #endregion
+
+        #region Constructors
+        public MultiBorrowingTimeSpan(DateTime start, DateTime end)
+        {
+            Start = start;
+            End = end;
+        }
         #endregion
     }
 }

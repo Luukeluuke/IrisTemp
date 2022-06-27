@@ -1,4 +1,5 @@
 ﻿using Iris.Database;
+using Iris.src.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,8 @@ namespace Iris.Structures
         /// Loaded loaners out of the database.
         /// </summary>
         public static IEnumerable<Loaner>? Loaners { get; private set; }
+
+        private static Dictionary<Device, List<MultiBorrowingTimeSpan>> temporaryBlockedTimeSpans = new(); //TODO: implement in IsDeviceAvailable
         #endregion
 
         #region Constructors
@@ -60,6 +63,26 @@ namespace Iris.Structures
 
         #region Methods
         #region Public
+        public static void TemporaryBlock(Device device, MultiBorrowingTimeSpan timeSpan)
+        {
+            if (!temporaryBlockedTimeSpans.TryAdd(device, new List<MultiBorrowingTimeSpan> { timeSpan }))
+            {
+                temporaryBlockedTimeSpans[device].Add(timeSpan);
+            }
+        }
+        public static void ReleaseTemporaryBlock(Device device, MultiBorrowingTimeSpan timeSpan)
+        {
+            if (temporaryBlockedTimeSpans.ContainsKey(device))
+            {
+                temporaryBlockedTimeSpans[device].Remove(timeSpan);
+            }
+        }
+
+        public static void ReleaseTemporaryBlocks()
+        {
+            temporaryBlockedTimeSpans.Clear();
+        }
+
         public static void Borrow(Borrowing borrowing, string notes, string loaner)
         {
             borrowing.Borrow();
@@ -156,7 +179,7 @@ namespace Iris.Structures
         /// <returns>Whether the device is availalbe in the given timespan.</returns>
         public static bool IsDeviceAvailable(Device device, DateTime startDate, DateTime endDate, int? ignoreBorrowingID = null)
         {
-            return !Borrowings.Any(b =>
+            bool available = !Borrowings.Any(b =>
             {
                 if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID || (b.DatePlannedEnd.Equals(endDate) && b.DateEndUnix != -1))
                 {
@@ -165,6 +188,21 @@ namespace Iris.Structures
 
                 return (startDate <= b.DatePlannedEnd && endDate >= b.DateStart);
             });
+
+            if (!available)
+            {
+                return available;
+            }
+
+            if (temporaryBlockedTimeSpans.TryGetValue(device, out List<MultiBorrowingTimeSpan> tss))
+            {
+                available = !tss.Any(ts => 
+                {
+                    return (startDate <= ts.End.Date && endDate >= ts.Start.Date);
+                });
+            }
+
+            return available;
         }
 
         /// <summary>
