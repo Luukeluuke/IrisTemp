@@ -214,6 +214,10 @@ namespace Iris.src.Windows
         private void DeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             DataHandler.ReleaseTemporaryBlocks();
+            MultipleBorrowTimeSpansDataGrid.Items.Clear();
+
+            //TODO: Email generierung // Rückgabedatum  // dauerleihgaben markieren
+
             FromToDatePicker_SelectedDateChanged(sender, e);
         }
         #endregion
@@ -252,6 +256,7 @@ namespace Iris.src.Windows
         private void MultipleBorrowCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             PermanentBorrowCheckBox.IsEnabled = true;
+            InstantBorrowCheckBox.IsEnabled = true;
 
             MultipleBorrowingGrid.Visibility = Visibility.Collapsed;
 
@@ -301,6 +306,22 @@ namespace Iris.src.Windows
             {
                 MultipleBorrowTimeSpansDataGrid.Items.Remove(item);
                 DataHandler.ReleaseTemporaryBlock(DeviceComboBox.SelectedItem as Device, item);
+            }
+        }
+        #endregion
+
+        #region LenderNameTextBox
+        private void LenderNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string[] vs = LenderNameTextBox.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (vs.Length > 1)
+            {
+                LenderEMailTextBox.Text = $"{vs[0]}.{vs[1]}@en-kreis.de".ToLower();
+            }
+            else
+            {
+                LenderEMailTextBox.Text = "";
             }
         }
         #endregion
