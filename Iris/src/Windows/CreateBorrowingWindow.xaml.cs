@@ -143,7 +143,8 @@ namespace Iris.src.Windows
         #region FromToDatePicker
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((sender as DatePicker)!.Equals(FromDatePicker) && FromDatePicker.SelectedDate is not null)
+            DatePicker dt = sender as DatePicker;
+            if (dt is not null && dt.Equals(FromDatePicker) && FromDatePicker.SelectedDate is not null)
             {
                 ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
             }
