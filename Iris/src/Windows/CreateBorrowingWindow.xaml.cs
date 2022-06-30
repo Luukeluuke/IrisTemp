@@ -143,8 +143,14 @@ namespace Iris.src.Windows
         #region FromToDatePicker
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
+            if ((sender as DatePicker)!.Equals(FromDatePicker) && FromDatePicker.SelectedDate is not null)
+            {
+                ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
+            }
+
             if (FromDatePicker.SelectedDate is not null && ToDatePicker.SelectedDate is not null)
             {
+
                 if (ToDatePicker.SelectedDate.Value < FromDatePicker.SelectedDate.Value)
                 {
                     DeviceAvailabilityTextBlock.Foreground = new SolidColorBrush(Colors.Red);
@@ -216,7 +222,7 @@ namespace Iris.src.Windows
             DataHandler.ReleaseTemporaryBlocks();
             MultipleBorrowTimeSpansDataGrid.Items.Clear();
 
-            //TODO: Email generierung // Rückgabedatum  // dauerleihgaben markieren
+            //TODO: Rückgabedatum  // dauerleihgaben markieren
 
             FromToDatePicker_SelectedDateChanged(sender, e);
         }
