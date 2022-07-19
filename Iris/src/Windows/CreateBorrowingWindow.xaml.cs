@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -87,9 +88,11 @@ namespace Iris.src.Windows
 
             if (MultipleBorrowCheckBox.IsChecked.Value)
             {
+                List<Borrowing> borrowings = new();
+
                 foreach (MultiBorrowingTimeSpan timeSpan in MultipleBorrowTimeSpansDataGrid.Items)
                 {
-                    Global.CopyBorrowingEMailString(await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+                    borrowings.Add(await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
                                    string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
                                    LenderNameTextBox.Text,
                                    string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
@@ -99,6 +102,8 @@ namespace Iris.src.Windows
                                    false,
                                    string.IsNullOrWhiteSpace(notes) ? null : notes));
                 }
+
+                Global.CopyMultiBorrowingEMailString(borrowings);
             }
             else
             {

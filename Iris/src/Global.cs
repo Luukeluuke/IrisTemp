@@ -1,8 +1,11 @@
 ﻿using Iris.Structures;
 using System;
+using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Iris
@@ -71,6 +74,33 @@ namespace Iris
             }
 
             Clipboard.SetText(bString, TextDataFormat.Text);
+        }
+
+        public static void CopyMultiBorrowingEMailString(IEnumerable<Borrowing> borrowings)
+        {
+            //Unclean as fuck
+            bool first = true;
+
+            StringBuilder sb = new();
+
+            foreach (Borrowing borrowing in borrowings)
+            {
+                if (first)
+                {
+                    sb.AppendLine($"{borrowing.Device.Name} - {borrowing.LenderName}");
+
+                    if (borrowing.Device.Type.Equals(DeviceType.ERK_Meeting))
+                    {
+                        sb.AppendLine($"Benutzername für den Login: {borrowing.Device.Notes.Split("\r\n")[0]}@en-kreis.de");
+                    }
+
+                    first = false;
+                }
+
+                sb.AppendLine($"{borrowing.DateStart:d} bis {borrowing.DatePlannedEnd:d}");
+            }
+
+            Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
         }
         #endregion
         
