@@ -122,6 +122,13 @@ namespace Iris.src.Views
             LoadBorrowings();
         }
         #endregion
+
+        #region OnlyPermenentBorrowingsCheckBox
+        private void OnlyPermanentBorrowingsCheckBox_Check(object sender, RoutedEventArgs e)
+        {
+            ApplyFiltersButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
+        #endregion
         #endregion
 
         #region Methods
@@ -157,6 +164,7 @@ namespace Iris.src.Views
             BorrowingsDataGrid.ItemsSource = LoadedBorrowings;
         }
         #endregion
+
         #endregion
     }
 }

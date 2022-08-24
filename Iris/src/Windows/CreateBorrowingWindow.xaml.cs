@@ -149,14 +149,13 @@ namespace Iris.src.Windows
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs? e)
         {
             DatePicker dt = (sender as DatePicker)!;
-            if (dt is not null && dt.Equals(FromDatePicker) && FromDatePicker.SelectedDate is not null)
+            if (dt is not null && dt.Equals(FromDatePicker) && FromDatePicker.SelectedDate is not null && ((ToDatePicker is not null && ToDatePicker.SelectedDate is not null) && ToDatePicker.SelectedDate!.Value.Year != DataHandler.permanentBorrowingYear))
             {
                 ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
             }
 
-            if (FromDatePicker.SelectedDate is not null && ToDatePicker.SelectedDate is not null)
+            if (FromDatePicker.SelectedDate is not null && ToDatePicker!.SelectedDate is not null)
             {
-
                 if (ToDatePicker.SelectedDate.Value < FromDatePicker.SelectedDate.Value)
                 {
                     DeviceAvailabilityTextBlock.Foreground = new SolidColorBrush(Colors.Red);
