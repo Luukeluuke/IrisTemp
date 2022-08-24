@@ -34,7 +34,7 @@ namespace Iris.src.Windows
         {
             Owner = Global.MainWindow;
 
-            LoadedTakers = DataHandler.Loaners.Select(l => l.Name).ToList();
+            LoadedTakers = DataHandler.Loaners!.Select(l => l.Name).ToList();
 
             InitializeComponent();
             Borrowing = borrowing;
@@ -77,7 +77,7 @@ namespace Iris.src.Windows
             int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
             int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
 
-            DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+            DatabaseHandler.UpdateBorrowing(Borrowing!.ID,
                 Borrowing.DeviceID,
                 string.IsNullOrWhiteSpace(Borrowing.Loaner) ? Global.NullDBString : Borrowing.Loaner,
                 string.IsNullOrWhiteSpace(Borrowing.Taker) ? Global.NullDBString : Borrowing.Taker,
@@ -99,7 +99,7 @@ namespace Iris.src.Windows
         #endregion
 
         #region BorrowTakeButton
-        private async void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
+        private void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
         {
             if (ApplyButton.IsEnabled)
             {
@@ -141,7 +141,7 @@ namespace Iris.src.Windows
         #region FromToDatePicker
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(FromDatePicker.SelectedDate.Equals(Borrowing.DateStart)) || !(ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd)))
+            if (!(FromDatePicker.SelectedDate.Equals(Borrowing!.DateStart)) || !(ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd)))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -166,7 +166,7 @@ namespace Iris.src.Windows
 
                 if (DeviceComboBox.SelectedIndex != -1)
                 {
-                    IsDeviceAvailable = DataHandler.IsDeviceAvailable(DeviceComboBox.SelectedItem as Device,
+                    IsDeviceAvailable = DataHandler.IsDeviceAvailable((DeviceComboBox.SelectedItem as Device)!,
                         FromDatePicker.SelectedDate.Value,
                         ToDatePicker.SelectedDate.Value,
                         Borrowing.ID);
@@ -216,6 +216,11 @@ namespace Iris.src.Windows
             {
                 TakerComboBox.IsEnabled = false;
                 LoanerComboBox.IsEnabled = true;
+
+                if (Borrowing.DatePlannedEnd.Year == DataHandler.permanentBorrowingYear)
+                {
+                    ToDatePicker.IsEnabled = false;
+                }
 
                 if (!LoadedTakers.Contains(Global.CurrentUser))
                 {
@@ -283,7 +288,7 @@ namespace Iris.src.Windows
         #region SendMailButton
         private async void SendEmailButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Borrowing.LenderEmail))
+            if (string.IsNullOrWhiteSpace(Borrowing!.LenderEmail))
             {
                 MessageBox.Show("Es ist keine E-Mail Adresse angegeben.", "Fehlende E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -325,7 +330,7 @@ namespace Iris.src.Windows
 
                     Borrowing.LastMailSent = DateTime.Now;
                 }
-                catch (SmtpException e)
+                catch (SmtpException)
                 {
                     MessageBox.Show("Die E-Mail konnte nicht gesendet werden.", "E-Mail senden fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -338,7 +343,7 @@ namespace Iris.src.Windows
         private void NotesRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
-            if (!string.IsNullOrWhiteSpace(notes) && !notes.Equals(Borrowing.Notes))
+            if (!string.IsNullOrWhiteSpace(notes) && !notes.Equals(Borrowing!.Notes))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -353,7 +358,7 @@ namespace Iris.src.Windows
         private void LenderEMailTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string email = LenderEMailTextBox.Text;
-            if (!string.IsNullOrWhiteSpace(email) && !email.Equals(Borrowing.LenderEmail))
+            if (!string.IsNullOrWhiteSpace(email) && !email.Equals(Borrowing!.LenderEmail))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -368,7 +373,7 @@ namespace Iris.src.Windows
         private void LenderPhoneTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string phone = LenderPhoneTextBox.Text;
-            if (!string.IsNullOrWhiteSpace(phone) && !phone.Equals(Borrowing.LenderPhone))
+            if (!string.IsNullOrWhiteSpace(phone) && !phone.Equals(Borrowing!.LenderPhone))
             {
                 ApplyButton.IsEnabled = true;
             }

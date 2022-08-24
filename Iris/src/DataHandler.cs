@@ -9,12 +9,16 @@ namespace Iris.Structures
     internal static class DataHandler
     {
         #region Properties and Variables
+        public const int permanentBorrowingYear = 2800;
+
         /// <summary>
         /// Loaded devices out of the database.
         /// </summary>
         public static IEnumerable<Device> AvailableDevices => Devices!.Where(d => !d.IsBlocked);
+        public static IEnumerable<Device> PermanentBorrowedDevices => GetPermanentBorrowedDevices();
 
         public static IEnumerable<Device>? Devices { get; private set; }
+
 
         /// <summary>
         /// Loaded borrowing out of the database.
@@ -40,7 +44,7 @@ namespace Iris.Structures
         #region Constructors
         static DataHandler()
         {
-            RefreshData();
+            LoadDataFromDatabase();
 
             if (DeleteNotTookBorrowings)
             {
@@ -63,6 +67,30 @@ namespace Iris.Structures
 
         #region Methods
         #region Public
+        public static List<Device> GetPermanentBorrowedDevices()
+        {
+            List<Device> devices = new();
+
+            foreach (Device device in AvailableDevices!)
+            {
+                IEnumerable<Borrowing> borrowings = Borrowings!.Where(b => b.DeviceID == device.ID);
+
+                foreach (Borrowing b in borrowings)
+                {
+                    if (b.IsBorrowed && b.DatePlannedEnd.Date.Year == permanentBorrowingYear && b.DateEndUnix == -1)
+                    {
+                        devices.Add(device);
+                    }
+                }
+            }
+
+            return devices;
+        }
+
+        public static IEnumerable<Device> GetDevicesByDeviceType(List<DeviceType> deviceTypes)
+        {
+            return Devices!.Where(d => deviceTypes.Contains(d.Type));
+        }
         public static void TemporaryBlock(Device device, MultiBorrowingTimeSpan timeSpan)
         {
             if (!temporaryBlockedTimeSpans.TryAdd(device, new List<MultiBorrowingTimeSpan> { timeSpan }))
@@ -100,7 +128,7 @@ namespace Iris.Structures
                 borrowing.IsBorrowed,
                 notes);
         }
-        public static void TakeBack(Borrowing borrowing, string notes, string taker)
+        public static void TakeBack(Borrowing borrowing, string? notes, string taker)
         {
             borrowing.TakeBack();
 
@@ -141,10 +169,14 @@ namespace Iris.Structures
         public static List<DeviceAvailability> GetDeviceAvailabilities(DateTime start, DateTime end)
         {
             List<DeviceAvailability> availabilities = new();
+            IEnumerable<Device> pBD = PermanentBorrowedDevices;
 
             foreach (Device device in AvailableDevices)
             {
-                availabilities.Add(new(device, start, end));
+                if (!pBD.Contains(device))
+                {
+                    availabilities.Add(new(device, start, end));
+                }
             }
 
             return availabilities;
@@ -153,11 +185,20 @@ namespace Iris.Structures
         /// <summary>
         /// Refresh the devices and borrowing out of the database.
         /// </summary>
-        public static async void RefreshData()
+        public static async void LoadDataFromDatabase(bool devices = true, bool borrowings = true, bool loaners = true)
         {
-            Devices = (await DatabaseHandler.SelectAllDevices())!.OrderBy(a => a.Type);
-            Borrowings = (await DatabaseHandler.SelectAllBorrowings())!.OrderBy(b => b.DateStart);
-            Loaners = (await DatabaseHandler.SelectAllLoaners())!.OrderBy(l => l.Name);
+            if (devices)
+            {
+                Devices = (await DatabaseHandler.SelectAllDevices())!.OrderBy(a => a.Type);
+            }
+            if (borrowings)
+            {
+                Borrowings = (await DatabaseHandler.SelectAllBorrowings())!.OrderBy(b => b.DateStart);
+            }
+            if (loaners)
+            {
+                Loaners = (await DatabaseHandler.SelectAllLoaners())!.OrderBy(l => l.Name);
+            }
         }
 
         /// <summary>
@@ -218,6 +259,11 @@ namespace Iris.Structures
         public static bool IsDeviceCurrentlyBorrowed(Device device)
         {
             return Borrowings!.Any(b => b.Device.Equals(device) && b.IsBorrowed && b.DateEndUnix == -1);
+        }
+
+        public static IEnumerable<Borrowing> GetPermenentBorrowings()
+        {
+            return Borrowings!.Where(b => b.DatePlannedEnd.Year == permanentBorrowingYear);
         }
         #endregion
         #endregion

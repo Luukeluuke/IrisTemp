@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Iris.src.Views"
              DataContext="{Binding RelativeSource={RelativeSource self}}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="450" d:DesignWidth="1000"
              Loaded="UserControl_Loaded">
     <Grid  Background="{StaticResource MaterialDesignDarkBackground}">
         <Grid Margin="5">
@@ -16,15 +16,19 @@
                 <ColumnDefinition Width="129*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Margin="5,0,0,0" Grid.ColumnSpan="2" >
+            <Grid Margin="5 0 0 0" Grid.ColumnSpan="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="35"></RowDefinition>
+                </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Filter:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
@@ -65,19 +69,22 @@
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Enthält:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="FilterContainsTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                     </Grid>
-                    <Button x:Name="RemoveFiltersButton" Grid.Column="5" Margin="10 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RemoveFiltersButton_Click" ToolTip="Filter zurücksetzen">
+                    <Button x:Name="RemoveFiltersButton" Grid.Column="5" Margin="10 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Padding="10 0 10 0" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="RemoveFiltersButton_Click" ToolTip="Filter zurücksetzen" IsCancel="True">
                         <Button.Content>
                             <TextBlock Text="Zurücksetzen" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         </Button.Content>
                     </Button>
-                    <Button x:Name="ApplyFiltersButton" Grid.Column="6" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="ApplyFiltersButton_Click" ToolTip="Filter anwenden">
+                    <Button x:Name="ApplyFiltersButton" Grid.Column="6" Margin="5 0 0 5" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Padding="10 0 10 0"  Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="ApplyFiltersButton_Click" ToolTip="Filter anwenden" IsDefault="True">
                         <Button.Content>
                             <TextBlock Text="Anwenden" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         </Button.Content>
                     </Button>
                 </Grid>
+                <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                    <CheckBox x:Name="OnlyPermanentBorrowingsCheckBox" Grid.Column="0" Content="Nur Dauer-Ausleihen" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}"></CheckBox>
+                </Grid>
             </Grid>
-            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" DataContext="{Binding LoadedBorrowings}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged" MouseDoubleClick="BorrowingsDataGrid_MouseDoubleClick">
+            <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged" MouseDoubleClick="BorrowingsDataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Gerät" Binding="{Binding Device.Name}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Ausleiher" Binding="{Binding LenderName}"></DataGridTextColumn>

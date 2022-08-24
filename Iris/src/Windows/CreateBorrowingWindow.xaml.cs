@@ -34,7 +34,7 @@ namespace Iris.src.Windows
         public CreateBorrowingWindow()
         {
             Owner = Global.MainWindow;
-            LoadedLoaners = DataHandler.Loaners.Select(l => l.Name).ToList();
+            LoadedLoaners = DataHandler.Loaners!.Select(l => l.Name).ToList();
 
             InitializeComponent();
         }
@@ -82,7 +82,7 @@ namespace Iris.src.Windows
                 return;
             }
 
-            FromToDatePicker_SelectedDateChanged(null, null);
+            FromToDatePicker_SelectedDateChanged(sender, null);
 
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
@@ -92,7 +92,7 @@ namespace Iris.src.Windows
 
                 foreach (MultiBorrowingTimeSpan timeSpan in MultipleBorrowTimeSpansDataGrid.Items)
                 {
-                    borrowings.Add(await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+                    borrowings.Add((await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device)!.ID,
                                    string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
                                    LenderNameTextBox.Text,
                                    string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
@@ -100,27 +100,27 @@ namespace Iris.src.Windows
                                    timeSpan.Start,
                                    timeSpan.End,
                                    false,
-                                   string.IsNullOrWhiteSpace(notes) ? null : notes));
+                                   string.IsNullOrWhiteSpace(notes) ? null : notes))!);
                 }
 
                 Global.CopyMultiBorrowingEMailString(borrowings);
             }
             else
             {
-                Borrowing? borrowing = await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device).ID,
+                Borrowing? borrowing = await Borrowing.CreateNewBorrowing((DeviceComboBox.SelectedItem as Device)!.ID,
                                                    string.IsNullOrWhiteSpace(LoanerComboBox.Text) ? null : LoanerComboBox.Text,
                                                    LenderNameTextBox.Text,
                                                    string.IsNullOrWhiteSpace(LenderPhoneTextBox.Text) ? null : LenderPhoneTextBox.Text,
                                                    string.IsNullOrWhiteSpace(LenderEMailTextBox.Text) ? null : LenderEMailTextBox.Text,
-                                                   FromDatePicker.SelectedDate.Value,
-                                                   ToDatePicker.SelectedDate.Value,
-                                                   InstantBorrowCheckBox.IsChecked.Value,
+                                                   FromDatePicker.SelectedDate!.Value,
+                                                   ToDatePicker.SelectedDate!.Value,
+                                                   InstantBorrowCheckBox.IsChecked!.Value,
                                                    string.IsNullOrWhiteSpace(notes) ? null : notes);
 
                 Global.CopyBorrowingEMailString(borrowing);
             }
 
-            DataHandler.RefreshData();
+            DataHandler.LoadDataFromDatabase(devices: false, loaners: false);
 
             Close();
         }
@@ -146,9 +146,9 @@ namespace Iris.src.Windows
         #endregion
 
         #region FromToDatePicker
-        private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs? e)
         {
-            DatePicker dt = sender as DatePicker;
+            DatePicker dt = (sender as DatePicker)!;
             if (dt is not null && dt.Equals(FromDatePicker) && FromDatePicker.SelectedDate is not null)
             {
                 ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
@@ -260,7 +260,7 @@ namespace Iris.src.Windows
             lastSelectedToDate = ToDatePicker.SelectedDate;
             
             ToDatePicker.IsEnabled = false;
-            ToDatePicker.SelectedDate = new DateTime(2800, 1, 1);
+            ToDatePicker.SelectedDate = new DateTime(DataHandler.permanentBorrowingYear, 1, 1);
         }
         #endregion
 
@@ -303,7 +303,7 @@ namespace Iris.src.Windows
 
                 MultiBorrowingTimeSpan ts = new(FromDatePicker.SelectedDate.Value, ToDatePicker.SelectedDate.Value);
                 MultipleBorrowTimeSpansDataGrid.Items.Add(ts);
-                DataHandler.TemporaryBlock((DeviceComboBox.SelectedItem as Device), ts);
+                DataHandler.TemporaryBlock((DeviceComboBox.SelectedItem as Device)!, ts);
 
                 FromDatePicker.SelectedDate = null;
                 ToDatePicker.SelectedDate = null;
@@ -312,12 +312,12 @@ namespace Iris.src.Windows
 
         private void RemoveBorrowingTimeSpanButton_Click(object sender, RoutedEventArgs e)
         {
-            MultiBorrowingTimeSpan item = MultipleBorrowTimeSpansDataGrid.SelectedItem as MultiBorrowingTimeSpan;
+            MultiBorrowingTimeSpan item = (MultipleBorrowTimeSpansDataGrid.SelectedItem as MultiBorrowingTimeSpan)!;
 
             if (item is not null)
             {
                 MultipleBorrowTimeSpansDataGrid.Items.Remove(item);
-                DataHandler.ReleaseTemporaryBlock(DeviceComboBox.SelectedItem as Device, item);
+                DataHandler.ReleaseTemporaryBlock((DeviceComboBox.SelectedItem as Device)!, item);
             }
         }
         #endregion

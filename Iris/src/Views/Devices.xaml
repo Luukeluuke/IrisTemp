@@ -33,7 +33,7 @@
                     <CheckBox x:Name="FilterSpecialCheckBox" Content="Spezial" Margin="10 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="FilterSpecialCheckBox_Checked" Unchecked="FilterSpecialCheckBox_Unchecked"></CheckBox>
                 </StackPanel>
             </Grid>
-            <DataGrid x:Name="DevicesDataGrid" Grid.Row="1" Margin="0 0 0 0" DataContext="{Binding LoadedDevices}" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="DevicesDataGrid_SelectedCellsChanged">
+            <DataGrid x:Name="DevicesDataGrid" Grid.Row="1" Margin="0 0 0 0" FontFamily="Segoe UI Semibold" FontSize="13" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="DevicesDataGrid_SelectedCellsChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Typ" Binding="{Binding Type}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}"></DataGridTextColumn>

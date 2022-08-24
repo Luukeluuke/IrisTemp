@@ -33,7 +33,7 @@ namespace Iris
         /// <summary>
         /// The main window of the application.
         /// </summary>
-        public static Window MainWindow { get; internal set; }
+        public static Window? MainWindow { get; internal set; }
         #endregion
 
         #region Constructors
@@ -53,7 +53,7 @@ namespace Iris
         {
             string bString = string.Empty;
 
-            string plannedEndString = borrowing.DatePlannedEnd.Year == 2800 ? "unbestimmt" : $"{borrowing.DatePlannedEnd:d}";
+            string plannedEndString = borrowing!.DatePlannedEnd.Year == DataHandler.permanentBorrowingYear ? "unbestimmt" : $"{borrowing.DatePlannedEnd:d}";
             
             switch (borrowing.Device.Type)
             {

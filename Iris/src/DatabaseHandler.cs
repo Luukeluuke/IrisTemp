@@ -150,7 +150,7 @@ namespace Iris.Database
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
@@ -168,7 +168,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return device;
@@ -184,7 +184,7 @@ namespace Iris.Database
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices");
 
@@ -202,7 +202,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return devices;
@@ -222,7 +222,7 @@ namespace Iris.Database
         /// <param name="datePlannedEnd">Planned end of the borrowing.</param>
         /// <param name="isBorrowed">Whether the borrowing is active. </param>
         /// <param name="notes">Notes about the borrowing.</param>
-        public static async Task<Borrowing?> InsertBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        public static async Task<Borrowing?> InsertBorrowing(int deviceID, string? loaner, string? taker, string? lenderName, string? lenderPhone, string? lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string? notes)
         {
             try
             {
@@ -291,7 +291,7 @@ namespace Iris.Database
         /// Updates a borrowing in the database.
         /// </summary>
         /// <param name="id">ID of the device.</param>
-        public static bool UpdateBorrowing(int id, int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        public static bool UpdateBorrowing(int id, int deviceID, string? loaner, string taker, string lenderName, string? lenderPhone, string? lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string? notes)
         {
             try
             {
@@ -336,7 +336,7 @@ namespace Iris.Database
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
                                                                                     WHERE
@@ -354,7 +354,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return borrowing;
@@ -370,7 +370,7 @@ namespace Iris.Database
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings");
 
@@ -388,7 +388,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return borrowings;
@@ -463,7 +463,7 @@ namespace Iris.Database
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners
                                                                                     WHERE
@@ -481,7 +481,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return loaner;
@@ -497,7 +497,7 @@ namespace Iris.Database
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners");
 
@@ -515,7 +515,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return loaners;
@@ -543,7 +543,7 @@ namespace Iris.Database
         /// <returns>The reader.</returns>
         private static async Task<SqliteDataReader?> ExecuteReaderAsync(string sqlCommand, params SqliteParameter[] paramter)
         {
-            SqliteCommand command = Connection.CreateCommand();
+            SqliteCommand command = Connection!.CreateCommand();
             command.CommandText = sqlCommand;
             Array.ForEach(paramter, p => command.Parameters.Add(p));
             SqliteDataReader? reader = await command.ExecuteReaderAsync();

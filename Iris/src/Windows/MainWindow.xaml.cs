@@ -153,8 +153,7 @@ namespace Iris
                     }
             }
 
-            ContentGrid.Children.Clear();
-            ContentGrid.Children.Add(new Frame() { Source = new Uri(uriString, UriKind.Relative) });
+            ContentFrame.Navigate(Application.LoadComponent(new Uri(uriString, UriKind.RelativeOrAbsolute)) as UserControl);
         }
         #endregion
 

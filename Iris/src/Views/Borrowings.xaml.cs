@@ -17,11 +17,11 @@ namespace Iris.src.Views
         /// <summary>
         /// The ItemSource for <see cref="BorrowingsDataGrid"/>.
         /// </summary>
-        private IEnumerable<Borrowing> LoadedBorrowings { get; set; }
+        private IEnumerable<Borrowing>? LoadedBorrowings { get; set; }
         /// <summary>
         /// The currently selected borrowing in <see cref="BorrowingsDataGrid"/>.
         /// </summary>
-        private Borrowing SelectedBorrowing { get; set; }
+        private Borrowing? SelectedBorrowing { get; set; }
         #endregion
 
         #region Constructors
@@ -68,7 +68,7 @@ namespace Iris.src.Views
         #endregion
 
         #region DeleteBorrowingsButton
-        private async void DeleteBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void DeleteBorrowingButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (SelectedBorrowing is null)
             {
@@ -87,7 +87,7 @@ namespace Iris.src.Views
         #region BorrowingsDataGrid
         private void BorrowingsDataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            SelectedBorrowing = BorrowingsDataGrid.SelectedItem as Borrowing;
+            SelectedBorrowing = (BorrowingsDataGrid.SelectedItem as Borrowing)!;
 
             DeleteBorrowingButton.IsEnabled = SelectedBorrowing is not null;
             EditBorrowingButton.IsEnabled = SelectedBorrowing is not null;
@@ -95,7 +95,7 @@ namespace Iris.src.Views
 
         private void BorrowingsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            new EditBorrowingWindow(SelectedBorrowing).ShowDialog();
+            new EditBorrowingWindow(SelectedBorrowing!).ShowDialog();
 
             LoadBorrowings();
         }
@@ -131,9 +131,9 @@ namespace Iris.src.Views
         /// </summary>
         private void LoadBorrowings()
         {
-            DataHandler.RefreshData();
+            DataHandler.LoadDataFromDatabase();
 
-            LoadedBorrowings = DataHandler.Borrowings!;
+            LoadedBorrowings = OnlyPermanentBorrowingsCheckBox.IsChecked!.Value ? DataHandler.GetPermenentBorrowings() : DataHandler.Borrowings!;
 
             #region Filter
             if (FilterDeviceComboBox.SelectedIndex != -1)

@@ -31,7 +31,8 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-        <Grid Grid.Row="1" x:Name="ContentGrid" Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
+        <Grid Grid.Row="1" Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
+            <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden"></Frame>
         </Grid>
     </Grid>
 </Window>
