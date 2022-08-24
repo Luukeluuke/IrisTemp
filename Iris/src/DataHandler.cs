@@ -120,22 +120,22 @@ namespace Iris.Structures
 
         public static IEnumerable<Borrowing> GetTodayLoans(DateTime now)
         {
-            return Borrowings.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date));
+            return Borrowings!.Where(b => !b.IsBorrowed && b.DateStart.Date.Equals(now.Date));
         }
 
         public static IEnumerable<Borrowing> GetTodayTakeBacks(DateTime now)
         {
-            return Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)) && (int)b.Device.Type != 3); //TODO: am besten iwo konstanten einführen, für die IDs. Aber das muss eh nochmal überarbeitet werden, da custom device types
+            return Borrowings!.Where(b => (b.IsBorrowed && b.DateEndUnix == -1 && b.DatePlannedEnd.Date.Equals(now.Date)) && (int)b.Device.Type != 3); //TODO: am besten iwo konstanten einführen, für die IDs. Aber das muss eh nochmal überarbeitet werden, da custom device types
         }
 
         public static IEnumerable<Borrowing> GetTooLateTakeBacks(DateTime now)
         {
-            return Borrowings.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date);
+            return Borrowings!.Where(b => (b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < now.Date);
         }
 
         public static IEnumerable<Borrowing> GetNotTookLoans(DateTime now)
         {
-            return Borrowings.Where(b => !b.IsBorrowed && b.DateStart < now.Date);
+            return Borrowings!.Where(b => !b.IsBorrowed && b.DateStart < now.Date);
         }
 
         public static List<DeviceAvailability> GetDeviceAvailabilities(DateTime start, DateTime end)
@@ -155,9 +155,9 @@ namespace Iris.Structures
         /// </summary>
         public static async void RefreshData()
         {
-            Devices = (await DatabaseHandler.SelectAllDevices()).OrderBy(a => a.Type);
-            Borrowings = (await DatabaseHandler.SelectAllBorrowings()).OrderBy(b => b.DateStart);
-            Loaners = (await DatabaseHandler.SelectAllLoaners()).OrderBy(l => l.Name);
+            Devices = (await DatabaseHandler.SelectAllDevices())!.OrderBy(a => a.Type);
+            Borrowings = (await DatabaseHandler.SelectAllBorrowings())!.OrderBy(b => b.DateStart);
+            Loaners = (await DatabaseHandler.SelectAllLoaners())!.OrderBy(l => l.Name);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Iris.Structures
         /// <returns>The device, otherwise null.</returns>
         public static Device? GetDeviceByID(int id)
         {
-            return Devices.FirstOrDefault(d => d.ID.Equals(id));
+            return Devices!.FirstOrDefault(d => d!.ID.Equals(id), null);
         }
 
         /// <summary>
@@ -179,11 +179,16 @@ namespace Iris.Structures
         /// <returns>Whether the device is availalbe in the given timespan.</returns>
         public static bool IsDeviceAvailable(Device device, DateTime startDate, DateTime endDate, int? ignoreBorrowingID = null)
         {
-            bool available = !Borrowings.Any(b =>
+            bool available = !Borrowings!.Any(b =>
             {
-                if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID || (b.DatePlannedEnd.Equals(endDate) && b.DateEndUnix != -1))
+                if (b.DeviceID != device.ID || b.ID == ignoreBorrowingID || (b.DatePlannedEnd.Equals(endDate) && b.DateEndUnix != -1) || b.DateEndUnix != -1)
                 {
-                    return false;
+                    return false; //Available
+                }
+
+                if ((b.IsBorrowed && b.DateEndUnix == -1) && b.DatePlannedEnd.Date < DateTime.Now.Date)
+                {
+                    return true; //Not Available
                 }
 
                 return (startDate <= b.DatePlannedEnd && endDate >= b.DateStart);
@@ -194,7 +199,7 @@ namespace Iris.Structures
                 return available;
             }
 
-            if (temporaryBlockedTimeSpans.TryGetValue(device, out List<MultiBorrowingTimeSpan> tss))
+            if (temporaryBlockedTimeSpans.TryGetValue(device, out List<MultiBorrowingTimeSpan>? tss))
             {
                 available = !tss.Any(ts => 
                 {
@@ -212,7 +217,7 @@ namespace Iris.Structures
         /// <returns>Whether the device is currently borrowed somewhere.</returns>
         public static bool IsDeviceCurrentlyBorrowed(Device device)
         {
-            return Borrowings.Any(b => b.Device.Equals(device) && b.IsBorrowed && b.DateEndUnix == -1);
+            return Borrowings!.Any(b => b.Device.Equals(device) && b.IsBorrowed && b.DateEndUnix == -1);
         }
         #endregion
         #endregion
