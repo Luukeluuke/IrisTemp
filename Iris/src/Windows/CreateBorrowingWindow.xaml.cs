@@ -239,8 +239,11 @@ namespace Iris.src.Windows
             DeviceComboBox.ItemsSource = LoadedDevices;
             LoanerComboBox.ItemsSource = LoadedLoaners;
 
-            FromDatePicker.SelectedDate = DateTime.Now.Date;
-            ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
+            if (FromDatePicker.SelectedDate is null && ToDatePicker.SelectedDate is null)
+            {
+                FromDatePicker.SelectedDate = DateTime.Now.Date;
+                ToDatePicker.SelectedDate = FromDatePicker.SelectedDate;
+            }
         }
         #endregion
 
