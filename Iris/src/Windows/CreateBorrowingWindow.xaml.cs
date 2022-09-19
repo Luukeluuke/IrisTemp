@@ -331,7 +331,7 @@ namespace Iris.src.Windows
 
             if (vs.Length > 1)
             {
-                LenderEMailTextBox.Text = $"{vs[0]}.{vs[1]}@en-kreis.de".ToLower();
+                LenderEMailTextBox.Text = $"{vs[1]}.{vs[0]}@en-kreis.de".ToLower();
             }
             else
             {
