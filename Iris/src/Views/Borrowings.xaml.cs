@@ -129,6 +129,20 @@ namespace Iris.src.Views
             ApplyFiltersButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
         #endregion
+
+        #region DataGrid
+        private void BorrowingsDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            DataGridColumn column = e.Column;
+            if (column.Header.Equals("Ausleihdatum") || column.Header.Equals("Geplante Rückgabe") || column.Header.Equals("Zurückgabedatum"))
+            {
+                e.Handled = true;
+
+                IComparer<DateTime>
+
+            }
+        }
+        #endregion
         #endregion
 
         #region Methods
