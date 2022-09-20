@@ -1,10 +1,14 @@
 ﻿using Iris.Database;
 using Iris.src.Windows;
 using Iris.Structures;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Iris.src.Views
 {
@@ -133,14 +137,15 @@ namespace Iris.src.Views
         #region DataGrid
         private void BorrowingsDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            DataGridColumn column = e.Column;
-            if (column.Header.Equals("Ausleihdatum") || column.Header.Equals("Geplante Rückgabe") || column.Header.Equals("Zurückgabedatum"))
-            {
-                e.Handled = true;
-
-                IComparer<DateTime>
-
-            }
+            //DataGridColumn column = e.Column;
+            //if (column.Header.Equals("Ausleihdatum") || column.Header.Equals("Geplante Rückgabe") || column.Header.Equals("Zurückgabedatum"))
+            //{
+            //    e.Handled = true;
+            //    ListCollectionView view = (ListCollectionView)(CollectionViewSource.GetDefaultView((sender as DataGrid).DataContext));
+            //    ListSortDirection direction = (column.SortDirection != ListSortDirection.Ascending) ? ListSortDirection.Ascending : ListSortDirection.Descending;
+            //
+            //    view.CustomSort = new DateComparer(direction);
+            //}
         }
         #endregion
         #endregion
@@ -180,5 +185,25 @@ namespace Iris.src.Views
         #endregion
 
         #endregion
+    }
+
+    public class DateComparer : IComparer
+    {
+        private ListSortDirection Direction { get; set; }
+
+        public DateComparer(ListSortDirection directon)
+        {
+            Direction = directon;
+        }
+
+        public int Compare(object? x, object? y)
+        {
+            return Direction switch
+            {
+                ListSortDirection.Ascending => DateTime.Compare((DateTime)x, (DateTime)y),
+                ListSortDirection.Descending => DateTime.Compare((DateTime)y, (DateTime)x),
+                _ => throw new NotImplementedException(),
+            };
+        }
     }
 }

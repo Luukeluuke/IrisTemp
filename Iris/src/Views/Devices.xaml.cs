@@ -341,7 +341,6 @@ namespace Iris.src.Views
             DevicesDataGrid.ItemsSource = LoadedDevices;
         }
         #endregion
-
         #endregion
     }
 }

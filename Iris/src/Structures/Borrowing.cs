@@ -46,7 +46,7 @@ namespace Iris.Structures
         /// </summary>
         public DateTime DateStart { get; private set; }
         public long DateStartUnix { get; private set; }
-        public string DateStartString => DateStart.ToString("dd.MM.yyyy");
+        public string DateStartString => DateStart.ToString("dd.MM.yyyy"); //4882
         /// <summary>
         /// Planned end of the borrowing.
         /// </summary>
