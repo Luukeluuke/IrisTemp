@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -181,6 +182,8 @@ namespace Iris.src.Views
             #endregion
 
             BorrowingsDataGrid.ItemsSource = LoadedBorrowings;
+
+            BorrowingsStatsTextBlock.Text = $"Ausgeliehen: {LoadedBorrowings.Where(b => b.Status == 1).Count()} | Reserviert: {LoadedBorrowings.Where(b => b.Status == 0).Count()} | Abgeschlossen: {LoadedBorrowings.Where(b => b.Status == 2).Count()}";
         }
         #endregion
 
