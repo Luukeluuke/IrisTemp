@@ -80,7 +80,7 @@ namespace Iris
 
         public static string GetNameByPhoneNumber(string phoneNumber)
         {
-            MainWindow!.Cursor = Cursors.IBeam;
+            MainWindow!.Cursor = Cursors.AppStarting;
 
             using PrincipalContext? context = new(ContextType.Domain, GetCurrentDomain());
             using PrincipalSearcher? searcher = new(new UserPrincipal(context));
