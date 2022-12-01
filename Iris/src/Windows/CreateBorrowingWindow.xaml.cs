@@ -351,7 +351,10 @@ namespace Iris.src.Windows
                 return;
             }
 
-            LenderNameTextBox.Text = Global.GetNameByPhoneNumber(LenderPhoneTextBox.Text);
+            if (string.IsNullOrWhiteSpace(LenderNameTextBox.Text))
+            {
+                LenderNameTextBox.Text = Global.GetNameByPhoneNumber(LenderPhoneTextBox.Text);
+            }
         }
         #endregion
         #endregion
