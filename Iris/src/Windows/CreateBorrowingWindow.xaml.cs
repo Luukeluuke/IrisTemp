@@ -342,6 +342,18 @@ namespace Iris.src.Windows
             }
         }
         #endregion
+
+        #region LenderPhoneTextBox
+        private void LenderPhoneTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (LenderPhoneTextBox.Text.Length < 4)
+            {
+                return;
+            }
+
+            LenderNameTextBox.Text = Global.GetNameByPhoneNumber(LenderPhoneTextBox.Text);
+        }
+        #endregion
         #endregion
     }
 

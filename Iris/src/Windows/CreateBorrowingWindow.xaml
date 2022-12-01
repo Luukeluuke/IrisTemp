@@ -46,7 +46,7 @@
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Ausleiher Mail:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
                         <TextBox x:Name="LenderEMailTextBox" Grid.Column="1" VerticalAlignment="Center" Margin="5 0 10 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Ausleiher Tel.:" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
-                        <TextBox x:Name="LenderPhoneTextBox" Grid.Column="3" VerticalAlignment="Center" Margin="5 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBox>
+                        <TextBox x:Name="LenderPhoneTextBox" Grid.Column="3" VerticalAlignment="Center" Margin="5 0 0 0" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" TextChanged="LenderPhoneTextBox_TextChanged"></TextBox>
                     </Grid>
                     <Grid Grid.Row="2" Margin="0 0 0 15">
                         <Grid.ColumnDefinitions>
