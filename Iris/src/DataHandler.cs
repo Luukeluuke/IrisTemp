@@ -55,13 +55,6 @@ namespace Iris.Structures
                     DatabaseHandler.DeleteBorrowing(borrowing.ID);
                 }
             }
-
-            //Take gotomeeting licenses back
-            IEnumerable<Borrowing> finishedErkMeetings = GetTooLateTakeBacks(DateTime.Now).Where(b => (int)b.Device.Type == 3);
-            foreach (Borrowing erkMeetingB in finishedErkMeetings)
-            {
-                TakeBack(erkMeetingB, erkMeetingB.Notes, "System");
-            }
         }
         #endregion
 
@@ -85,6 +78,27 @@ namespace Iris.Structures
             }
 
             return devices;
+        }
+
+        public static void DoAutomaticBorrowingsHandling()
+        {
+            DateTime now = DateTime.Now;
+            //Automatic loan of gotomeeting licenses
+            IEnumerable<Borrowing> toLoanErkMeetings = GetAllLoans(now).Where(b => (int)b.Device.Type == 3);
+            foreach (Borrowing erkMeetingB in toLoanErkMeetings)
+            {
+                Borrow(erkMeetingB, erkMeetingB.Notes ?? "", "System");
+            }
+
+            //Automatic takeback of gotomeeting licenses
+            IEnumerable<Borrowing> finishedErkMeetings = GetTooLateTakeBacks(now).Where(b => (int)b.Device.Type == 3);
+            foreach (Borrowing erkMeetingB in finishedErkMeetings)
+            {
+                if (!erkMeetingB.DateStart.Date.Equals(now.Date))
+                {
+                    TakeBack(erkMeetingB, erkMeetingB.Notes, "System");
+                }
+            }
         }
 
         public static IEnumerable<Device> GetDevicesByDeviceType(List<DeviceType> deviceTypes)
@@ -166,6 +180,19 @@ namespace Iris.Structures
             return Borrowings!.Where(b => !b.IsBorrowed && b.DateStart < now.Date);
         }
 
+        /// <summary>
+        /// Get all loans. Today loans, and not took loans.
+        /// </summary>
+        public static IEnumerable<Borrowing> GetAllLoans(DateTime now)
+        {
+            List<Borrowing> borrowings = new();
+
+            borrowings.AddRange(GetTodayLoans(now));
+            borrowings.AddRange(GetNotTookLoans(now));
+
+            return borrowings;
+        }
+
         public static List<DeviceAvailability> GetDeviceAvailabilities(DateTime start, DateTime end)
         {
             List<DeviceAvailability> availabilities = new();
@@ -199,6 +226,8 @@ namespace Iris.Structures
             {
                 Loaners = (await DatabaseHandler.SelectAllLoaners())!.OrderBy(l => l.Name);
             }
+
+            DataHandler.DoAutomaticBorrowingsHandling();
         }
 
         /// <summary>

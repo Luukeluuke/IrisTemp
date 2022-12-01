@@ -82,6 +82,7 @@
                 </Grid>
                 <Grid Grid.Row="1" Grid.ColumnSpan="2">
                     <CheckBox x:Name="OnlyPermanentBorrowingsCheckBox" Grid.Column="0" Content="Nur Dauer-Ausleihen" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Checked="OnlyPermanentBorrowingsCheckBox_Check" Unchecked="OnlyPermanentBorrowingsCheckBox_Check"></CheckBox>
+                    <TextBlock x:Name="BorrowingsStatsTextBlock" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignLightSeparatorBackground}"></TextBlock>
                 </Grid>
             </Grid>
             <DataGrid x:Name="BorrowingsDataGrid" Grid.Row="1" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" Grid.ColumnSpan="2" Sorting="BorrowingsDataGrid_Sorting" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" CanUserSortColumns="True" SelectionMode="Single" AutoGenerateColumns="False" SelectedCellsChanged="BorrowingsDataGrid_SelectedCellsChanged" MouseDoubleClick="BorrowingsDataGrid_MouseDoubleClick">

@@ -75,6 +75,11 @@ namespace Iris.Structures
         /// Null is the default value, it is setted when starting the program.
         /// </summary>
         public DateTime? LastMailSent { get; set; }
+        /// <summary>
+        /// 0 = Reserviert
+        /// 1 = Ausgeliehen
+        /// 2 = Abgeschlossen
+        /// </summary>
         public int Status => !IsBorrowed ? 0 : DateEndUnix == -1 ? 1 : 2;
         #endregion
 
