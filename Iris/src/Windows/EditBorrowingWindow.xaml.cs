@@ -2,9 +2,11 @@
 using Iris.Structures;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -299,38 +301,23 @@ namespace Iris.src.Windows
                 return;
             }
 
-            using SmtpClient smtp = new();
-            using MailMessage mail = new();
-
-            smtp.Host = "172.28.0.43"; // TODO: Dynamic
-            smtp.Port = 25;
-            smtp.Credentials = CredentialCache.DefaultNetworkCredentials;
-            smtp.Timeout = 5000;
-
-            mail.From = new MailAddress("adv.iris@en-kreis.de"); // TODO: Dynamic
-            mail.Subject = $"Erinnerung an Rückgabe von Verleihgerät ({Borrowing.Device.Name})";
-            mail.Body = $"Guten Tag,\n\n" +
-                $"bitte denken Sie daran, das ausgeliehene Gerät ({Borrowing.Device.Name}) zurück zu bringen.\n" +
-                $"Ihr geplanter Ausleizeitraum: {Borrowing.DateStart.ToLongDateString()} bis {Borrowing.DatePlannedEnd.ToLongDateString()}.\n\n" +
-                $"Mit freundlichen Grüßen\n" +
-                $"Ihre EDV-Abteilung\n\n\n" +
-                $"Diese E-Mail-Adresse ist nicht für den Empfang von Nachrichten vorgesehen!\n" +
-                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird."; // TODO: E-Mail settings
-
-            // TODO: E-Mail for reservation confirmation
-
-            //mail.CC.Add(new MailAddress());
-            mail.To.Add(new MailAddress(Borrowing.LenderEmail));
-
             await Task.Run(() =>
             {
                 try
                 {
-                    smtp.Send(mail);
+                    ProcessStartInfo info = new(@"N:\USER\MAILBOX\1EmailBitte\1EmailBitte.exe",
+                        $"-e:{Borrowing.LenderEmail} " +
+                        $"-b:\"Erinnerung an Rückgabe von Verleihgerät - {Borrowing.Device.Name}\" " +
+                        $"-t:\"Guten Tag,\n\nbitte denken Sie daran, das ausgeliehene Gerät '{Borrowing.Device.Name}' zurückzubringen.\n" +
+                        $"Ihr Ausleihzeitraum: {Borrowing.DateStart.ToLongDateString()} bis {Borrowing.DatePlannedEnd.ToLongDateString()}.\n\n" +
+                        $"Mit freundlichen Grüßen\n" +
+                        $"Ihre EDV-Abteilung\"");
 
-                    Borrowing.LastMailSent = DateTime.Now;
+                    SecureString a = new();
+
+                    Process.Start(info);
                 }
-                catch (SmtpException)
+                catch
                 {
                     MessageBox.Show("Die E-Mail konnte nicht gesendet werden.", "E-Mail senden fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
