@@ -1,7 +1,13 @@
-﻿using System;
+﻿using Iris.Structures;
+using System;
+using System.Collections.Generic;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Iris
@@ -29,7 +35,7 @@ namespace Iris
         /// <summary>
         /// The main window of the application.
         /// </summary>
-        public static Window MainWindow { get; internal set; }
+        public static Window? MainWindow { get; internal set; }
         #endregion
 
         #region Constructors
@@ -41,11 +47,97 @@ namespace Iris
         #endregion
 
         #region Methods
+        #region Public
+        /// <summary>
+        /// Creates a E-Mail string for a borrowing and copies it to the clipboard.
+        /// </summary>
+        public static void CopyBorrowingEMailString(Borrowing? borrowing)
+        {
+            string bString = string.Empty;
+
+            string plannedEndString = borrowing!.DatePlannedEnd.Year == DataHandler.permanentBorrowingYear ? "unbestimmt" : $"{borrowing.DatePlannedEnd:d}";
+            
+            switch (borrowing.Device.Type)
+            {
+                case DeviceType.Notebook:
+                case DeviceType.GigaCube:
+                case DeviceType.Special:
+                    {
+                        bString = $"{borrowing.Device.Name} - {borrowing.LenderName} - {borrowing.DateStart:d} bis {plannedEndString}";
+                        break;
+                    }
+                case DeviceType.ERK_Meeting:
+                    { 
+                        bString = $"{borrowing.Device.Notes.Split("\r\n")[0]}@en-kreis.de (Benutzername für den Login) - {borrowing.LenderName} - {borrowing.DateStart:d} bis {plannedEndString}";
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            Clipboard.SetText(bString, TextDataFormat.Text);
+        }
+
+        public static string GetNameByPhoneNumber(string phoneNumber)
+        {
+            using PrincipalContext? context = new(ContextType.Domain, GetCurrentDomain());
+            using PrincipalSearcher? searcher = new(new UserPrincipal(context));
+
+            UserPrincipal userPrincipal = new(context);
+            userPrincipal.Enabled = true;
+            userPrincipal.VoiceTelephoneNumber = phoneNumber;
+
+            searcher.QueryFilter = userPrincipal;
+
+            Principal principal = searcher.FindOne();
+
+            if (principal is not null)
+            {
+                DirectoryEntry user = (principal.GetUnderlyingObject() as DirectoryEntry)!;
+
+                object? givenNameObject = user.Properties["givenName"].Value;
+                string givenName = givenNameObject is null ? "" : givenNameObject!.ToString()!;
+
+                string surname = user.Properties["sn"].Value!.ToString()!;
+
+                return $"{surname} {givenName}";
+            }
+
+            return "";
+        }
+        public static void CopyMultiBorrowingEMailString(IEnumerable<Borrowing> borrowings)
+        {
+            //Unclean as fuck
+            bool first = true;
+
+            StringBuilder sb = new();
+
+            foreach (Borrowing borrowing in borrowings)
+            {
+                if (first)
+                {
+                    sb.AppendLine($"{borrowing.Device.Name} - {borrowing.LenderName}");
+
+                    if (borrowing.Device.Type.Equals(DeviceType.ERK_Meeting))
+                    {
+                        sb.AppendLine($"Benutzername für den Login: {borrowing.Device.Notes.Split("\r\n")[0]}@en-kreis.de");
+                    }
+
+                    first = false;
+                }
+
+                sb.AppendLine($"{borrowing.DateStart:d} bis {borrowing.DatePlannedEnd:d}");
+            }
+
+            Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+        }
+        #endregion
+
         #region Private
         /// <summary>
         /// Loads the three primary MaterialDesing colors.
         /// </summary>
-        static private void LoadMaterialDesignColors()
+        private static void LoadMaterialDesignColors()
         {
             MaterialDesignDarkBackground = Application.Current.FindResource("MaterialDesignDarkBackground") as SolidColorBrush;
             MaterialDesignDarkForeground = Application.Current.FindResource("MaterialDesignDarkForeground") as SolidColorBrush;
@@ -57,7 +149,7 @@ namespace Iris
         /// Get the current users fullname.
         /// In case of an error, the windows username will be returned.
         /// </summary>
-        static private string GetUsersFullName()
+        private static string GetUsersFullName()
         {
             try
             {
@@ -78,7 +170,7 @@ namespace Iris
             }
         }
 
-        static private string GetWindowsUserName()
+        private static string GetWindowsUserName()
         {
             return Environment.UserName;
         }
@@ -86,7 +178,7 @@ namespace Iris
         /// <summary>
         /// Get the current domain as string.
         /// </summary>
-        static private string GetCurrentDomain()
+        private static string GetCurrentDomain()
         {
             return Domain.GetCurrentDomain().ToString();
         }

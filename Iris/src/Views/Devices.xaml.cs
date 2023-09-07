@@ -64,11 +64,11 @@ namespace Iris.src.Views
         /// <summary>
         /// The ItemSource for <see cref="DevicesDataGrid"/>.
         /// </summary>
-        private List<Device> LoadedDevices { get; set; }
+        private IEnumerable<Device>? LoadedDevices { get; set; }
         /// <summary>
         /// The currently selected device in <see cref="DevicesDataGrid"/>.
         /// </summary>
-        private Device SelectedDevice { get; set; }
+        private Device? SelectedDevice { get; set; }
 
         private List<DeviceType> SelectedDeviceTypes { get; set; }
 
@@ -98,7 +98,7 @@ namespace Iris.src.Views
             FilterERKMeetingCheckBox.IsChecked = true;
             FilterSpecialCheckBox.IsChecked = true;
 
-            LoadDevices();
+            LoadDevices(true);
         }
         #endregion
 
@@ -158,12 +158,12 @@ namespace Iris.src.Views
         #region RefreshDevicesButton
         private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadDevices();
+            LoadDevices(true);
         }
         #endregion
 
         #region DeleteDeviceButton
-        private async void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedDevice is null)
             {
@@ -171,7 +171,7 @@ namespace Iris.src.Views
                 return;
             }
 
-            if (DataHandler.Borrowings.Any(b => b.DeviceID.Equals(SelectedDevice.ID)))
+            if (DataHandler.Borrowings!.Any(b => b.DeviceID.Equals(SelectedDevice.ID)))
             {
                 MessageBox.Show("Das ausgewählte Gerät kann nicht gelöscht werden, da bereits Ausleihen mit diesem Gerät existieren.", $"{SelectedDevice.Name} löschen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -179,8 +179,8 @@ namespace Iris.src.Views
 
             if (MessageBox.Show($"Soll '{SelectedDevice.Type}, {SelectedDevice.Name}' wirklich gelöscht werden?", $"{SelectedDevice.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
-                await DatabaseHandler.DeleteDevice(SelectedDevice.ID);
-                LoadDevices();
+                DatabaseHandler.DeleteDevice(SelectedDevice.ID);
+                LoadDevices(true);
             }
         }
         #endregion
@@ -209,7 +209,7 @@ namespace Iris.src.Views
             }
 
             await Device.CreateNewDevice(NewDeviceNameTextBox.Text, new TextRange(NewDeviceNotesRichTextBox.Document.ContentStart, NewDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), (DeviceType)(NewDeviceTypeComboBox.SelectedIndex + 1));
-            LoadDevices();
+            LoadDevices(true);
 
             AddDeviceCancelButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
@@ -218,7 +218,7 @@ namespace Iris.src.Views
         #region EditDeviceCancelButton
         private void EditDeviceCancelButton_Click(object sender, RoutedEventArgs e)
         {
-            EditDeviceNameTextBox.Text = SelectedDevice.Name;
+            EditDeviceNameTextBox.Text = SelectedDevice!.Name;
             EditDeviceTypeComboBox.SelectedIndex = (int)SelectedDevice.Type - 1;
             EditDeviceNotesRichTextBox.Document.Blocks.Clear();
             EditDeviceNotesRichTextBox.Document.Blocks.Add(new Paragraph(new Run(SelectedDevice.Notes.Trim())));
@@ -226,7 +226,7 @@ namespace Iris.src.Views
         #endregion
 
         #region EditDeviceConfirmButton
-        private async void EditDeviceConfirmButton_Click(object sender, RoutedEventArgs e)
+        private void EditDeviceConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(EditDeviceNameTextBox.Text))
             {
@@ -235,21 +235,21 @@ namespace Iris.src.Views
             }
 
             //Check if device is currently borrowed somewhere, while trying to block
-            if (EditDeviceBlockedCheckBox.IsChecked.Value)
+            if (EditDeviceBlockedCheckBox.IsChecked!.Value)
             {
-                if (DataHandler.IsDeviceCurrentlyBorrowed(SelectedDevice))
+                if (DataHandler.IsDeviceCurrentlyBorrowed(SelectedDevice!))
                 {
                     MessageBox.Show("Das Gerät ist momentan ausgeliehen und kann daher nicht gesperrt werden.", "Gerät kann nicht gesperrt werden", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
 
-            int lastID = SelectedDevice.ID;
+            int lastID = SelectedDevice!.ID;
 
-            await DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), EditDeviceBlockedCheckBox.IsChecked.Value);
-            LoadDevices();
+            DatabaseHandler.UpdateDevice(SelectedDevice.ID, EditDeviceNameTextBox.Text, new TextRange(EditDeviceNotesRichTextBox.Document.ContentStart, EditDeviceNotesRichTextBox.Document.ContentEnd).Text.Trim(), EditDeviceBlockedCheckBox.IsChecked.Value);
+            LoadDevices(true);
 
-            DevicesDataGrid.SelectedItem = LoadedDevices.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
+            DevicesDataGrid.SelectedItem = LoadedDevices!.Where(x => x.ID.Equals(lastID)).FirstOrDefault();
 
             MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Änderungen übernommen", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -330,14 +330,17 @@ namespace Iris.src.Views
         /// <summary>
         /// Load the devices out of the database. Including the filters.
         /// </summary>
-        private async void LoadDevices()
+        private void LoadDevices(bool refresh = false)
         {
-            DataHandler.RefreshData();
-            LoadedDevices = DataHandler.AllDevices.Where(d => SelectedDeviceTypes.Contains(d.Type)).ToList();
+            if (refresh)
+            {
+                DataHandler.LoadDataFromDatabase(borrowings: false, loaners: false);
+            }
+
+            LoadedDevices = DataHandler.GetDevicesByDeviceType(SelectedDeviceTypes);
             DevicesDataGrid.ItemsSource = LoadedDevices;
         }
         #endregion
-
         #endregion
     }
 }

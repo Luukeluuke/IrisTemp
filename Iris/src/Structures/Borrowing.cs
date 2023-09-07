@@ -18,17 +18,17 @@ namespace Iris.Structures
         /// <summary>
         /// The borrowed device.
         /// </summary>
-        public Device Device => DataHandler.GetDeviceByID(DeviceID);
+        public Device Device => DataHandler.GetDeviceByID(DeviceID)!;
         /// <summary>
         /// Name of the loaner of the borrowing.
         /// (The person who gave the device to the lender)
         /// </summary>
-        public string Loaner { get; private set; }
+        public string? Loaner { get; private set; }
         /// <summary>
         /// Name of the taker of the borrowing.
         /// (The person who took the device back from the lender)
         /// </summary>
-        public string Taker { get; private set; }
+        public string? Taker { get; private set; }
         /// <summary>
         /// Name of the lender.
         /// </summary>
@@ -36,17 +36,17 @@ namespace Iris.Structures
         /// <summary>
         /// Phone number of the lender.
         /// </summary>
-        public string LenderPhone { get; private set; }
+        public string? LenderPhone { get; private set; }
         /// <summary>
         /// Email of the lender.
         /// </summary>
-        public string LenderEmail { get; private set; }
+        public string? LenderEmail { get; private set; }
         /// <summary>
         /// Start date of the borrowing.
         /// </summary>
         public DateTime DateStart { get; private set; }
         public long DateStartUnix { get; private set; }
-        public string DateStartString => DateStart.ToString("dd.MM.yyyy");
+        public string DateStartString => DateStart.ToString("dd.MM.yyyy"); //4882
         /// <summary>
         /// Planned end of the borrowing.
         /// </summary>
@@ -58,7 +58,7 @@ namespace Iris.Structures
         /// </summary>
         public DateTime? DateEnd { get; private set; }
         public long DateEndUnix { get; private set; }
-        public string DateEndString => DateEndUnix == -1 ? "" : DateEnd.Value.ToString("dd.MM.yyyy");
+        public string DateEndString => DateEndUnix == -1 ? "" : DateEnd!.Value.ToString("dd.MM.yyyy");
 
         /// <summary>
         /// Whether the borrowing is active. 
@@ -68,13 +68,18 @@ namespace Iris.Structures
         /// <summary>
         /// Notes about the borrowing.
         /// </summary>
-        public string Notes { get; private set; }
+        public string? Notes { get; private set; }
 
         /// <summary>
         /// Last time a remind e-mail was sent to the lender's email.
         /// Null is the default value, it is setted when starting the program.
         /// </summary>
         public DateTime? LastMailSent { get; set; }
+        /// <summary>
+        /// 0 = Reserviert
+        /// 1 = Ausgeliehen
+        /// 2 = Abgeschlossen
+        /// </summary>
         public int Status => !IsBorrowed ? 0 : DateEndUnix == -1 ? 1 : 2;
         #endregion
 
@@ -130,7 +135,7 @@ namespace Iris.Structures
         /// <param name="isBorrowed">Whether the borrowing is active. </param>
         /// <param name="notes">Notes about the borrowing.</param>
         /// <returns>The created borrowing.</returns>
-        public static async Task<Borrowing> CreateNewBorrowing(int deviceID, string loaner, string lenderName, string lenderPhone, string lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string notes)
+        public static async Task<Borrowing?> CreateNewBorrowing(int deviceID, string? loaner, string? lenderName, string? lenderPhone, string? lenderEmail, DateTime dateStart, DateTime datePlannedEnd, bool isBorrowed, string? notes)
         {
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
 

@@ -2,9 +2,11 @@
 using Iris.Structures;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +26,7 @@ namespace Iris.src.Windows
         /// </summary>
         private bool IsDeviceAvailable { get; set; } = true;
 
-        private Borrowing Borrowing { get; set; }
+        private Borrowing? Borrowing { get; set; }
         private List<string> LoadedTakers { get; init; }
         #endregion
 
@@ -34,7 +36,7 @@ namespace Iris.src.Windows
         {
             Owner = Global.MainWindow;
 
-            LoadedTakers = DataHandler.Loaners.Select(l => l.Name).ToList();
+            LoadedTakers = DataHandler.Loaners!.Select(l => l.Name).ToList();
 
             InitializeComponent();
             Borrowing = borrowing;
@@ -77,7 +79,7 @@ namespace Iris.src.Windows
             int offsetStartDate = timeZoneInfo.IsDaylightSavingTime(dateStart) ? 2 : 1;
             int offsetPlannedEndDate = timeZoneInfo.IsDaylightSavingTime(datePlannedEnd) ? 2 : 1;
 
-            await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
+            DatabaseHandler.UpdateBorrowing(Borrowing!.ID,
                 Borrowing.DeviceID,
                 string.IsNullOrWhiteSpace(Borrowing.Loaner) ? Global.NullDBString : Borrowing.Loaner,
                 string.IsNullOrWhiteSpace(Borrowing.Taker) ? Global.NullDBString : Borrowing.Taker,
@@ -90,7 +92,7 @@ namespace Iris.src.Windows
                 Borrowing.IsBorrowed,
                 new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
 
-            Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID);
+            Borrowing = await DatabaseHandler.SelectBorrowing(Borrowing.ID)!;
 
             MessageBox.Show("Die Änderungen wurden erfolgreich übernommen.", "Ausleihe bearbeiten erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -99,60 +101,39 @@ namespace Iris.src.Windows
         #endregion
 
         #region BorrowTakeButton
-        private async void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
+        private void BorrowTakeButton_Click(object sender, RoutedEventArgs e)
         {
             if (ApplyButton.IsEnabled)
             {
-                string text = (Borrowing.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "zurückgenommen" : "geschlossen" : "ausgeliehen");
+                string text = (Borrowing!.IsBorrowed ? Borrowing.DateEndUnix == -1 ? "zurückgenommen" : "geschlossen" : "ausgeliehen");
                 if (MessageBox.Show($"Es gibt ungespeicherte Änderungen. Soll die Ausleihe dennoch {text} werden?", "Ungespeicherte Änderungen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.No))
                 {
                     return;
                 }
             }
 
-            if (Borrowing.IsBorrowed && Borrowing.DateEndUnix != -1) //Fishied
+            if (Borrowing!.IsBorrowed && Borrowing.DateEndUnix != -1) //Fishied
             {
                 Close();
             }
-            else if (Borrowing.IsBorrowed) //Take back
+            else
             {
-                Borrowing.TakeBack();
+                string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
 
-                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
-                    Borrowing.DeviceID,
-                    Borrowing.Loaner,
-                    TakerComboBox.Text,
-                    Borrowing.LenderName,
-                    Borrowing.LenderPhone,
-                    Borrowing.LenderEmail,
-                    Borrowing.DateStartUnix,
-                    Borrowing.DatePlannedEndUnix,
-                    Borrowing.DateEndUnix,
-                    Borrowing.IsBorrowed,
-                    new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim());
-            }
-            else //Loan
-            {
-                if (Borrowing.Device.IsBlocked)
+                if (Borrowing.IsBorrowed) //Take back
                 {
-                    MessageBox.Show($"Das Gerät '{Borrowing.Device.Name}' kann nicht augeliehen werden, da es zurzeit gesperrt ist.", "Ausleihen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    DataHandler.TakeBack(Borrowing, notes, TakerComboBox.Text);
                 }
+                else
+                {
+                    if (Borrowing.Device.IsBlocked)
+                    {
+                        MessageBox.Show($"Das Gerät '{Borrowing.Device.Name}' kann nicht augeliehen werden, da es zurzeit gesperrt ist.", "Ausleihen fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
-                Borrowing.Borrow();
-
-                await DatabaseHandler.UpdateBorrowing(Borrowing.ID,
-                    Borrowing.DeviceID,
-                    LoanerComboBox.Text,
-                    Global.NullDBString,
-                    Borrowing.LenderName,
-                    Borrowing.LenderPhone,
-                    Borrowing.LenderEmail,
-                    Borrowing.DateStartUnix,
-                    Borrowing.DatePlannedEndUnix,
-                    -1,
-                    Borrowing.IsBorrowed,
-                    Borrowing.Notes);
+                    DataHandler.Borrow(Borrowing, notes, LoanerComboBox.Text);
+                }
             }
 
             Close();
@@ -162,7 +143,7 @@ namespace Iris.src.Windows
         #region FromToDatePicker
         private void FromToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(FromDatePicker.SelectedDate.Equals(Borrowing.DateStart)) || !(ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd)))
+            if (!(FromDatePicker.SelectedDate.Equals(Borrowing!.DateStart)) || !(ToDatePicker.SelectedDate.Equals(Borrowing.DatePlannedEnd)))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -187,7 +168,7 @@ namespace Iris.src.Windows
 
                 if (DeviceComboBox.SelectedIndex != -1)
                 {
-                    IsDeviceAvailable = DataHandler.IsDeviceAvailable(DeviceComboBox.SelectedItem as Device,
+                    IsDeviceAvailable = DataHandler.IsDeviceAvailable((DeviceComboBox.SelectedItem as Device)!,
                         FromDatePicker.SelectedDate.Value,
                         ToDatePicker.SelectedDate.Value,
                         Borrowing.ID);
@@ -237,6 +218,11 @@ namespace Iris.src.Windows
             {
                 TakerComboBox.IsEnabled = false;
                 LoanerComboBox.IsEnabled = true;
+
+                if (Borrowing.DatePlannedEnd.Year == DataHandler.permanentBorrowingYear)
+                {
+                    ToDatePicker.IsEnabled = false;
+                }
 
                 if (!LoadedTakers.Contains(Global.CurrentUser))
                 {
@@ -304,7 +290,7 @@ namespace Iris.src.Windows
         #region SendMailButton
         private async void SendEmailButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Borrowing.LenderEmail))
+            if (string.IsNullOrWhiteSpace(Borrowing!.LenderEmail))
             {
                 MessageBox.Show("Es ist keine E-Mail Adresse angegeben.", "Fehlende E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -315,39 +301,25 @@ namespace Iris.src.Windows
                 return;
             }
 
-            using SmtpClient smtp = new();
-            using MailMessage mail = new();
-
-            smtp.Host = "172.28.0.43"; // TODO: Das könnte man noch dynamisch machen -> Guter Ausblick
-            smtp.Port = 25;
-            smtp.Credentials = CredentialCache.DefaultNetworkCredentials;
-            smtp.Timeout = 5000;
-
-            mail.From = new MailAddress("edv.iris@en-kreis.de"); // TODO: Das könnte man noch dynamisch machen -> Guter Ausblick
-            mail.Subject = $"Erinnerung an Rückgabe von Verleihgerät ({Borrowing.Device.Name})";
-            mail.Body = $"Guten Tag,\n\n" +
-                $"bitte denken Sie daran, das ausgeliehene Gerät ({Borrowing.Device.Name}) zurück zu bringen.\n" +
-                $"Ihr geplanter Ausleizeitraum: {Borrowing.DateStart.ToLongDateString()} bis {Borrowing.DatePlannedEnd.ToLongDateString()}.\n\n" +
-                $"Mit freundlichen Grüßen\n" +
-                $"Ihre EDV-Abteilung\n\n\n" +
-                $"Diese E-Mail-Adresse ist nicht für den Empfang von Nachrichten vorgesehen!\n" +
-                $"Bitte antworten Sie deshalb nicht auf diese E-Mail, da ihre Nachricht nicht gelesen oder weitergeleitet wird."; // TODO: Wild wäre hier noch einen Custom Mail Editor als extra tab oder so vllt Einstellungen (würde auch für smtp usw passen) -> Email Templates
-
-            // TODO: Email für Reservierungsbestätigung
-
-            // TODO: Hier könnte man noch die Email des Email senders rein packen...
-            //mail.CC.Add(new MailAddress());
-            mail.To.Add(new MailAddress(Borrowing.LenderEmail));
-
             await Task.Run(() =>
             {
                 try
                 {
-                    smtp.Send(mail);
+                    ProcessStartInfo info = new(@"N:\USER\MAILBOX\1EmailBitte\1EmailBitte.exe",
+                        $"-e:{Borrowing.LenderEmail} " +
+                        $"-b:\"Erinnerung an Rückgabe von Verleihgerät - {Borrowing.Device.Name}\" " +
+                        $"-t:\"Guten Tag,\n\nbitte denken Sie daran, das ausgeliehene Gerät '{Borrowing.Device.Name}' zurückzubringen.\n" +
+                        $"Ihr Ausleihzeitraum: {Borrowing.DateStart.ToLongDateString()} bis {Borrowing.DatePlannedEnd.ToLongDateString()}.\n\n" +
+                        $"Bei Rückfragen wenden Sie sich bitte an Herr Borchardt (2042) oder Herr Raddatz (2056).\n\n" +
+                        $"Mit freundlichen Grüßen\n" +
+                        $"Ihre EDV-Abteilung\"");
 
+                    SecureString a = new();
+
+                    Process.Start(info);
                     Borrowing.LastMailSent = DateTime.Now;
                 }
-                catch (SmtpException e)
+                catch
                 {
                     MessageBox.Show("Die E-Mail konnte nicht gesendet werden.", "E-Mail senden fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -360,7 +332,7 @@ namespace Iris.src.Windows
         private void NotesRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string notes = new TextRange(NotesRichTextBox.Document.ContentStart, NotesRichTextBox.Document.ContentEnd).Text.Trim();
-            if (!string.IsNullOrWhiteSpace(notes) && !notes.Equals(Borrowing.Notes))
+            if (!string.IsNullOrWhiteSpace(notes) && !notes.Equals(Borrowing!.Notes))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -375,7 +347,7 @@ namespace Iris.src.Windows
         private void LenderEMailTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string email = LenderEMailTextBox.Text;
-            if (!string.IsNullOrWhiteSpace(email) && !email.Equals(Borrowing.LenderEmail))
+            if (!string.IsNullOrWhiteSpace(email) && !email.Equals(Borrowing!.LenderEmail))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -390,7 +362,7 @@ namespace Iris.src.Windows
         private void LenderPhoneTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string phone = LenderPhoneTextBox.Text;
-            if (!string.IsNullOrWhiteSpace(phone) && !phone.Equals(Borrowing.LenderPhone))
+            if (!string.IsNullOrWhiteSpace(phone) && !phone.Equals(Borrowing!.LenderPhone))
             {
                 ApplyButton.IsEnabled = true;
             }
@@ -398,6 +370,13 @@ namespace Iris.src.Windows
             {
                 ApplyButton.IsEnabled = false;
             }
+        }
+        #endregion
+
+        #region CopyContentButton
+        private void CopyContentButton_Click(object sender, RoutedEventArgs e)
+        {
+            Global.CopyBorrowingEMailString(Borrowing);
         }
         #endregion
         #endregion

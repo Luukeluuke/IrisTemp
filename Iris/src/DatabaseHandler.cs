@@ -11,7 +11,7 @@ namespace Iris.Database
     static internal class DatabaseHandler
     {
         #region Properties and Variables
-        private static SqliteConnection Connection { get; set; }
+        private static SqliteConnection? Connection { get; set; }
 
         /// <summary>
         /// Whether has a connection to database.
@@ -29,7 +29,7 @@ namespace Iris.Database
             }
 
             Connection = new("Data Source=Iris_devices.db");
-            Connection.Open();
+            Connection!.Open();
         }
         #endregion
 
@@ -42,7 +42,7 @@ namespace Iris.Database
         {
             if (IsConnected)
             {
-                Connection.Close();
+                Connection!.Close();
             }
         }
 
@@ -53,7 +53,7 @@ namespace Iris.Database
         /// <param name="name">Name of the device.</param>
         /// <param name="notes">Notes of the device.</param>
         /// <param name="type">Type of the device.</param>
-        public static async Task<Device> InsertDevice(string name, string notes, DeviceType type)
+        public static async Task<Device?> InsertDevice(string name, string notes, DeviceType type)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace Iris.Database
         /// Deletes a device by its ID out of the database.
         /// </summary>
         /// <param name="id">ID of the device.</param>
-        public static async Task<bool> DeleteDevice(int id)
+        public static bool DeleteDevice(int id)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace Iris.Database
         /// <param name="id">ID of the device.</param>
         /// <param name="name">"New" name of the device.</param>
         /// <param name="notes">"New" notes of the device.</param>
-        public static async Task<bool> UpdateDevice(int id, string name, string notes, bool isBlocked)
+        public static bool UpdateDevice(int id, string name, string notes, bool isBlocked)
         {
             try
             {
@@ -144,13 +144,13 @@ namespace Iris.Database
         /// </summary>
         /// <param name="id">The ID of the device.</param>
         /// <returns>The device, otherwise null.</returns>
-        public static async Task<Device> SelectDevice(int id)
+        public static async Task<Device?> SelectDevice(int id)
         {
-            Device device = null;
+            Device? device = null;
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices
                                                                                     WHERE
@@ -168,7 +168,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return device;
@@ -178,13 +178,13 @@ namespace Iris.Database
         /// Select all devices out of the database.
         /// </summary>
         /// <returns>The devices.</returns>
-        public static async Task<List<Device>> SelectAllDevices()
+        public static async Task<List<Device>?> SelectAllDevices()
         {
             List<Device> devices = new();
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TDevices");
 
@@ -202,7 +202,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return devices;
@@ -222,7 +222,7 @@ namespace Iris.Database
         /// <param name="datePlannedEnd">Planned end of the borrowing.</param>
         /// <param name="isBorrowed">Whether the borrowing is active. </param>
         /// <param name="notes">Notes about the borrowing.</param>
-        public static async Task<Borrowing> InsertBorrowing(int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        public static async Task<Borrowing?> InsertBorrowing(int deviceID, string? loaner, string? taker, string? lenderName, string? lenderPhone, string? lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string? notes)
         {
             try
             {
@@ -272,7 +272,7 @@ namespace Iris.Database
         /// Deletes a borrowing by its ID out of the database.
         /// </summary>
         /// <param name="id">ID of the borrowing.</param>
-        public static async Task<bool> DeleteBorrowing(int id)
+        public static bool DeleteBorrowing(int id)
         {
             try
             {
@@ -291,7 +291,7 @@ namespace Iris.Database
         /// Updates a borrowing in the database.
         /// </summary>
         /// <param name="id">ID of the device.</param>
-        public static async Task<bool> UpdateBorrowing(int id, int deviceID, string loaner, string taker, string lenderName, string lenderPhone, string lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string notes)
+        public static bool UpdateBorrowing(int id, int deviceID, string? loaner, string taker, string lenderName, string? lenderPhone, string? lenderEmail, long dateStart, long datePlannedEnd, long dateEnd, bool isBorrowed, string? notes)
         {
             try
             {
@@ -330,13 +330,13 @@ namespace Iris.Database
         /// </summary>
         /// <param name="id">The ID of the borrowing.</param>
         /// <returns>The borrowing, otherwise null.</returns>
-        public static async Task<Borrowing> SelectBorrowing(int id)
+        public static async Task<Borrowing?> SelectBorrowing(int id)
         {
-            Borrowing borrowing = null;
+            Borrowing? borrowing = null;
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings
                                                                                     WHERE
@@ -354,7 +354,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return borrowing;
@@ -364,13 +364,13 @@ namespace Iris.Database
         /// Select all borrowings out of the database.
         /// </summary>
         /// <returns>The borrowings.</returns>
-        public static async Task<List<Borrowing>> SelectAllBorrowings()
+        public static async Task<List<Borrowing>?> SelectAllBorrowings()
         {
             List<Borrowing> borrowings = new();
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TBorrowings");
 
@@ -388,7 +388,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return borrowings;
@@ -400,7 +400,7 @@ namespace Iris.Database
         /// Insert a new loaner into the database.
         /// </summary>
         /// <param name="name">Name of the loaner.</param>
-        public static async Task<Loaner> InsertLoaner(string name)
+        public static async Task<Loaner?> InsertLoaner(string name)
         {
             try
             {
@@ -437,7 +437,7 @@ namespace Iris.Database
         /// Deletes a loaner by its ID out of the database.
         /// </summary>
         /// <param name="id">ID of the loaner.</param>
-        public static async Task<bool> DeleteLoaner(int id)
+        public static bool DeleteLoaner(int id)
         {
             try
             {
@@ -457,13 +457,13 @@ namespace Iris.Database
         /// </summary>
         /// <param name="id">The ID of the loaner.</param>
         /// <returns>The loaner, otherwise null.</returns>
-        public static async Task<Loaner> SelectLoaner(int id)
+        public static async Task<Loaner?> SelectLoaner(int id)
         {
-            Loaner loaner = null;
+            Loaner? loaner = null;
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners
                                                                                     WHERE
@@ -481,7 +481,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return loaner;
@@ -491,13 +491,13 @@ namespace Iris.Database
         /// Select all loaners out of the database.
         /// </summary>
         /// <returns>The loaners.</returns>
-        public static async Task<List<Loaner>> SelectAllLoaners()
+        public static async Task<List<Loaner>?> SelectAllLoaners()
         {
             List<Loaner> loaners = new();
 
             try
             {
-                Global.MainWindow.Cursor = Cursors.Wait;
+                Global.MainWindow!.Cursor = Cursors.Wait;
 
                 SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TLoaners");
 
@@ -515,7 +515,7 @@ namespace Iris.Database
             }
             finally
             {
-                Global.MainWindow.Cursor = Cursors.Arrow;
+                Global.MainWindow!.Cursor = Cursors.Arrow;
             }
 
             return loaners;
@@ -530,7 +530,7 @@ namespace Iris.Database
         /// <param name="sqlCommand">The SQL command.</param>
         private static async void ExecuteNonQuery(string sqlCommand, params SqliteParameter[] paramter)
         {
-            SqliteCommand command = Connection.CreateCommand();
+            SqliteCommand command = Connection!.CreateCommand();
             command.CommandText = sqlCommand;
             Array.ForEach(paramter, p => command.Parameters.Add(p));
             await command.ExecuteNonQueryAsync();
@@ -543,7 +543,7 @@ namespace Iris.Database
         /// <returns>The reader.</returns>
         private static async Task<SqliteDataReader?> ExecuteReaderAsync(string sqlCommand, params SqliteParameter[] paramter)
         {
-            SqliteCommand command = Connection.CreateCommand();
+            SqliteCommand command = Connection!.CreateCommand();
             command.CommandText = sqlCommand;
             Array.ForEach(paramter, p => command.Parameters.Add(p));
             SqliteDataReader? reader = await command.ExecuteReaderAsync();

@@ -1,5 +1,6 @@
 ﻿using Iris.Database;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,6 +12,8 @@ namespace Iris
     public partial class MainWindow : Window
     {
         #region Properties and Variables
+        private const string userPath = @"\\USER-SERVER\USER\LBERGER\Iris";
+
         private MenuTab SelectedMenuTab
         {
             get => selectedMenuTab;
@@ -98,11 +101,21 @@ namespace Iris
             ChangeContentFrame(MenuTab.Startpage);
 
             Global.MainWindow = this;
+
+            try
+            {
+                if (File.Exists($@"{userPath}\{Global.CurrentUser}.txt")) File.Delete($@"{userPath}\{Global.CurrentUser}.txt");
+                File.Create($@"{userPath}\{Global.CurrentUser}.txt");
+            }
+            catch
+            { }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             DatabaseHandler.CloseDBConnection();
+
+            if (File.Exists($@"{userPath}\{Global.CurrentUser}.txt")) File.Delete($@"{userPath}\{Global.CurrentUser}.txt");
         }
         #endregion
 
@@ -153,8 +166,7 @@ namespace Iris
                     }
             }
 
-            ContentGrid.Children.Clear();
-            ContentGrid.Children.Add(new Frame() { Source = new Uri(uriString, UriKind.Relative) });
+            ContentFrame.Navigate(Application.LoadComponent(new Uri(uriString, UriKind.RelativeOrAbsolute)) as UserControl);
         }
         #endregion
 

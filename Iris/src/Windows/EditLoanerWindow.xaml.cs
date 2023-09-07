@@ -11,12 +11,12 @@ namespace Iris.src.Windows
     public partial class EditLoanerWindow : Window
     {
         #region Properties and Variables
-        private List<Loaner> LoadedLoaners => DataHandler.Loaners;
+        private static IEnumerable<Loaner> LoadedLoaners => DataHandler.Loaners!;
 
         /// <summary>
         /// The currently selected loaner in <see cref="LoanerDataGrid"/>.
         /// </summary>
-        private Loaner SelectedLoaner { get; set; }
+        private Loaner? SelectedLoaner { get; set; }
         #endregion
 
         #region Constructors
@@ -53,14 +53,14 @@ namespace Iris.src.Windows
         #region LoanerDataGrid
         private void LoanerDataGrid_SelectedCellsChanged(object sender, System.Windows.Controls.SelectedCellsChangedEventArgs e)
         {
-            SelectedLoaner = LoanerDataGrid.SelectedItem as Loaner;
+            SelectedLoaner = (LoanerDataGrid.SelectedItem as Loaner)!;
 
             DeleteLoanerButton.IsEnabled = SelectedLoaner is not null;
         }
         #endregion
 
         #region DeleteLoanerButton
-        private async void DeleteLoanerButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteLoanerButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedLoaner is null)
             {
@@ -70,7 +70,7 @@ namespace Iris.src.Windows
 
             if (MessageBox.Show($"Soll der Herausgeber: '{SelectedLoaner.Name}' wirklich gelöscht werden?", $"{SelectedLoaner.Name} löschen", MessageBoxButton.YesNo, MessageBoxImage.Question).Equals(MessageBoxResult.Yes))
             {
-                await DatabaseHandler.DeleteLoaner(SelectedLoaner.ID);
+                DatabaseHandler.DeleteLoaner(SelectedLoaner.ID);
                 RefreshLoaners();
             }
         }
@@ -100,8 +100,7 @@ namespace Iris.src.Windows
         /// </summary>
         private void RefreshLoaners()
         {
-            DataHandler.RefreshData();
-
+            DataHandler.LoadDataFromDatabase(devices: false, borrowings: false);
             LoanerDataGrid.ItemsSource = LoadedLoaners;
         }
         #endregion
