@@ -310,7 +310,7 @@ namespace Iris.src.Windows
                         $"-b:\"Erinnerung an Rückgabe von Verleihgerät - {Borrowing.Device.Name}\" " +
                         $"-t:\"Guten Tag,\n\nbitte denken Sie daran, das ausgeliehene Gerät '{Borrowing.Device.Name}' zurückzubringen.\n" +
                         $"Ihr Ausleihzeitraum: {Borrowing.DateStart.ToLongDateString()} bis {Borrowing.DatePlannedEnd.ToLongDateString()}.\n\n" +
-                        $"Bei Rückfragen wenden Sie sich bitte an Herr Borchardt (2042) oder Herr Raddatz (2056).\n\n" +
+                        $"Bei Rückfragen wenden Sie sich bitte an Herrn Borchardt (2042) oder Herrn Raddatz (2056).\n\n" +
                         $"Mit freundlichen Grüßen\n" +
                         $"Ihre EDV-Abteilung\"");
 
