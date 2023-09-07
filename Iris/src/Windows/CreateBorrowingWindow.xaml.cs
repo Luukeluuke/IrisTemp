@@ -310,8 +310,9 @@ namespace Iris.src.Windows
                 MultipleBorrowTimeSpansDataGrid.Items.Add(ts);
                 DataHandler.TemporaryBlock((DeviceComboBox.SelectedItem as Device)!, ts);
 
-                FromDatePicker.SelectedDate = null;
-                ToDatePicker.SelectedDate = null;
+                DateTime now = DateTime.Now;
+                FromDatePicker.SelectedDate = now.Date;
+                ToDatePicker.SelectedDate = now.Date;
             }
         }
 

@@ -290,6 +290,11 @@ namespace Iris.src.Windows
         #region SendMailButton
         private async void SendEmailButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
+             * Bei mehrfachausleihe immer datum von heute
+             * Bei bereits verschickter mail hinweis
+             */
+
             if (string.IsNullOrWhiteSpace(Borrowing!.LenderEmail))
             {
                 MessageBox.Show("Es ist keine E-Mail Adresse angegeben.", "Fehlende E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
