@@ -5,11 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Iris.src.Windows"
+        xmlns:conv="clr-namespace:Iris.src.Converter"
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         mc:Ignorable="d"
         Title="Iris VGV - Ausleihe bearbeiten" MinHeight="460" MinWidth="480" Height="460" Width="500"
         Background="{StaticResource MaterialDesignDarkBackground}"
         Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <conv:LastReminderStringConverter x:Key="LastReminderStringConverter"/>
+    </Window.Resources>
     <Grid Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
         <Border BorderThickness="1 0 1 1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
             <Border Margin="5" Background="{StaticResource MaterialDesignDarkBackground}">
@@ -102,9 +106,20 @@
                         <DatePicker x:Name="EndDatePicker" Grid.Column="3" IsEnabled="False" VerticalAlignment="Center" Margin="10 0 0 0" Width="95" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="{StaticResource MaterialDesignDarkForeground}"></DatePicker>
                     </Grid>
                     <Grid Grid.Row="6">
-                        <Button x:Name="SendEmailButton" Visibility="Collapsed" Background="{StaticResource MaterialDesignDarkSeparatorBackground}" BorderThickness="2" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Height="35" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:RippleAssist.Feedback="{x:Null}" Click="SendEmailButton_Click">
+                        <Button x:Name="SendEmailButton" 
+                                Visibility="Collapsed" 
+                                Background="{StaticResource MaterialDesignDarkSeparatorBackground}" 
+                                BorderThickness="2"
+                                BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" 
+                                Height="35" Style="{StaticResource MaterialDesignFlatButton}" 
+                                materialDesign:RippleAssist.Feedback="{x:Null}"
+                                Click="SendEmailButton_Click"
+                                Loaded="SendEmailButton_Loaded">
                             <Button.Content>
-                                <TextBlock Text="Erinnerungs E-Mail an Ausleiher senden" Foreground="{StaticResource MaterialDesignDarkForeground}"></TextBlock>
+                                <TextBlock Foreground="{StaticResource MaterialDesignDarkForeground}">
+                                    <Run Text="Erinnerung senden"/>
+                                    <Run Text="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType={x:Type Button}}, Converter={StaticResource LastReminderStringConverter}}"/>
+                                </TextBlock>
                             </Button.Content>
                         </Button>
                     </Grid>

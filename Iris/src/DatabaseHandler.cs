@@ -1,10 +1,13 @@
-﻿using Iris.Structures;
+﻿using Iris.src.Structures;
+using Iris.Structures;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace Iris.Database
 {
@@ -430,7 +433,6 @@ namespace Iris.Database
             {
                 return null;
             }
-
         }
 
         /// <summary>
@@ -521,6 +523,85 @@ namespace Iris.Database
             return loaners;
         }
         #endregion
+
+        public static async Task<Reminder?> InsertReminder(Borrowing borrowing, long unixTimestamp)
+        {
+            try
+            {
+                ExecuteNonQuery($@"INSERT INTO TReminders
+                                                    (BorrowingID, Timestamp) 
+                                                VALUES 
+                                                    (@borrowingID, @timestamp)
+                ",
+                                                    new SqliteParameter("@borrowingID", borrowing.ID),
+                                                    new SqliteParameter("@timestamp", unixTimestamp));
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TReminders
+                                                                                    WHERE
+                                                                                        rowid == last_insert_rowid()");
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                await reader.ReadAsync();
+                Reminder reminder = Reminder.CreateReminder(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt64(2));
+
+                await reader.CloseAsync();
+
+                return reminder;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Select the latest reminder for a borrowing.
+        /// </summary>
+        /// <param name="id">The ID of the borrowing.</param>
+        /// <returns>The latest reminder, otherwise null.</returns>
+        public static async Task<Reminder?> SelectLatestReminder(int borrowingId)
+        {
+            Reminder? reminder= null;
+
+            try
+            {
+                Global.MainWindow!.Cursor = Cursors.Wait;
+
+                SqliteDataReader? reader = await ExecuteReaderAsync($@"SELECT * FROM TReminders
+                                                                                    WHERE BorrowingID == @borrowingID
+                                                                                    ORDER BY Timestamp DESC
+                                                                                    LIMIT 1;",
+                                                                                    new SqliteParameter("@borrowingID", borrowingId));
+
+                if (reader is null)
+                {
+                    return null;
+                }
+
+                await reader.ReadAsync();
+                reminder = Reminder.CreateReminder(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt64(2));
+                //TODO: Dates are not german time
+
+                await reader.CloseAsync();
+
+                return reminder;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+
+            {
+                Global.MainWindow!.Cursor = Cursors.Arrow;
+            }
+
+            return reminder;
+        }
         #endregion
 
         #region Private

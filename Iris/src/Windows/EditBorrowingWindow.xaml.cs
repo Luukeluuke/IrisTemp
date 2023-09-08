@@ -1,4 +1,5 @@
 ﻿using Iris.Database;
+using Iris.src.Structures;
 using Iris.Structures;
 using System;
 using System.Collections.Generic;
@@ -290,11 +291,6 @@ namespace Iris.src.Windows
         #region SendMailButton
         private async void SendEmailButton_Click(object sender, RoutedEventArgs e)
         {
-            /*
-             * Bei mehrfachausleihe immer datum von heute
-             * Bei bereits verschickter mail hinweis
-             */
-
             if (string.IsNullOrWhiteSpace(Borrowing!.LenderEmail))
             {
                 MessageBox.Show("Es ist keine E-Mail Adresse angegeben.", "Fehlende E-Mail Adresse", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -306,7 +302,8 @@ namespace Iris.src.Windows
                 return;
             }
 
-            await Task.Run(() =>
+            Reminder? newReminder = null;
+            await Task.Run(async () =>
             {
                 try
                 {
@@ -322,14 +319,18 @@ namespace Iris.src.Windows
                     SecureString a = new();
 
                     Process.Start(info);
-                    Borrowing.LastMailSent = DateTime.Now;
+                    DateTime now = DateTime.Now;
+
+                    Borrowing.LastMailSent = now;
+                    newReminder = await Reminder.CreateNewReminder(Borrowing, now);
                 }
                 catch
                 {
                     MessageBox.Show("Die E-Mail konnte nicht gesendet werden.", "E-Mail senden fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
                 }
             });
+
+            SendEmailButton.Tag = newReminder;
         }
         #endregion
 
@@ -384,6 +385,12 @@ namespace Iris.src.Windows
             Global.CopyBorrowingEMailString(Borrowing);
         }
         #endregion
+
         #endregion
+
+        private async void SendEmailButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            SendEmailButton.Tag = await DatabaseHandler.SelectLatestReminder(Borrowing!.ID);
+        }
     }
 }

@@ -319,7 +319,7 @@ namespace Iris.src.Windows
         private void RemoveBorrowingTimeSpanButton_Click(object sender, RoutedEventArgs e)
         {
             MultiBorrowingTimeSpan item = (MultipleBorrowTimeSpansDataGrid.SelectedItem as MultiBorrowingTimeSpan)!;
-
+            
             if (item is not null)
             {
                 MultipleBorrowTimeSpansDataGrid.Items.Remove(item);
