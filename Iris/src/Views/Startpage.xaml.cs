@@ -1,10 +1,9 @@
 ﻿using Iris.src.Windows;
 using Iris.Structures;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace Iris.src.Views
 {
@@ -21,12 +20,31 @@ namespace Iris.src.Views
         private Borrowing? TooLateTakeBacksSelectedBorrowing { get; set; }
 
         private Borrowing? NotTookLoansSelectedBorrowing { get; set; }
+
+        /// <summary>
+        /// Interval in seconds.
+        /// </summary>
+        private const int RefreshInterval = 30;
+        private const bool DoRefresh = true;
+        private DispatcherTimer RefreshTimer { get; }
         #endregion
 
         #region Constructors
         public Startpage()
         {
             InitializeComponent();
+
+            RefreshTimer = new()
+            {
+                Interval = TimeSpan.FromSeconds(RefreshInterval),
+                IsEnabled = DoRefresh
+            };
+            RefreshTimer.Tick += (_, _) =>
+            {
+                RefreshButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            };
+
+            RefreshTimer.Start();
         }
         #endregion
 
