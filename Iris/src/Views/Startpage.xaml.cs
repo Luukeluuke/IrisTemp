@@ -1,6 +1,8 @@
 ﻿using Iris.src.Windows;
 using Iris.Structures;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -205,7 +207,10 @@ namespace Iris.src.Views
                 return;
             }
 
-            DeviceAvailabilitiesDataGrid.ItemsSource = DataHandler.GetDeviceAvailabilities(FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
+            List<DeviceAvailability> availabilites = DataHandler.GetDeviceAvailabilities(FromDatePicker.SelectedDate.Value.Date, ToDatePicker.SelectedDate.Value.Date);
+            availabilites = availabilites.OrderBy(a => a.Device.Type).ThenBy(a => a.Device.Name[^3..]).ThenBy(a => a.Device.Name).ToList(); //ungeil
+            
+            DeviceAvailabilitiesDataGrid.ItemsSource = availabilites;
         }
         #endregion
 
