@@ -25,13 +25,13 @@ namespace Iris.Database
         #region Constructors
         static DatabaseHandler()
         {
-            if (!File.Exists("Iris_devices.db"))
+            if (!File.Exists("Iris.db"))
             {
                 IsConnected = false;
                 return;
             }
 
-            Connection = new("Data Source=Iris_devices.db");
+            Connection = new("Data Source=Iris.db");
             Connection!.Open();
         }
         #endregion

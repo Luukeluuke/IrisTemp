@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Iris_devices.db" />
     <None Remove="src\Iris_devices.db" />
   </ItemGroup>
 
@@ -26,7 +25,7 @@
 
   <ItemGroup>
     <Content Include="erk.ico" />
-    <Content Include="Iris_devices.db">
+    <Content Include="Iris.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
